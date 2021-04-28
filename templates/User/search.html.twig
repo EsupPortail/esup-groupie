@@ -1,0 +1,156 @@
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('css/groupie') }}
+    {{ encore_entry_link_tags('css/jquery-ui') }}
+    {{ encore_entry_link_tags('css/datatable') }}
+{% endblock %}
+
+{% block app_body %}
+
+    <div style="padding: 15px">
+
+        <h1>Utilisateur</h1>
+
+        <table id="memb" class="table table-striped table-bordered">
+            <thead>
+                <tr>
+                    <th>Identifiant</th>
+                    <th>Nom complet</th>
+                    <th>Mail</th>
+                    <th>Téléphone</th>
+                    <th>Composante</th>
+                    <th>Affectation principale</th>
+                    <th>Affectation</th>
+                    <th>Campus</th>
+                    <th>Site</th>
+                    {% if opt == 'add' %}
+                        <th> Groupe </th>
+                        <th> Ajouter </th>
+                    {% endif %}
+                    {% if opt == 'addprivate' %}
+                        <th> Groupe </th>
+                        <th> Ajouter </th>
+                    {% endif %}
+                    {% if opt == 'search' %}
+                        <th> Voir </th>
+                    {% endif %}
+                    {% if opt == 'searchprivate' %}
+                        <th> Voir </th>
+                    {% endif %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in users %}
+                <tr >
+                    <td style="vertical-align: middle;">{{user.uid}}</td>
+                    <td style="vertical-align: middle;">{{user.displayname}}</td>
+                    <td style="vertical-align: middle;"> <a href="mailto:{{user.mail}}"> {{user.mail}}</td>
+                    <td style="vertical-align: middle;">{{user.tel}}</td>
+                    <td style="vertical-align: middle;">{{user.comp}}</td>
+                    <td style="vertical-align: middle;">{{user.primaff}}</td>
+                    <td style="vertical-align: middle;">{{user.aff}}</td>
+                    <td style="vertical-align: middle;">{{user.campus}}</td>
+                    <td style="vertical-align: middle;">{{user.site}}</td>
+                    {% if opt == 'add' %}
+                        <td style="vertical-align: middle;">{{cn}}</td>
+                        <td style="vertical-align: middle;">
+                            <a href="{{path('user_add', { 'uid': user.uid, 'cn': cn, 'liste': liste })}}">
+                                <img class="jqtip ui-button" align="absmiddle" src="{{ asset("build/images/user-add.png") }}" title="Ajouter des droits "/>
+                            </a>
+                        </td>
+                    {% else %}
+                        {% if opt == 'addprivate' %}
+                            <td style="vertical-align: middle;">{{cn}}</td>
+                            <td style="vertical-align: middle;">
+                                <a href="{{path('user_add_private', { 'uid': user.uid, 'cn': cn, 'liste': liste })}}">
+                                    <img class="jqtip ui-button" align="absmiddle" src="{{ asset("build/images/user-add.png") }}" title="Ajouter des droits "/>
+                                </a>
+                            </td>
+                        {% else %}
+                            {% if opt == 'search' %}
+                                <td style="vertical-align: middle;">
+                                    <a href="{{path('user_update', { 'uid': user.uid })}}">
+                                        <img class="jqtip ui-button" align="absmiddle" src="{{ asset("build/images/modif.png") }}" title="Modifier des droits "/>
+                                    </a>
+                                </td>
+                            {% else %}
+                                {% if opt == 'searchprivate' %}
+                                    {# {% if droits == 'Voir' %} #}
+                                    <td style="vertical-align: middle;">
+                                        <a href="{{path('voir_user_private', { 'uid': user.uid })}}">
+                                            <img class="jqtip ui-button" align="absmiddle" src="{{ asset("build/images/view-page.png") }}" title="Voir les droits sur les groupes privés "/>
+                                        </a>
+                                    </td>
+                                    {# {% endif %}    #}
+                                {% endif %}
+                            {% endif %}
+                        {% endif %}
+                    {% endif %}
+                </tr>
+               {% endfor %}
+            </tbody>
+        </table>
+        <br>
+        {% if opt == 'add' %}
+            <div class="amui-a-btn ">
+                <a href="{{ path('group_update', { 'cn': cn, 'liste': liste }) }}">
+                    <button class="amui-a-btn is--sm is--default" type="button" >
+                        <img src="{{asset('build/images/prev-green.png')}}" alt=""/>
+                        &nbsp;Retour à la gestion du groupe&nbsp;
+                    </button>
+                </a>
+            </div>
+        {% endif %}
+        {% if opt == 'search' %}
+            <div class="amui-a-btn ">
+                <a href="{{ path('user_search') }}">
+                    <button class="amui-a-btn is--sm is--default" type="button" >
+                        <img src="{{asset('build/images/prev-green.png')}}" alt=""/>
+                        &nbsp;Retour à la recherche&nbsp;
+                    </button>
+                </a>
+            </div>
+        {% endif %}
+        <br><br>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript" src="{{ asset('build/js/jquery-3.6.0.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('build/js/jquery-ui.1.12.1.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('build/js/jquery.dataTables.1.10.24.min.js') }}"></script>
+
+
+    {# Ajout d'une fonction javascript pour effacer automatiquement les messages flash après 5s #}
+    <script type="text/javascript">
+        setTimeout(function(){
+            $('#flash').hide(1500);
+        },15000);
+    </script>
+
+    <script type="text/javascript">
+        $('#memb').DataTable({
+            "paging": true,
+            "lengthMenu": [ [10, 25, 50, -1], [10, 25, 50, "tous"] ],
+            "oLanguage": {
+                "sLengthMenu": "Afficher  _MENU_  éléments  par page",
+                "sZeroRecords": "Aucune entrée trouvée",
+                "sInfo": "Affichage éléments _START_ à _END_ sur _TOTAL_ éléments",
+                "sInfoEmpty": "Pas d'élément disponible",
+                "sInfoFiltered": "(filtrage sur un total de _MAX_ éléments)",
+                "sSearch": "Recherche",
+                "oPaginate": {
+                    "sFirst": "Premier",
+                    "sLast": "Dernier",
+                    "sNext": ">>",
+                    "sPrevious": "<<"
+                },
+            },
+            "iDisplayLength": 25
+        });
+    </script>
+
+{% endblock %}

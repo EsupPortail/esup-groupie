@@ -1,0 +1,147 @@
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('css/groupie') }}
+    {{ encore_entry_link_tags('css/jquery-ui') }}
+    {{ encore_entry_link_tags('css/datatable') }}
+{% endblock %}
+
+{% block app_body %}
+
+    <div style="padding: 15px">
+
+        <h1>Liste des groupes de l'utilisateur {{ uid }} </h1>
+
+        {% if app.session.flashbag.has('flash-notice') %}
+            <center>
+                <div id="flash" class="ui-state-highlight ui-button ui-corner-all" onclick="$(this).hide(500);" style="min-width:600px;padding:15px;margin:10px;">
+                    {% for flashMessage in app.session.flashbag.get('flash-notice') %}
+                        <p>{{ flashMessage }}</p>
+                    {% endfor %}
+                </div>
+            </center>
+        {% endif %}
+
+        {% if nb_grp_admins == 0 %}
+            <h3>   L'utilisateur n'est administrateur d'aucun groupe. </h3>
+            <br>
+         {% else %}
+
+            <h3>   Nombre de groupes dont l'utilisateur est administrateur : {{ nb_grp_admins }} </h3>
+            <br>
+
+            <table id="groups" class="table table-striped table-bordered">
+                <thead>
+                    <tr>
+                        <th>Nom</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for grp in grp_admins %}
+                <tr >
+                  <td style="vertical-align: middle;">{{grp.cn }}</td>
+                      <td style="vertical-align: middle;">{{grp.description }}</td>
+                    </tr>
+               {% endfor %}
+                </tbody>
+            </table>
+        {% endif %}
+        {% if nb_grp_membres == 0 %}
+            <h3>   L'utilisateur n'est membre d'aucun groupe. </h3>
+            <br>
+        {% else %}
+
+            <br>
+            <br>
+
+            <h3>   Nombre de groupes dont l'utilisateur est membre : {{ nb_grp_membres }} </h3>
+            <br>
+
+            <table id="groups2" class="table table-striped table-bordered">
+                <thead>
+                    <tr>
+                        <th>Nom</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for grp in grp_membres %}
+                <tr >
+                  <td style="vertical-align: middle;">{{grp.cn }}</td>
+                      <td style="vertical-align: middle;">{{grp.description }}</td>
+                    </tr>
+               {% endfor %}
+                </tbody>
+            </table>
+        {% endif %}
+        <br>
+        <br>
+
+        <div class="amui-a-btn" style="text-align: left">
+            <button class="amui-a-btn is--sm is--default" type="button" onclick="history.back()">
+                <img src="{{asset('build/images/prev-green.png')}}" alt=""/>
+                &nbsp;Retour
+            </button>
+        </div>
+        <br><br>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript" src="{{ asset('build/js/jquery-3.6.0.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('build/js/jquery-ui.1.12.1.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('build/js/jquery.dataTables.1.10.24.min.js') }}"></script>
+
+    {# Ajout d'une fonction javascript pour effacer automatiquement les messages flash après 5s #}
+    <script type="text/javascript">
+        setTimeout(function(){
+            $('#flash').hide(1500);
+        },15000);
+    </script>
+
+    <script type="text/javascript">
+        $('#groups').DataTable({
+            "paging": true,
+            "lengthMenu": [ [10, 25, 50, -1], [10, 25, 50, "tous"] ],
+            "oLanguage": {
+                "sLengthMenu": "Afficher  _MENU_  éléments  par page",
+                "sZeroRecords": "Aucune entrée trouvée",
+                "sInfo": "Affichage éléments _START_ à _END_ sur _TOTAL_ éléments",
+                "sInfoEmpty": "Pas d'élément disponible",
+                "sInfoFiltered": "(filtrage sur un total de _MAX_ éléments)",
+                "sSearch": "Recherche",
+                "oPaginate": {
+                    "sFirst": "Premier",
+                    "sLast": "Dernier",
+                    "sNext": ">>",
+                    "sPrevious": "<<"
+                },
+            },
+            "iDisplayLength": 25
+        });
+        $('#groups2').DataTable({
+            "paging": true,
+            "lengthMenu": [ [10, 25, 50, -1], [10, 25, 50, "tous"] ],
+            "oLanguage": {
+                "sLengthMenu": "Afficher  _MENU_  éléments  par page",
+                "sZeroRecords": "Aucune entrée trouvée",
+                "sInfo": "Affichage éléments _START_ à _END_ sur _TOTAL_ éléments",
+                "sInfoEmpty": "Pas d'élément disponible",
+                "sInfoFiltered": "(filtrage sur un total de _MAX_ éléments)",
+                "sSearch": "Recherche",
+                "oPaginate": {
+                    "sFirst": "Premier",
+                    "sLast": "Dernier",
+                    "sNext": ">>",
+                    "sPrevious": "<<"
+                },
+            },
+            "iDisplayLength": 25
+        });
+    </script>
+
+
+{% endblock %}

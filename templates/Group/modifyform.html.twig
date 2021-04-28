@@ -1,0 +1,74 @@
+{% extends 'base.html.twig' %}
+
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('css/groupie') }}
+{% endblock %}
+
+{% block app_body %}
+
+    <div style="padding: 15px">
+
+        <h1>Modification de groupe</h1>
+
+        {% if app.session.flashbag.has('flash-notice') %}
+            <center>
+                <div id="flash" class="ui-state-highlight ui-button ui-corner-all" onclick="$(this).hide(500);" style="min-width:600px;padding:15px;margin:10px;">
+                    {% for flashMessage in app.session.flashbag.get('flash-notice') %}
+                        <p>{{ flashMessage }}</p>
+                    {% endfor %}
+                </div>
+            </center>
+        {% endif %}
+        {% if app.session.flashbag.has('flash-error') %}
+            <center>
+                <div class="ui-state-error ui-button ui-corner-all" onclick="$(this).remove();" style="min-width:600px;padding:15px;margin:10px;margin:auto;">
+                    {% for flashMessage in app.session.flashbag.get('flash-error') %}
+                        <p>{{ flashMessage }}</p>
+                    {% endfor %}
+                </div>
+            </center>
+        {% endif %}
+
+        {{ form_start(form) }}
+        {{ form_errors(form) }}
+
+        <div>
+            {{ form_label(form.cn) }}
+            {{ form_errors(form.cn) }}
+            {{ form_widget(form.cn, { 'attr': { 'size' : 32 } }) }}
+        </div>
+        <br>
+        <div>
+            {{ form_label(form.description) }}
+            {{ form_errors(form.description) }}
+            {{ form_widget(form.description,  { 'attr': { 'size' : 100 } }) }}
+
+        </div>
+        <br>
+        <div>
+            {{ form_label(form.amugroupfilter) }}
+            {{ form_errors(form.amugroupfilter) }}
+            {{ form_widget(form.amugroupfilter, { 'attr': { 'size' : 128 } }) }}
+
+
+        </div>
+        <br>
+        Exemple de filtre à partir d'une requête SQL : dbi:mysql:host=server.univ.fr;port=3306;database=name|user|pwduser|SELECT * from V_USERS
+        <br><br>
+        <div class="amui-a-btn ">
+            <button class="amui-a-btn is--sm is--default" type="submit" name="btModifier"><img align="absmiddle" src="{{ asset('build/images/accept.png') }}" />&nbsp;Enregistrer les modifications&nbsp;</button>
+            <a href="{{ path('homepage') }}">
+                <button class="amui-a-btn is--sm is--default" type="button" >
+                    <img src="{{asset('build/images/cancel-16.png')}}" alt=""/>
+                    &nbsp;Annuler&nbsp;
+                </button>
+            </a>
+        </div>
+
+        {{ form_end(form) }}
+        <br>
+    </div>
+    
+{% endblock %}

@@ -1,0 +1,110 @@
+{
+    "type": "project",
+    "license": "proprietary",
+    "require": {
+        "php": "^7.4",
+        "ext-ctype": "*",
+        "ext-iconv": "*",
+        "sensio/framework-extra-bundle": "^5.1",
+        "symfony/asset": "4.2.*",
+        "symfony/console": "4.2.*",
+        "symfony/dotenv": "4.2.*",
+        "symfony/expression-language": "4.2.*",
+        "symfony/flex": "^1.3.1",
+        "symfony/form": "4.2.*",
+        "symfony/framework-bundle": "4.2.*",
+        "symfony/monolog-bundle": "^3.1",
+        "symfony/orm-pack": "*",
+        "symfony/process": "4.2.*",
+        "symfony/security-bundle": "4.2.*",
+        "symfony/swiftmailer-bundle": "^3.1",
+        "symfony/translation": "4.2.*",
+        "symfony/twig-bundle": "4.2.*",
+        "symfony/validator": "4.2.*",
+        "symfony/web-link": "4.2.*",
+        "symfony/cache": "4.2.*",
+        "symfony/config": "4.2.*",
+        "symfony/debug": "4.*",
+        "symfony/dependency-injection": "4.2.*",
+        "symfony/event-dispatcher": "4.1.*",
+        "symfony/http-foundation": "4.*",
+        "symfony/http-kernel": "4.2.*",
+        "symfony/routing": "4.*",
+        "symfony/security-core": "4.2.*",
+        "symfony/security-csrf": "4.2.*",
+        "symfony/security-guard": "4.2.*",
+        "symfony/security-http": "4.2.*",
+        "symfony/twig-bridge": "4.2.*",
+        "symfony/options-resolver": "4.2.*",
+        "symfony/intl": "4.*",
+        "symfony/yaml": "4.2.*",
+        "symfony/ldap": "4.2.*",
+        "amu/charte-graphique-bundle": "3.0.x-dev",
+        "amu/cas-bundle": "^2.0",
+        "amu/role-bundle": "^2.0"
+    },
+    "repositories": [
+        {
+            "type": "git",
+            "url": "ssh://gitadmin@projets-dev.univ-amu.fr/CharteGraphiqueBundle"
+        },
+        {
+            "type": "git",
+            "url": "ssh://gitadmin@projets-dev.univ-amu.fr/CasBundle"
+        },
+        {
+            "type": "git",
+            "url": "ssh://gitadmin@projets-dev.univ-amu.fr/RoleBundle"
+        }
+    ],
+    "require-dev": {
+        "symfony/maker-bundle": "^1.0",
+        "symfony/web-server-bundle": "4.2.*"
+    },
+    "config": {
+        "preferred-install": {
+            "*": "dist"
+        },
+        "sort-packages": true,
+        "disable-tls": true,
+        "secure-http": false
+    },
+    "autoload": {
+        "psr-4": {
+            "App\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "App\\Tests\\": "tests/"
+        }
+    },
+    "replace": {
+        "paragonie/random_compat": "2.*",
+        "symfony/polyfill-ctype": "*",
+        "symfony/polyfill-iconv": "*",
+        "symfony/polyfill-php70": "*",
+        "symfony/polyfill-php56": "*"
+    },
+    "scripts": {
+        "auto-scripts": {
+            "cache:clear": "symfony-cmd",
+            "assets:install %PUBLIC_DIR%": "symfony-cmd"
+        },
+        "post-install-cmd": [
+            "@auto-scripts"
+        ],
+        "post-update-cmd": [
+            "@auto-scripts"
+        ]
+    },
+    "conflict": {
+        "symfony/symfony": "*"
+    },
+    "extra": {
+        "symfony": {
+            "allow-contrib": false,
+            "require": "3.4.*"
+        }
+    }
+}

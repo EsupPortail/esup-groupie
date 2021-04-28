@@ -1,0 +1,29 @@
+{% extends 'base.html.twig' %}
+
+{% block app_body %}
+
+
+    <div style="padding: 15px">
+
+        <h1>Groupes privés</h1>
+        <br><br>
+        <div style="text-align: center">
+
+            <div class="amui-a-btnbtn">
+                <a href="{{ path('private_memberships') }}">
+                    <button type="button" class="amui-a-btn is--xl is--default"><i class="material-icons md-18">person</i> Voir les groupes privés auxquels j'appartiens</button>
+                </a>
+                <a href="{{ path('private_group') }}">
+                    <button type="button" class="amui-a-btn is--xl is--default"><i class="material-icons md-18">person</i> Gérer mes groupes privés</button>
+                </a>
+                <a href="{{ path('all_private_groups') }}">
+                    <button type="button" class="amui-a-btn is--xl is--default"><i class="material-icons md-18">person</i> Voir tous les groupes privés (DOSI)</button>
+                </a>
+            </div>
+
+        </div>
+
+            <br><br><br><br><br><br><br><br>
+        </div>
+
+{% endblock %}

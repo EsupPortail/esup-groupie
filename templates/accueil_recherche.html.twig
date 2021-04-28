@@ -1,0 +1,26 @@
+{% extends 'base.html.twig' %}
+
+{% block app_body %}
+
+
+    <div style="padding: 15px">
+
+        <h1>Recherche de groupes et de personnes </h1>
+        <br><br>
+        <div style="text-align: center">
+            <div class="amui-a-btn">
+                <a href="{{ path('group_search') }}">
+                    <button type="button" class="amui-a-btn is--xl is--default"><i class="material-icons md-18">person</i> Rechercher un groupe</button>
+                </a>
+                <a href="{{ path('user_search') }}">
+                    <button type="button" class="amui-a-btn is--xl is--default"><i class="material-icons md-18">person</i> Rechercher une personne</button>
+                </a>
+
+            </div>
+
+        </div>
+
+            <br><br><br><br><br><br><br><br>
+        </div>
+
+{% endblock %}

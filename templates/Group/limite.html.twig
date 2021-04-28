@@ -1,0 +1,24 @@
+{% extends 'base.html.twig' %}
+
+
+{% block app_body %}
+
+    <h1>Limite atteinte</h1>
+
+    <div style="padding: 15px">
+        <h2>Vous ne pouvez plus créer de nouveaux groupes privés. </h2>
+        <br>
+        <h3>Le nombre maximum de groupes privés créés est atteint (20 groupes). </h3>
+        <br>
+        <br>
+        <div class="amui-a-btn is--sm is--default">
+            <a href="{{ path('private_group') }}" >
+                <img src="{{asset('build/images/prev-green.png')}}" alt=""/>
+                &nbsp;Retour à la gestion des groupes privés&nbsp;
+            </a>
+        </div>
+        <br>
+        <br>
+    </div>
+                
+{% endblock %}

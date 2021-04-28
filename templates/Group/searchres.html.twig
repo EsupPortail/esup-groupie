@@ -1,0 +1,137 @@
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('css/groupie') }}
+    {{ encore_entry_link_tags('css/jquery-ui') }}
+    {{ encore_entry_link_tags('css/datatable') }}
+{% endblock %}
+
+{% block app_body %}
+
+    <div style="padding: 15px">
+
+        <h1> Liste des groupes  </h1>
+        <div class="amui-m-panel">
+            <table id="tab_groups" class="table table-striped table-bordered">
+                <thead>
+                    <tr>
+                        <th style="min-width: 200px">Nom</th>
+                        <th style="min-width: 400px">Description </th>
+                        {% if opt=='search' %}
+                            <th>Accès</th>
+                        {% endif %}
+                        {% if opt=='del' %}
+                            <th>Supprimer</th>
+                        {% endif %}
+                        {% if opt=='mod' %}
+                            <th>Modifier</th>
+                        {% endif %}
+                        {% if opt=='add' %}
+                            <th>Ajouter</th>
+                        {% endif %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for group in groups %}
+                        <tr>
+                            <td style="vertical-align: middle;">{{group.cn}}</td>
+                            <td style="vertical-align: middle;">{{group.description}}</td>
+                            {% if opt=='search' %}
+                                {% if group.droits=='Aucun' %}
+                                    <td style="vertical-align: middle;">
+                                        <img align="absmiddle" src="{{ asset('build/images/usergroup-banish.png') }}" title="Accès non autorisé" class="ui-button" />
+                                    </td>
+                                {% endif %}
+                                {% if group.droits=='Voir' %}
+                                    <td style="vertical-align: middle;">
+                                        <a href="{{path('see_group', { 'cn': group.cn, 'mail': 'true', 'liste': 'recherchegroupe'})}}">
+                                            <img align="absmiddle" src="{{ asset("build/images/view-page.png") }}" title="Voir les membres de {{ group.cn }} "/>
+                                        </a>
+                                    </td>
+                                {% endif %}
+                                {% if group.droits=='Modifier' %}
+                                    <td style="vertical-align: middle;">
+                                        <a href="{{path('group_update', { 'cn': group.cn, 'liste': 'recherchegroupe'})}}">
+                                            <img align="absmiddle" src="{{ asset("build/images/usergroup-edit.png") }}" title="Gérer le groupe {{ group.cn }} "/>
+                                        </a>
+                                    </td>
+                                {% endif %}
+                            {% endif %}
+                            {% if opt=='del' %}
+                                <td style="vertical-align: middle;">
+                                    <a href="{{path('group_delete', { 'cn': group.cn })}}">
+                                        <img align="absmiddle" src="{{ asset("build/images/delete-1.png") }}" title="Supprimer le groupe {{ group.cn }} "/>
+                                    </a>
+                                </td>
+                            {% endif %}
+                            {% if opt=='mod' %}
+                                {% if group.amugroupfilter == "" %}
+                                    <td style="vertical-align: middle;">
+                                        <a href="{{path('group_modify', { 'cn': group.cn, 'desc': group.description, 'filt': 'no' })}}">
+                                            <img align="absmiddle" src="{{ asset("build/images/modif.png") }}" title="Modifier le groupe {{ group.cn }} "/>
+                                        </a>
+                                    </td>
+                                {% else %}
+                                    <td style="vertical-align: middle;">
+                                        <a href="{{path('group_modify', { 'cn': group.cn, 'desc': group.description, 'filt': group.amugroupfilter })}}">
+                                            <img align="absmiddle" src="{{ asset("build/images/modif.png") }}" title="Modifier le groupe {{ group.cn }} "/>
+                                        </a>
+                                    </td>
+                                {% endif %}
+                            {% endif %}
+                            {% if opt=='add' %}
+                                <td style="vertical-align: middle;">
+                                    {#   <td style="vertical-align: middle;"> {{ form_widget(m.memberof) }} </td> #}
+                                    <a href="{{path('user_add', { 'uid': uid, 'cn': group.cn })}}">
+                                        <img align="absmiddle" src="{{ asset("build/images/user-add.png") }}" title="Ajouter des droits "/>
+                                    </a>
+                                </td>
+                            {% endif %}
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <br><br>
+
+    </div>
+
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript" src="{{ asset('build/js/jquery-3.6.0.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('build/js/jquery-ui.1.12.1.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('build/js/jquery.dataTables.1.10.24.min.js') }}"></script>
+
+    {# Ajout d'une fonction javascript pour effacer automatiquement les messages flash après 5s #}
+    <script type="text/javascript">
+        setTimeout(function(){
+            $('#flash').hide(1500);
+        },15000);
+    </script>
+
+    <script type="text/javascript">
+        $('#tab_groups').DataTable({
+            "paging": true,
+            "lengthMenu": [ [10, 25, 50, -1], [10, 25, 50, "tous"] ],
+            "oLanguage": {
+                "sLengthMenu": "Afficher  _MENU_  éléments  par page",
+                "sZeroRecords": "Aucune entrée trouvée",
+                "sInfo": "Affichage éléments _START_ à _END_ sur _TOTAL_ éléments",
+                "sInfoEmpty": "Pas d'élément disponible",
+                "sInfoFiltered": "(filtrage sur un total de _MAX_ éléments)",
+                "sSearch": "Recherche",
+                "oPaginate": {
+                    "sFirst": "Premier",
+                    "sLast": "Dernier",
+                    "sNext": ">>",
+                    "sPrevious": "<<"
+                },
+            },
+            "iDisplayLength": 25
+        });
+    </script>
+
+{% endblock %}

@@ -1,0 +1,83 @@
+{% extends 'base.html.twig' %}
+
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('css/jolitree-group') }}
+{% endblock %}
+
+{% block app_body %}
+
+    <div style="padding: 15px">
+
+    <div id="listeGroupes">
+
+        <h1> Liste de mes groupes </h1>
+
+        <div class="amui-m-panel">
+            <table class="table table-striped table-bordered">
+                <tbody>
+                    <tr>
+                        <td class="titre1"> Nom </td>
+                        <td class="titre6"> Description </td>
+                        <td class="titre7"> Voir groupe </td>
+                    </tr>
+            </table>
+
+             <div id="wrapper">
+                <dl id="myTree" class="jolitree">
+                    {% for group in groups %}
+                        {% if group.lastopen != 0 %}
+                            {% if group.lastopen <= (group.lastnbetages-2) %}
+                                {% for i in group.lastopen .. (group.lastnbetages-2) %}
+                                    </dl>
+                                    </dd>
+                                {% endfor %}
+                            {% endif %}
+                        {% endif %}
+                        {% if group.lastopen <= (group.nbetages-2) %}
+                            {% for i in group.lastopen .. (group.nbetages-2) %}
+                                {% if i<3 %}
+                                    <dd class="opened">
+                                {% else %}
+                                    <dd class="last">
+                                {% endif %}
+                                <p> {{ group.etages[i] }} </p>
+                                <dl>
+                            {% endfor %}
+                        {% endif %}
+                        <dt>
+                            <div  class="d-inline" style="width: 300px"> <a href="{{path('group_update', { 'cn': group.cn, 'liste': 'mesgroupes'})}}" title="Gérer le groupe {{ group.cn }}"> {{ group.etages[group.nbetages-1] }} </a> </div>
+                            <div class="d-inline" style="position: absolute;left : 50%;margin-left: -150px;"> {{ group.description }} </div>
+                            <div class="d-inline" style="width: 330px;position: absolute;left : 50%;margin-left:400px;text-align: center;" >
+                                <a href="{{path('group_update', { 'cn': group.cn, 'liste': 'mesgroupes'})}}">
+                                    <img class="jqtip ui-button" align="absmiddle" src="{{ asset("build/images/usergroup-edit.png") }}" title="Gérer le groupe {{ group.cn }} "/>
+                                </a>
+                            </div>
+                        </dt>
+                    {% endfor %}
+                </dl>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+
+    <script type="text/javascript" src="{{ asset('build/js/jolitree.js') }}"></script>
+
+    <script type="text/javascript">
+        function init() {var tree = new JoliTree(document.getElementById("myTree"));}window.onload = init;
+    </script>
+
+    {# Ajout d'une fonction javascript pour effacer automatiquement les messages flash après 5s #}
+    <script type="text/javascript">
+        setTimeout(function(){
+            $('#flash').hide(1500);
+        },15000);
+    </script>
+{% endblock %}
+    

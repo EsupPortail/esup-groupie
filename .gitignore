@@ -1,0 +1,6 @@
+/config/services.yaml
+.env
+/node_modules
+/public
+/var
+/vendor

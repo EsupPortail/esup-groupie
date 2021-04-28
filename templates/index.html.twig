@@ -1,0 +1,46 @@
+{% extends 'base.html.twig' %}
+
+{% block app_body %}
+
+
+    <div style="padding: 15px">
+
+        <h1>Bienvenue sur l'application de gestion des groupes LDAP </h1>
+        <br><br>
+        <div style="text-align: center">
+            {% if (is_granted("ROLE_ADMIN") or (is_granted("ROLE_GESTIONNAIRE") and is_granted("ROLE_DOSI"))) %}
+                <a href="{{ path('memberships') }}">
+                    <button type="button" class="amui-a-btn is--xl is--default"><i class="material-icons md-18">person</i> Voir mes appartenances</button>
+                </a>
+                <a href="{{ path('my_groups') }}">
+                    <button type="button" class="amui-a-btn is--xl is--default"><i class="material-icons md-18">group_add</i> Gérer mes groupes</button>
+                </a>
+                <a href="{{ path('all_groups') }}">
+                    <button type="button" class="amui-a-btn is--xl is--default"><i class="material-icons md-18">supervisor_account</i> Voir tous les groupes</button>
+                </a>
+
+            {% elseif is_granted("ROLE_MEMBRE") and is_granted("ROLE_DOSI") %}
+                <a href="{{ path('homepage') }}">
+                    <button type="button" class="amui-a-btn is--xl is--default"><i class="material-icons md-18">person</i> Voir mes appartenances</button>
+                </a>
+                <a href="{{ path('all_groups') }}">
+                    <button type="button" class="amui-a-btn is--xl is--default"><i class="material-icons md-18">supervisor_account</i> Voir tous les groupes</button>
+                </a>
+            {% elseif is_granted("ROLE_MEMBRE") and is_granted("ROLE_GESTIONNAIRE") %}
+                    <a href="{{ path('homepage') }}">
+                        <button type="button" class="amui-a-btn is--xl is--default"><i class="material-icons md-18">person</i> Voir mes appartenances</button>
+                    </a>
+                    <a href="{{ path('my_groups') }}">
+                        <button type="button" class="amui-a-btn is--xl is--default"><i class="material-icons md-18">group_add</i> Gérer mes groupes</button>
+                    </a>
+            {% elseif is_granted("ROLE_MEMBRE") %}
+                <a href="{{ path('homepage') }}">
+                    <button type="button" class="amui-a-btn is--xl is--default"><i class="material-icons md-18">person</i> Voir mes appartenances</button>
+                </a>
+            {% endif %}
+        </div>
+
+            <br><br><br><br><br><br><br><br>
+        </div>
+
+{% endblock %}

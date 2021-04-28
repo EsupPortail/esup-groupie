@@ -1,0 +1,103 @@
+# This file is the entry point to configure your own services.
+# Files in the packages/ subdirectory configure your dependencies.
+
+# Put parameters here that don't need to change on each machine where the app is deployed
+# https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
+parameters:
+    # charte graphique
+    amu_chartegraphique_nom_appli: 'Groupie -  Gestion des groupes LDAP'         # Le nom de l'application
+    amu_chartegraphique_slogan: ''            # Le slogan de l'application
+    amu_chartegraphique_auteur: ''            # Le nom de l'auteur de l'application
+    amu_chartegraphique_contact_referent: ''  # L'adresse mail du référent fonctionnel
+    amu_chartegraphique_titre_onglet: ''      # Le titre qui sera affiché dans l'onglet
+
+    # configuration LDAP
+    ldap_param:
+        rel_dn: '%env(relative_dn)%'
+        pwd: '%env(ldappassword)%'
+        base_dn: '%env(base_dn)%'
+
+    # configuration groupie
+    logs:
+        facility: LOG_SYSLOG
+    users:
+        people_branch: ou=people
+        uid: uid
+        name: sn
+        givenname: givenName
+        displayname: cn
+        mail: mail
+        tel: telephoneNumber
+        comp: amuComposante
+        aff: amuAffectationlib
+        primaff: eduPersonPrimaryAffiliation
+        campus: amuCampus
+        site: amuSite
+        filter: (&(!(eduPersonPrimaryAffiliation=student))(!(eduPersonPrimaryAffiliation=alum))(amuDateValidation=*))
+    groups:
+        object_class: groupOfNames
+        group_branch: ou=groups
+        cn: cn
+        desc: description
+        member: member
+        memberof: memberOf
+        groupfilter: amuGroupFilter
+        groupadmin: amuGroupAdmin
+    private:
+        private_branch: ou=private
+        prefix: amu:perso
+
+services:
+    # default configuration for services in *this* file
+    _defaults:
+        autowire: true      # Automatically injects dependencies in your services.
+        autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
+        public: false       # Allows optimizing the container by removing unused services; this also means
+                            # fetching services directly from the container via $container->get() won't work.
+                            # The best practice is to be explicit about your dependencies anyway.
+
+    # makes classes in src/ available to be used as services
+    # this creates a service per class whose id is the fully-qualified class name
+    App\:
+        resource: '../src/*'
+        exclude: '../src/{DependencyInjection,Entity,Migrations,Tests,Kernel.php}'
+
+    # controllers are imported separately to make sure services can be injected
+    # as action arguments even if you don't extend any base controller class
+    App\Controller\:
+        resource: '../src/Controller'
+        tags: ['controller.service_arguments']
+
+    # add more service definitions when explicit configuration is needed
+    # please note that last definitions always *replace* previous ones
+
+
+    app.ldap:
+        class: Symfony\Component\Ldap\Ldap
+        factory:
+            - 'Symfony\Component\Ldap\Ldap'
+            - 'create'
+        arguments:
+            - 'ext_ldap'
+            - connection_string: ldaps://ldap.fr:636
+              version: 3
+              encryption: 'none'
+
+    amubundle.cup_service:
+        class: Amu\Bundle\AmuCasBundle\Security\User\CasUserProvider
+        #Configuration pour AmuRoleBundle
+        calls:
+            # Si rôle par login
+            - method: setRoleService
+              arguments:
+                  - '@amu_role'
+            # Si rôle par IP
+            - method: setRequest
+              arguments:
+                  - '@request_stack'
+            # Si rôle par Ldap
+            - method: setLDAP
+              arguments:
+                  - '@app.ldap'
+                  - '%ldap_param%'
+                  -

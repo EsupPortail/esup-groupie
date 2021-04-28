@@ -1,0 +1,35 @@
+security:
+    # https://symfony.com/doc/current/security.html#where-do-users-come-from-user-providers
+    providers:
+        amu_users:
+            id: amubundle.cup_service
+    firewalls:
+#        appel:
+#            pattern: ^/(livesearch)
+#            security: false
+        dev:
+            pattern: ^/(_(profiler|wdt)|css|images|js)/
+            security: false
+        search:
+            pattern: ^/ajax
+            security: false
+        secured_area:
+            pattern: ^/*
+            provider: amu_users
+            guard:
+                authenticators:
+                    - phpcasguard.cas_authenticator
+            logout:
+                path: security_logout
+                # La Route de la page de retour de déconnexion est paramétrée dans cas_guard.yaml
+                #target: homepage
+                success_handler: phpcasguard.cas_authenticator
+            logout_on_user_change: true
+            anonymous: false
+            security: true
+
+    access_control:
+        - { path: ^/habilitateur, roles: ROLE_SUPER_ADMIN }
+        - { path: ^/roles/[0-9]+/edit, roles: ROLE_SUPER_ADMIN }
+        - { path: ^/roles/new, roles: ROLE_SUPER_ADMIN }
+        - { path: ^/, roles: ROLE_CAS_AUTHENTICATED }

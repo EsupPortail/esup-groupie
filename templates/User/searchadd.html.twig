@@ -1,0 +1,123 @@
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('css/groupie') }}
+    {{ encore_entry_link_tags('css/jquery-ui') }}
+    {{ encore_entry_link_tags('css/datatable') }}
+{% endblock %}
+
+{% block app_body %}
+
+    <div style="padding: 15px">
+
+        <h1>Ajout de droits</h1>
+
+        {{ form_start(form) }}
+        <br>
+        <h3>Droits sur le groupe : {{ cn }}</h3>
+        <br>
+        <table id="memb" class="table table-striped table-bordered">
+            <thead>
+                <tr>
+                    <th>Identifiant</th>
+                    <th style="width: 300px;">Nom complet</th>
+                    <th style="width: 120px;">Membre</th>
+                    <th style="width: 120px;">Administrateur</th>
+                </tr>
+            </thead>
+            <tbody>
+                {# itère sur chaque membership existant et affiche les champs : name, memberof et adminof #}
+                {% for m in form.memberships  %}
+                    <tr>
+                        <td style="vertical-align: middle;">{{user.uid}}</td>
+                        <td style="vertical-align: middle;">{{user.displayname}}</td>
+                        <td style="vertical-align: middle;"> {{ form_widget(m.memberof) }} </td>
+                        <td style="vertical-align: middle;"> {{ form_widget(m.adminof) }} </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <br>
+        <div class="amui-a-btn ">
+            <button class="amui-a-btn is--sm is--default" type="submit" name="btAjouter"><img align="absmiddle" src="{{ asset('build/images/user-add.png') }}" />&nbsp;Ajouter&nbsp;</button>
+            <a href="{{ path('homepage') }}">
+                <button class="amui-a-btn is--sm is--default" type="button" >
+                    <img src="{{asset('build/images/cancel-16.png')}}" alt=""/>
+                    &nbsp;Annuler&nbsp;
+                </button>
+            </a>
+        </div>
+
+
+        {{ form_rest(form) }}
+        {{ form_end(form) }}
+        <br>
+        <br>
+        <br>
+
+    </div>
+
+    <div class="amui-a-btn " style="text-align: left">
+        <a href="{{ path('user_update', {'uid': user.uid}) }}">
+            <button class="amui-a-btn is--sm is--default" type="button" >
+                <img src="{{asset('build/images/prev-green.png')}}" alt=""/>
+                &nbsp;Retour à l'utilisateur&nbsp;
+            </button>
+        </a>
+    </div>
+    <br><br>
+
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript" src="{{ asset('build/js/jquery-3.6.0.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('build/js/jquery-ui.1.12.1.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('build/js/jquery.dataTables.1.10.24.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('build/js/dom-checkbox.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('build/js/fnGetHiddenNodes.js') }}"></script>
+
+
+    {# Ajout d'une fonction javascript pour effacer automatiquement les messages flash après 5s #}
+    <script type="text/javascript">
+        setTimeout(function(){
+            $('#flash').hide(1500);
+        },15000);
+    </script>
+{#
+    <script type="text/javascript">
+       $('#memb').DataTable({
+            "paging": true,
+            "lengthMenu": [ [10, 25, 50, -1], [10, 25, 50, "tous"] ],
+            "oLanguage": {
+                "sLengthMenu": "Afficher  _MENU_  éléments  par page",
+                "sZeroRecords": "Aucune entrée trouvée",
+                "sInfo": "Affichage éléments _START_ à _END_ sur _TOTAL_ éléments",
+                "sInfoEmpty": "Pas d'élément disponible",
+                "sInfoFiltered": "(filtrage sur un total de _MAX_ éléments)",
+                "sSearch": "Recherche",
+                "oPaginate": {
+                    "sFirst": "Premier",
+                    "sLast": "Dernier",
+                    "sNext": ">>",
+                    "sPrevious": "<<"
+                },
+            },
+            "columns": [
+                null, null,
+                { "orderDataType": "dom-checkbox" },
+                { "orderDataType": "dom-checkbox" }
+            ],
+            "iDisplayLength": 25
+        });
+    </script>
+
+    <script type="text/javascript">
+        $('#group_edit').submit( function() {
+            oTable = $('#memb').dataTable();
+            $(oTable.fnGetHiddenNodes()).css("display", "none").appendTo(this);
+        } );
+    </script>
+#}
+{% endblock %}

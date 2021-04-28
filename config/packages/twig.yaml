@@ -1,0 +1,19 @@
+twig:
+    path:
+        - '%kernel.project_dir%/templates'
+        - '%kernel.project_dir%/vendor/amu/charte-graphique-bundle/Resources/views/bundles/KnpMenu'
+        - '%kernel.project_dir%/vendor/amu/charte-graphique-bundle/Resources/views/bundles/Bootstrap3'
+        - '%kernel.project_dir%/vendor/knplabs/knp-menu/src/Knp/Menu/Resources/views'
+
+    debug: '%kernel.debug%'
+    strict_variables: '%kernel.debug%'
+
+    form_themes: ['amu_bootstrap_base_layout.html.twig',
+                  'amu_bootstrap_3_layout.html.twig',]
+
+    globals:
+        nom_appli: '%amu_chartegraphique_nom_appli%'
+        slogan : '%amu_chartegraphique_slogan%'
+        auteur: '%amu_chartegraphique_auteur%'
+        contact: '%amu_chartegraphique_contact_referent%'
+        titre_onglet: '%amu_chartegraphique_titre_onglet%'

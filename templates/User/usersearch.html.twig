@@ -1,0 +1,256 @@
+{% extends 'base.html.twig' %}
+
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('css/groupie') }}
+{% endblock %}
+
+{% block app_body %}
+
+    <div style="padding: 15px">
+
+        {% if opt=='add' or opt=='addprivate'%}
+            <h1>Ajout d'utilisateur au groupe <span style="font-variant-caps: small-caps;">{{ cn }}</span></h1>
+        {%  else %}
+            <h1>Recherche d'utilisateur et visualisation des droits</h1>
+        {%  endif %}
+
+        {% if app.session.flashbag.has('flash-notice') %}
+            <center>
+                <div id="flash" class="ui-state-highlight ui-button ui-corner-all" onclick="$(this).hide(500);" style="min-width:600px;padding:15px;margin:10px;">
+                    {% for flashMessage in app.session.flashbag.get('flash-notice') %}
+                        <p>{{ flashMessage }}</p>
+                    {% endfor %}
+                </div>
+            </center>
+        {% endif %}
+        {% if opt =='add' %}
+        <div style="height: 100%; display: inline">
+             <div style="width: 50%; float:left;height: 100%;padding-right: 5%">
+                 {% endif %}
+                <h2> Recherche individuelle </h2>
+                <br>
+                <h3> Veuillez indiquer l'identifiant ou le nom de la personne à rechercher. </h3>
+                <br>
+                <br>
+                {{ form_start(form) }}
+                {{ form_errors(form) }}
+                <div>
+                    {{ form_label(form.uid) }}
+                    {{ form_errors(form.uid) }}
+                    {{ form_widget(form.uid) }}
+                </div>
+                <br>
+                <div>
+                    {{ form_label(form.sn) }}
+                    {{ form_errors(form.sn) }}
+                    {{ form_widget(form.sn) }}
+
+                    {{ form_label(form.exacte) }}
+                    {{ form_errors(form.exacte) }}
+                    {{ form_widget(form.exacte) }}
+                </div>
+                <br>
+                <div class="amui-a-btn col-lg">
+                    <button class="amui-a-btn is--sm is--default" type="submit" name="btRechercher"><img align="absmiddle" src="{{ asset('build/images/search-3.png') }}" />&nbsp;Rechercher&nbsp;</button>
+                    <a href="{{ path('homepage') }}">
+                        <button class="amui-a-btn is--sm is--default" type="button" >
+                            <img src="{{asset('build/images/cancel-16.png')}}" alt=""/>
+                            &nbsp;Annuler&nbsp;
+                        </button>
+                    </a>
+                </div>
+                <br>
+                <br>
+                <p style='font-size:12px; line-height: 20px;'>
+                    <img align="absmiddle" src="{{ asset('build/images/warning.png') }}" />
+                    L'autocomplétion fournit un maximum de 20 résultats.
+                    <br>Si vous ne trouvez pas dans la liste le groupe que vous recherchez, tapez le nom dans le formulaire puis cliquez sur le bouton "Rechercher".
+                </p>
+                <br>
+                 {{ form_end(form) }}
+                 {% if opt =='add' %}
+             </div>
+            {% endif %}
+            {% if opt=='add' %}
+                <div style="width: 50%; float:right;height: 100%">
+                    <h2> Ajout de personnes en masse </h2>
+                    <br>
+                    <h3> Pour ajouter plusieurs membres en même temps, cliquez sur ce bouton. </h3>
+                    <br>
+                    <br>
+                    <div class="amui-a-btn col-lg">
+                        <a href="{{ path('user_multiple', { 'opt': opt, 'cn' : cn, 'liste' : liste }) }}">
+                            <button class="amui-a-btn is--sm is--default" type="button" >
+                                <img src="{{asset('build/images/usergroup-add.png')}}" alt=""/>
+                                &nbsp;Ajouts multiples&nbsp;
+                            </button>
+                        </a>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+
+    </div>
+    <style>
+        .ui-corner-all
+        {
+            -moz-border-radius: 4px 4px 4px 4px;
+        }
+        .ui-widget-content
+        {
+            border: 5px solid black;
+            color: #222222;
+            background-color: Red;
+        }
+        .ui-widget
+        {
+            font-family: Verdana,Arial,sans-serif;
+            font-size: 15px;
+        }
+        .ui-menu
+        {
+            display: block;
+            float: left;
+            list-style: none outside none;
+            margin: 0;
+            padding: 2px;
+        }
+        .ui-autocomplete
+        {
+            cursor: default;
+            position: absolute;
+        }
+        .ui-menu .ui-menu-item
+        {
+            clear: left;
+            float: left;
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            background-color: Green;
+        }
+        .ui-menu .ui-menu-item a
+        {
+            display: block;
+            padding: 3px 3px 3px 3px;
+            text-decoration: none;
+            cursor: pointer;
+            background-color: Green;
+        }
+        .ui-menu .ui-menu-item a:hover
+        {
+            display: block;
+            padding: 3px 3px 3px 3px;
+            text-decoration: none;
+            color: White;
+            cursor: pointer;
+            background-color: ButtonText;
+        }
+        .ui-widget-content a
+        {
+            color: #222222;
+        }
+    </style>
+
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+    {# Ajout d'une fonction javascript pour effacer automatiquement les messages flash après 5s #}
+    <script type="text/javascript">
+        setTimeout(function(){
+            $('#flash').hide(1500);
+        },15000);
+    </script>
+
+    <script>
+        $( function() {
+            $('#user_search_uid').autocomplete({
+                source : function(requete, reponse){
+                    var motcle = requete.term;
+                    var DATA = 'motcle=' + motcle;
+
+                    $.ajax({
+                        type:"POST",
+                        url : "{{ path('ajax_uidcompletlist') }}",
+                        dataType : 'json',
+                        data : DATA,
+
+                        success : function(donnee){
+                            reponse($.map(donnee, function(object){
+                                return object;
+                            }));
+                        }
+                    });
+                },
+                autoFocus: true,
+                select : function(event, ui) {
+                    if(ui.item){
+                        $(event.target).val(ui.item.value);
+                    }
+                    //submit the form
+                    $(event.target.form).submit();
+
+                    return false;
+                }
+            });
+
+            $('#user_search_sn').autocomplete({
+                source : function(requete, reponse){
+                    //var motcle = $('#usersearch_sn').val();
+                    var motcle = requete.term;
+
+                    var rech = 0;
+                    if($('#usersearch_exacte').is(':checked')){
+                        rech = 1;
+                    }
+                    var DATA = 'motcle=' + motcle + '&exacte=' + rech;
+
+                    $.ajax({
+                        type:"POST",
+                        url : "{{ path('ajax_sncompletlist') }}",
+                        dataType : 'json',
+                        data : DATA,
+
+                        success : function(donnee){
+                            reponse($.map(donnee, function(object){
+                                return {
+                                    label: object.label,
+                                    value: function ()
+                                    {
+                                        if ($(this).attr('id') == 'value')
+                                        {
+                                            $('#user_search_sn').val(object.value);
+                                            return object.uid;
+                                        }
+                                        else
+                                        {
+                                            $('#user_search_uid').val(object.uid);
+                                            return object.value;
+                                        }
+                                    }
+                                }
+                            }));
+                        }
+                    });
+                },
+                autoFocus: true,
+                select : function(event, ui) {
+                    {# $('#usersearch_sn').val(ui.item.value); #}
+                    if(ui.item){
+                        $(event.target).val(ui.item.value);
+                    }
+                    //submit the form
+                    $(event.target.form).submit();
+                    return false;
+                }
+            });
+        } );
+    </script>
+
+{% endblock %}

@@ -1,0 +1,132 @@
+/* BUTTONS */
+.buttons a, .buttons button{
+    display:block;
+    float:left;
+    margin:0 7px 0 0;
+    background-color:#f5f5f5;
+    border:1px solid #dedede;
+    border-top:1px solid #eee;
+    border-left:1px solid #eee;    font-family: sans-serif;
+    font-size:100%;
+    line-height:130%;
+    text-decoration:none;
+    font-weight:bold;
+    color:#666666;
+    cursor:pointer;
+    background-color: #e4e4e4;
+    border-color:#c0c0c0;
+    padding:5px 10px 6px 7px; /* Links */
+}
+.buttons button{
+    width:auto;
+    overflow:visible;
+    padding:4px 10px 3px 7px; /* IE6 */
+}
+.buttons button[type]{
+    padding:5px 10px 5px 7px; /* Firefox */
+    line-height:17px; /* Safari */
+}
+*:first-child+html button[type]{
+    padding:4px 10px 3px 7px; /* IE7 */
+}
+.buttons button img, .buttons a img{
+    margin:0 3px -3px 0 !important;
+    padding:0;
+    border:none;
+    width:16px;
+    height:16px;
+}
+
+/* BUTTONS */
+.buttons-2{
+    display: inline-block;
+}
+.buttons-2 a, .buttons-2 button{
+    display:block;
+    float:left;
+    margin:0 10px 0 ;
+    background-color:#f5f5f5;
+    border:1px solid #dedede;
+    border-top:1px solid #eee;
+    border-left:1px solid #eee;    font-family: sans-serif;
+    font-size:160%;
+    line-height:260%;
+    text-decoration:none;
+    font-weight:bold;
+    color:#666666;
+    cursor:pointer;
+    background-color: #e4e4e4;
+    border-color:#c0c0c0;
+    padding:5px 10px 6px 7px; /* Links */
+}
+.buttons-2 button{
+    width:auto;
+    overflow:visible;
+    padding:4px 10px 3px 7px; /* IE6 */
+}
+.buttons-2 button[type]{
+    padding:5px 10px 5px 7px; /* Firefox */
+    line-height:17px; /* Safari */
+}
+*:first-child+html button[type]{
+    padding:4px 10px 3px 7px; /* IE7 */
+}
+.buttons-2 button img, .buttons-2 a img{
+    margin:0 3px -3px 0 !important;
+    padding:0;
+    border:none;
+    width:32px;
+    height:32px;
+}
+/*
+a.button{
+    background: #b6b9b7 url("../images/ui-bg_inset-hard_100_fcfdfd_1x100.png") repeat-x scroll 50% bottom;
+    border: 2px solid #a6c9e2;
+    /*    color: #222; */
+/*    display:block;
+    color:#555555;
+    font-weight:bold;
+    height:30px;
+    line-height:29px;
+    margin-bottom:14px;
+    text-decoration:none;
+    width:150px;
+}
+
+a:hover.button  {
+    color: #0066CC;
+}
+*/
+a.button-prev{
+    background: #b6b9b7 url("../images/ui-bg_inset-hard_100_f5f8f9_1x100.png") repeat-x scroll 50% bottom;
+    border: 2px solid #a6c9e2;
+    /*    color: #222; */
+    display:block;
+    color:#555555;
+    font-weight:bold;
+    height:30px;
+    line-height:29px;
+    margin-bottom:14px;
+    text-decoration:none;
+    width:190px;
+}
+
+a:hover.button-add  {
+    color: #0066CC;
+}
+
+/* -------------------- */
+/* CLASSES */
+/* -------------------- */
+.retour{
+    background:url("../images/prev-green.png") no-repeat ;
+    text-indent:40px;
+    display:block;
+}
+
+.add-user{
+    background:url("../images/add-1.png") no-repeat ;
+    text-indent:40px;
+    display:block;
+}
+
