@@ -350,7 +350,7 @@ class LdapFonctions
                             return (2);
                         }
                     } catch (\Exception $e) {
-                        return (false);
+                        return (2);
                     }
                 }else {
                     return (false);
@@ -360,6 +360,24 @@ class LdapFonctions
             return(false);
         }
         return(true);
+
+    }
+
+    /**
+     * Tester la validité amuGroupFilter
+     */
+    public function testAmugroupfilter($filter) {
+        $queryTest = $this->ldap->query($this->base_dn, $filter);
+        try {
+            $resultTest = $queryTest->execute();
+            if (sizeof($resultTest) > 0) {
+                return true;
+            } else {
+                return false;
+            }
+        } catch (\Exception $e) {
+            return false;
+        }
 
     }
 

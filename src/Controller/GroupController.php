@@ -496,6 +496,16 @@ class GroupController extends AbstractController {
                            return $this->redirect($this->generateUrl('see_group', array('cn'=>$groups[0]->getCn(), 'mail' => true, 'liste' => 'recherchegroupe')));
                         }
                     }
+                } elseif ($opt=='mod') {
+                    if ($nb==1) {
+                        if ($groups[0]->getDroits() == 'Modifier') {
+                            if ($groups[0]->getAmuGroupFilter() == "") {
+                                return $this->redirect($this->generateUrl('group_modify', array('cn' => $groups[0]->getCn(), 'desc' => $groups[0]->getDescription(), 'filt' => 'no')));
+                            } else {
+                                return $this->redirect($this->generateUrl('group_modify', array('cn' => $groups[0]->getCn(), 'desc' => $groups[0]->getDescription(), 'filt' => $groups[0]->getAmuGroupFilter())));
+                            }
+                        }
+                    }
                 }
   
                 return $this->render('Group/searchres.html.twig',array('groups' => $groups, 'opt' => $opt, 'uid' => $uid));
@@ -987,13 +997,7 @@ class GroupController extends AbstractController {
         if ($form->isSubmitted() && $form->isValid()) {
             // Récupération des données
             $group = $form->getData();
-            
-            // Log création de groupe
-            openlog("groupie-v2", LOG_PID | LOG_PERROR, constant($this->config_logs['facility']));
-            $adm = $this->container->get('security.token_storage')->getToken()->getAttribute("uid");
-                
-            // Création du groupe dans le LDAP
-            $infogroup = $group->infosGroupeLdap();
+
             // On déclare le LDAP
             try {
                 $ldap = Ldap::create('ext_ldap', array('connection_string' => 'ldaps://ldapmaitre.univ-amu.fr'));
@@ -1005,6 +1009,28 @@ class GroupController extends AbstractController {
             // On récupère le service ldapfonctions
             $ldapfonctions->SetLdap($ldap, getenv("base_dn"), $this->config_users, $this->config_groups, $this->config_private);
 
+            if ($group->getAmugroupfilter() != "") {
+                // Test validité du filtre si c'est un filtre LDAP
+                $filtre = $group->getAmugroupfilter();
+                $b = $ldapfonctions->testAmugroupfilter($filtre);
+                if ($b === true) {
+                    // Le filtre LDAP est valide, on continue
+                } else {
+                    // affichage erreur filtre invalide
+                    $this->get('session')->getFlashBag()->add('flash-error', 'amuGroupFilter n\'est pas valide !');
+
+                    // Retour à la page contenant le formulaire de création de groupe
+                    return $this->render('Group/group.html.twig', array('form' => $form->createView()));
+                }
+
+            }
+            
+            // Log création de groupe
+            openlog("groupie-v2", LOG_PID | LOG_PERROR, constant($this->config_logs['facility']));
+            $adm = $this->container->get('security.token_storage')->getToken()->getAttribute("uid");
+                
+            // Création du groupe dans le LDAP
+            $infogroup = $group->infosGroupeLdap();
             $b =$ldapfonctions->createGroupeLdap("cn=".$group->getCn().", ou=groups, dc=univ-amu, dc=fr", $infogroup);
             if ($b==true) {          
                 // affichage groupe créé
