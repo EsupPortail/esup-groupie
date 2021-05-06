@@ -4,6 +4,15 @@
 {% block stylesheets %}
     {{ parent() }}
     {{ encore_entry_link_tags('css/groupie') }}
+    {{ encore_entry_link_tags('css/jquery-ui') }}
+    {# Petite modif pour la police du texte ajax proposé  #}
+    <style>
+        .ui-widget
+        {
+            font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif;
+            font-size: 0.9em;
+        }
+    </style>
 {% endblock %}
 
 {% block app_body %}
@@ -11,9 +20,9 @@
     <div style="padding: 15px">
 
         {% if opt=='add' or opt=='addprivate'%}
-            <h1>Ajout d'utilisateur au groupe <span style="font-variant-caps: small-caps;">{{ cn }}</span></h1>
+            <h1 class="h1-groupie">Ajout d'utilisateur au groupe <span style="font-variant-caps: small-caps;">{{ cn }}</span></h1>
         {%  else %}
-            <h1>Recherche d'utilisateur et visualisation des droits</h1>
+            <h1 class="h1-groupie">Recherche d'utilisateur et visualisation des droits</h1>
         {%  endif %}
 
         {% if app.session.flashbag.has('flash-notice') %}
@@ -25,15 +34,21 @@
                 </div>
             </center>
         {% endif %}
+        {% if app.session.flashbag.has('flash-error') %}
+            <center>
+                <div class="ui-state-error ui-button ui-corner-all" onclick="$(this).remove();" style="min-width:600px;padding:15px;margin:10px;margin:auto;">
+                    {% for flashMessage in app.session.flashbag.get('flash-error') %}
+                        <p>{{ flashMessage }}</p>
+                    {% endfor %}
+                </div>
+            </center>
+        {% endif %}
         {% if opt =='add' %}
         <div style="height: 100%; display: inline">
              <div style="width: 50%; float:left;height: 100%;padding-right: 5%">
+                 <h2> Recherche individuelle </h2>
                  {% endif %}
-                <h2> Recherche individuelle </h2>
-                <br>
-                <h3> Veuillez indiquer l'identifiant ou le nom de la personne à rechercher. </h3>
-                <br>
-                <br>
+
                 {{ form_start(form) }}
                 {{ form_errors(form) }}
                 <div>
@@ -93,73 +108,13 @@
         </div>
 
     </div>
-    <style>
-        .ui-corner-all
-        {
-            -moz-border-radius: 4px 4px 4px 4px;
-        }
-        .ui-widget-content
-        {
-            border: 5px solid black;
-            color: #222222;
-            background-color: Red;
-        }
-        .ui-widget
-        {
-            font-family: Verdana,Arial,sans-serif;
-            font-size: 15px;
-        }
-        .ui-menu
-        {
-            display: block;
-            float: left;
-            list-style: none outside none;
-            margin: 0;
-            padding: 2px;
-        }
-        .ui-autocomplete
-        {
-            cursor: default;
-            position: absolute;
-        }
-        .ui-menu .ui-menu-item
-        {
-            clear: left;
-            float: left;
-            margin: 0;
-            padding: 0;
-            width: 100%;
-            background-color: Green;
-        }
-        .ui-menu .ui-menu-item a
-        {
-            display: block;
-            padding: 3px 3px 3px 3px;
-            text-decoration: none;
-            cursor: pointer;
-            background-color: Green;
-        }
-        .ui-menu .ui-menu-item a:hover
-        {
-            display: block;
-            padding: 3px 3px 3px 3px;
-            text-decoration: none;
-            color: White;
-            cursor: pointer;
-            background-color: ButtonText;
-        }
-        .ui-widget-content a
-        {
-            color: #222222;
-        }
-    </style>
 
 {% endblock %}
 
 {% block javascripts %}
     {{ parent() }}
-    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
-    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script type="text/javascript" src="{{ asset('build/js/jquery-3.6.0.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('build/js/jquery-ui.1.12.1.min.js') }}"></script>
 
     {# Ajout d'une fonction javascript pour effacer automatiquement les messages flash après 5s #}
     <script type="text/javascript">

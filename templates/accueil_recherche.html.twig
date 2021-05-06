@@ -1,16 +1,40 @@
 {% extends 'base.html.twig' %}
 
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('css/groupie') }}
+{% endblock %}
+
 {% block app_body %}
 
 
     <div style="padding: 15px">
 
-        <h1>Recherche de groupes et de personnes </h1>
-        <br><br>
+        <h1 class="h1-groupie">Recherche de groupes et de personnes </h1>
+        <br>
+        {% if app.session.flashbag.has('flash-notice') %}
+            <center>
+                <div id="flash" class="ui-state-highlight ui-button ui-corner-all" onclick="$(this).hide(500);" style="min-width:600px;padding:15px;margin:10px;">
+                    {% for flashMessage in app.session.flashbag.get('flash-notice') %}
+                        <p>{{ flashMessage }}</p>
+                    {% endfor %}
+                </div>
+            </center>
+        {% endif %}
+        {% if app.session.flashbag.has('flash-error') %}
+        <center>
+            <div class="ui-state-error ui-button ui-corner-all" onclick="$(this).remove();" style="min-width:600px;padding:15px;margin:10px;margin:auto;">
+                {% for flashMessage in app.session.flashbag.get('flash-error') %}
+                    <p>{{ flashMessage }}</p>
+                {% endfor %}
+            </div>
+        </center>
+        {% endif %}
+        <br>
         <div style="text-align: center">
             <div class="amui-a-btn">
                 <a href="{{ path('group_search') }}">
-                    <button type="button" class="amui-a-btn is--xl is--default"><i class="material-icons md-18">person</i> Rechercher un groupe</button>
+                    <button type="button" class="amui-a-btn is--xl is--default"><i class="material-icons md-18">supervisor_account</i> Rechercher un groupe</button>
                 </a>
                 <a href="{{ path('user_search') }}">
                     <button type="button" class="amui-a-btn is--xl is--default"><i class="material-icons md-18">person</i> Rechercher une personne</button>
@@ -23,4 +47,15 @@
             <br><br><br><br><br><br><br><br>
         </div>
 
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+
+    {# Ajout d'une fonction javascript pour effacer automatiquement les messages flash après 5s #}
+    <script type="text/javascript">
+        setTimeout(function(){
+            $('#flash').hide(1500);
+        },15000);
+    </script>
 {% endblock %}

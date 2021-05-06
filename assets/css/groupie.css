@@ -130,3 +130,12 @@ a:hover.button-add  {
     display:block;
 }
 
+.h1-groupie{
+    margin-bottom: 0;
+    color: #555;
+    font-size: 2rem;
+    font-weight: 700;
+    line-height: 1.25;
+    margin-top: 0;
+}
+

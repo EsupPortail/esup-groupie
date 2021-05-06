@@ -10,7 +10,7 @@
 
     <div style="padding: 15px">
 
-        <h1>Modification de groupe</h1>
+        <h1 class="h1-groupie">Modification de groupe</h1>
 
         {% if app.session.flashbag.has('flash-notice') %}
             <center>
@@ -71,4 +71,15 @@
         <br>
     </div>
     
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+
+    {# Ajout d'une fonction javascript pour effacer automatiquement les messages flash après 5s #}
+    <script type="text/javascript">
+        setTimeout(function(){
+            $('#flash').hide(1500);
+        },15000);
+    </script>
 {% endblock %}

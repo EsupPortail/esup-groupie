@@ -1,12 +1,35 @@
 {% extends 'base.html.twig' %}
 
-{% block app_body %}
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('css/groupie') }}
+{% endblock %}
 
+{% block app_body %}
 
     <div style="padding: 15px">
 
-        <h1>Groupes privés</h1>
-        <br><br>
+        <h1 class="h1-groupie">Groupes privés</h1>
+        <br>
+        {% if app.session.flashbag.has('flash-notice') %}
+            <center>
+                <div id="flash" class="ui-state-highlight ui-button ui-corner-all" onclick="$(this).hide(500);" style="min-width:600px;padding:15px;margin:10px;">
+                    {% for flashMessage in app.session.flashbag.get('flash-notice') %}
+                        <p>{{ flashMessage }}</p>
+                    {% endfor %}
+                </div>
+            </center>
+        {% endif %}
+        {% if app.session.flashbag.has('flash-error') %}
+            <center>
+                <div class="ui-state-error ui-button ui-corner-all" onclick="$(this).remove();" style="min-width:600px;padding:15px;margin:10px;margin:auto;">
+                    {% for flashMessage in app.session.flashbag.get('flash-error') %}
+                        <p>{{ flashMessage }}</p>
+                    {% endfor %}
+                </div>
+            </center>
+        {% endif %}
+        <br>
         <div style="text-align: center">
 
             <div class="amui-a-btnbtn">
@@ -14,10 +37,10 @@
                     <button type="button" class="amui-a-btn is--xl is--default"><i class="material-icons md-18">person</i> Voir les groupes privés auxquels j'appartiens</button>
                 </a>
                 <a href="{{ path('private_group') }}">
-                    <button type="button" class="amui-a-btn is--xl is--default"><i class="material-icons md-18">person</i> Gérer mes groupes privés</button>
+                    <button type="button" class="amui-a-btn is--xl is--default"><i class="material-icons md-18">group_add</i> Gérer mes groupes privés</button>
                 </a>
                 <a href="{{ path('all_private_groups') }}">
-                    <button type="button" class="amui-a-btn is--xl is--default"><i class="material-icons md-18">person</i> Voir tous les groupes privés (DOSI)</button>
+                    <button type="button" class="amui-a-btn is--xl is--default"><i class="material-icons md-18">supervisor_account</i> Voir tous les groupes privés (DOSI)</button>
                 </a>
             </div>
 

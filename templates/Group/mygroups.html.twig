@@ -4,6 +4,7 @@
 {% block stylesheets %}
     {{ parent() }}
     {{ encore_entry_link_tags('css/jolitree-group') }}
+    {{ encore_entry_link_tags('css/groupie') }}
 {% endblock %}
 
 {% block app_body %}
@@ -11,8 +12,28 @@
     <div style="padding: 15px">
 
     <div id="listeGroupes">
+        <div class="col-xs-12 col-md-6 heading-page">
+            <h1 class="h1-groupie"> Liste de mes groupes </h1>
+        </div>
 
-        <h1> Liste de mes groupes </h1>
+        {% if app.session.flashbag.has('flash-notice') %}
+            <center>
+                <div id="flash" class="ui-state-highlight ui-button ui-corner-all" onclick="$(this).hide(500);" style="min-width:600px;padding:15px;margin:10px;">
+                    {% for flashMessage in app.session.flashbag.get('flash-notice') %}
+                        <p>{{ flashMessage }}</p>
+                    {% endfor %}
+                </div>
+            </center>
+        {% endif %}
+        {% if app.session.flashbag.has('flash-error') %}
+            <center>
+                <div class="ui-state-error ui-button ui-corner-all" onclick="$(this).remove();" style="min-width:600px;padding:15px;margin:10px;margin:auto;">
+                    {% for flashMessage in app.session.flashbag.get('flash-error') %}
+                        <p>{{ flashMessage }}</p>
+                    {% endfor %}
+                </div>
+            </center>
+        {% endif %}
 
         <div class="amui-m-panel">
             <table class="table table-striped table-bordered">

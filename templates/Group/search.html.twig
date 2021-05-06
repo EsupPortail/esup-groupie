@@ -4,52 +4,20 @@
 {% block stylesheets %}
     {{ parent() }}
     {{ encore_entry_link_tags('css/groupie') }}
+    {{ encore_entry_link_tags('css/jquery-ui') }}
+    {# Petite modif pour la police du texte ajax proposé  #}
+    <style>
+        .ui-widget
+        {
+            font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif;
+            font-size: 0.9em;
+        }
+    </style>
 {% endblock %}
 
 {% block app_body %}
-{#     <script type="text/javascript" src="{{ asset('build/js/jquery-1.11.3.min.98123256.js') }}"></script>
-    <script type="text/javascript" src="{{ asset('build/js/jquery-ui.min.c708fd92.js') }}"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>#}
-
-{#
-    <script type="text/javascript">
-        $('#groupsearch_flag').val('0');
-        $('#groupsearch_cn').autocomplete({
-            source: function (requete, reponse) {
-                var motcle = $('#groupsearch_cn').val();
-                var DATA = 'motcle=' + motcle;
-
-                $.ajax({
-                    type: "POST",
-                    url: "{{ path('ajax_groupcompletlist') }}",
-                    dataType: 'json',
-                    data: DATA,
-
-                    success: function (donnee) {
-                        reponse($.map(donnee, function (object) {
-                            return object;
-                        }));
-                    }
-                });
-            },
-            autoFocus: true,
-            select: function (event, ui) {
-                {# $('#groupsearch_cn').val(ui.item.value); #}
-{#                 $(event.target).val(ui.item.value);
-                $('#groupsearch_flag').val('1');
-                $('#groupsearch').closest("form").submit();
-                {# $('#groupsearch').submit(); #}
-{#                 return false;
-            }
-        });
-
-    </script>
-    #}
     <div style="padding: 15px">
-        <h1>Recherche de groupe</h1>
-
-        <br>
-        <h3> Veuillez indiquer le nom du groupe à rechercher. </h3>
+        <h1 class="h1-groupie">Recherche de groupe</h1>
         <br>
         {% if app.session.flashbag.has('flash-notice') %}
         <center>
@@ -70,35 +38,33 @@
         </center>
         {% endif %}
 
-            {{ form_start(form) }}
-            {{ form_errors(form) }}
-            <div>
-                {{ form_label(form.cn) }}
-                {{ form_errors(form.cn) }}
-                {{ form_widget(form.cn) }}
-            </div>
-            <div class="amui-a-btn col-lg">
-                <button class="amui-a-btn is--sm is--default" type="submit" name="btRechercher"><img align="absmiddle" src="{{ asset('build/images/search-3.png') }}" />&nbsp;Rechercher&nbsp;</button>
-                <a href="{{ path('homepage') }}">
-                    <button class="amui-a-btn is--sm is--default" type="button" >
-                    <img src="{{asset('build/images/cancel-16.png')}}" alt=""/>
-                    &nbsp;Annuler&nbsp;
-                    </button>
-                </a>
-            </div>
+        {{ form_start(form) }}
+        {{ form_errors(form) }}
+        <div>
+            {{ form_label(form.cn) }}
+            {{ form_errors(form.cn) }}
+            {{ form_widget(form.cn) }}
+        </div>
+        <div class="amui-a-btn col-lg">
+            <button class="amui-a-btn is--sm is--default" type="submit" name="btRechercher"><img align="absmiddle" src="{{ asset('build/images/search-3.png') }}" />&nbsp;Rechercher&nbsp;</button>
+            <a href="{{ path('homepage') }}">
+                <button class="amui-a-btn is--sm is--default" type="button" >
+                <img src="{{asset('build/images/cancel-16.png')}}" alt=""/>
+                &nbsp;Annuler&nbsp;
+                </button>
+            </a>
+        </div>
 
-            <br>
-            <br>
-            <p style='font-size:12px; line-height: 20px;'>
-                <img align="absmiddle" src="{{ asset('build/images/warning.png') }}" />
-                L'autocomplétion fournit un maximum de 20 résultats.
-                <br>Si vous ne trouvez pas dans la liste le groupe que vous recherchez, tapez le nom dans le formulaire puis cliquez sur le bouton "Rechercher".
-            </p>
-            <br>
+        <br>
+        <br>
+        <p style='font-size:12px; line-height: 20px;'>
+            <img align="absmiddle" src="{{ asset('build/images/warning.png') }}" />
+            L'autocomplétion fournit un maximum de 20 résultats.
+            <br>Si vous ne trouvez pas dans la liste le groupe que vous recherchez, tapez le nom dans le formulaire puis cliquez sur le bouton "Rechercher".
+        </p>
+        <br>
 
-            {{ form_end(form) }}
-
-
+        {{ form_end(form) }}
 
         {% if opt=='add' %}
             <div class="amui-a-btn" style="text-align: left">
@@ -118,8 +84,8 @@
 
 {% block javascripts %}
     {{ parent() }}
-    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
-    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script type="text/javascript" src="{{ asset('build/js/jquery-3.6.0.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('build/js/jquery-ui.1.12.1.min.js') }}"></script>
     <script>
         $( function() {
             $('#group_search_flag').val('0');
@@ -154,5 +120,11 @@
                 }
             });
         } );
+    </script>
+    {# Ajout d'une fonction javascript pour effacer automatiquement les messages flash après 5s #}
+    <script type="text/javascript">
+        setTimeout(function(){
+            $('#flash').hide(1500);
+        },15000);
     </script>
 {% endblock %}

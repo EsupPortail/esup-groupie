@@ -1,23 +1,27 @@
 {% extends 'base.html.twig' %}
 
-{% block app_body %}
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('css/groupie') }}
+{% endblock %}
 
+{% block app_body %}
 
     <div style="padding: 15px">
 
-        <h1>Gestion des groupes </h1>
+        <h1 class="h1-groupie">Gestion des groupes </h1>
         <br><br>
         <div style="text-align: center">
 
             <div class="amui-a-btn">
                 <a href="{{ path('group_create') }}">
-                    <button type="button" class="amui-a-btn is--xl is--default"><i class="material-icons md-18">person</i> Créer un groupe</button>
+                    <button type="button" class="amui-a-btn is--xl is--default"><i class="material-icons md-18">note_add</i> Créer un groupe</button>
                 </a>
                 <a href="{{ path('group_search_modify') }}">
-                    <button type="button" class="amui-a-btn is--xl is--default"><i class="material-icons md-18">person</i> Modifier un groupe</button>
+                    <button type="button" class="amui-a-btn is--xl is--default"><i class="material-icons md-18">edit</i> Modifier un groupe</button>
                 </a>
                 <a href="{{ path('group_search_del') }}">
-                    <button type="button" class="amui-a-btn is--xl is--default"><i class="material-icons md-18">person</i> Supprimer un groupe</button>
+                    <button type="button" class="amui-a-btn is--xl is--default"><i class="material-icons md-18">delete</i> Supprimer un groupe</button>
                 </a>
             </div>
 
