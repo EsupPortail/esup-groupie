@@ -62,9 +62,21 @@ class MenuBuilder extends Container
 //        Ajout d'un item si l'utilisateur est authentifié
 //        ------------------------------------------------
 //
+        if( $this->authorizationChecker->isGranted('ROLE_ADMIN') ||
+            $this->authorizationChecker->isGranted('ROLE_DOSI') ||
+            $this->authorizationChecker->isGranted('ROLE_GESTIONNAIRE')) {
+            $menu->addChild('Gérer mes groupes', ['route' => 'my_groups',])
+                ->setExtras(['icon' => 'group_add']);  // Gérer les groupes dont je suis admin
+        }
         if ($this->authorizationChecker->isGranted('IS_AUTHENTICATED_FULLY')) {
-                $menu->addChild('Accueil',['route' => 'homepage',])
-                    ->setExtras(['icon'=> 'home']);
+            $menu->addChild('Voir mes groupes',['route' => 'memberships',])
+                ->setExtras(['icon'=> 'person']);
+        }
+
+        if( $this->authorizationChecker->isGranted('ROLE_ADMIN') ||
+            $this->authorizationChecker->isGranted('ROLE_DOSI') ) {
+            $menu->addChild('Voir tous les groupes', ['route' => 'all_groups',])
+                ->setExtras(['icon' => 'supervisor_account']);  // Voir tous les groupes
         }
 
         if( $this->authorizationChecker->isGranted('ROLE_ADMIN') ||
