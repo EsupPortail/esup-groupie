@@ -139,3 +139,11 @@ a:hover.button-add  {
     margin-top: 0;
 }
 
+.amui-m-nav-icon{
+    width: 6rem;
+}
+
+.amui-o-sidebar-nav{
+    min-width: 6rem;
+}
+
