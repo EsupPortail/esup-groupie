@@ -1391,7 +1391,7 @@ class GroupController extends AbstractController {
                 // Suppression de l'attribut
                 $b = $ldapfonctions->delAmuGroupFilter($dn, $filt);
                 if ($b == true) {
-                    //Le groupe a bien été supprimé
+                    //Le filtre du groupe a bien été supprimé
                     $this->get('session')->getFlashBag()->add('flash-notice', 'AmuGroupFilter  a bien été supprimé');
                     // Log
                     syslog(LOG_INFO, "delete_amugroupfilter by $adm : group : $cn");
@@ -1443,9 +1443,11 @@ class GroupController extends AbstractController {
                     // Log Erreur LDAP
                     syslog(LOG_ERR, "LDAP ERROR : modif_group by $adm : group : $cn");
                     $this->get('session')->getFlashBag()->add('flash-error', 'Erreur LDAP lors du renommage du groupe');
-                    return $this->render('Group/modifyform.html.twig', array('form' => $form->createView(), 'group' => $group));
                 }
             }
+
+            // retour sur la fiche du groupe
+            return $this->redirect($this->generateUrl('group_update', array('cn'=>$cn, 'liste' => 'recherchegroupe')));
             
             // Ferme fichier log
             closelog();
@@ -1461,7 +1463,8 @@ class GroupController extends AbstractController {
     public function displayAction(Request $request, $opt='search', $uid='') {
         $this->init_config();
         // Récupération des groupes mis en session
-        $groups = $this->container->get('request')->getSession()->get('groups');
+        //$groups = $this->container->get('request')->getSession()->get('groups');
+        $groups = $this->get('session')->get('groups');
 
         return $this->render('Group/search.html.twig',array('groups' => $groups, 'opt' => $opt, 'uid' => $uid));
     }

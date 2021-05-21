@@ -848,7 +848,7 @@ class UserController extends AbstractController {
                     $data = $arData[$i];
                         
                     $user = new User();
-                    $user->setUid($data[$this->config_users['uid']][0]);
+                    $user->setUid($data->getAttribute($this->config_users['uid'])[0]);
                     $user->setDisplayname($data->getAttribute($this->config_users['displayname'])[0]);
                     if (isset($data->getAttribute($this->config_users['mail'])[0]))
                         $user->setMail($data->getAttribute($this->config_users['mail'])[0]);
@@ -880,7 +880,7 @@ class UserController extends AbstractController {
                 }
                     
                 // Mise en session des résultats de la recherche
-                $this->container->get('request')->getSession()->set('users', $users);
+                $this->get('session')->set('users', $users);
                     
                 // Si on a un seul résultat de recherche, affichage direct de l'utilisateur concerné en fonction des droits
                 if ($nb==1) {
