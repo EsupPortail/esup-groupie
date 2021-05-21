@@ -65,11 +65,11 @@ class MenuBuilder extends Container
         if( $this->authorizationChecker->isGranted('ROLE_ADMIN') ||
             $this->authorizationChecker->isGranted('ROLE_DOSI') ||
             $this->authorizationChecker->isGranted('ROLE_GESTIONNAIRE')) {
-            $menu->addChild('Gérer mes groupes', ['route' => 'my_groups',])
+            $menu->addChild('Administrer mes groupes', ['route' => 'my_groups',])
                 ->setExtras(['icon' => 'group_add']);  // Gérer les groupes dont je suis admin
         }
         if ($this->authorizationChecker->isGranted('IS_AUTHENTICATED_FULLY')) {
-            $menu->addChild('Voir mes groupes',['route' => 'memberships',])
+            $menu->addChild('Voir mes appartenances',['route' => 'memberships',])
                 ->setExtras(['icon'=> 'person']);
         }
 
@@ -100,12 +100,13 @@ class MenuBuilder extends Container
 //                ->setExtras(['icon'=> 'key']);
 //        }
         if( $this->authorizationChecker->isGranted('ROLE_ADMIN')) {
-            $menu->addChild('Gestion des groupes', ['route' => 'gestion',])
-                ->setExtras(['icon' => 'settings']);  // Ajout/modification/suppression de groupes par les admin
+            $menu->addChild('Administrer Groupie', ['route' => 'gestion',])
+                ->setExtras(['icon' => 'settings_applications']);  // Ajout/modification/suppression de groupes par les admin
+
         }
 
         if ($this->authorizationChecker->isGranted('IS_AUTHENTICATED_FULLY')) {
-            $menu->addChild('Aide', ['route' => 'homepage',])
+            $menu->addChild('Aide', ['route' => 'help',])
                 ->setExtras(['icon' => 'help']);  // Lien vers la bibliothèque d'icônes pour faire vos choix => https://material.io/tools/icons/?style=baseline
         }
 
