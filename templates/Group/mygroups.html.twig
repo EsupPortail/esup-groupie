@@ -41,7 +41,7 @@
                     <tr>
                         <td class="titre1"> Nom </td>
                         <td class="titre6"> Description </td>
-                        <td class="titre7"> Voir groupe </td>
+{#                         <td class="titre7"> Voir groupe </td> #}
                     </tr>
             </table>
 
@@ -70,11 +70,11 @@
                         <dt>
                             <div  class="d-inline" style="width: 300px"> <a href="{{path('group_update', { 'cn': group.cn, 'liste': 'mesgroupes'})}}" title="Gérer le groupe {{ group.cn }}"> {{ group.etages[group.nbetages-1] }} </a> </div>
                             <div class="d-inline" style="position: absolute;left : 50%;margin-left: -150px;"> {{ group.description }} </div>
-                            <div class="d-inline" style="width: 330px;position: absolute;left : 50%;margin-left:400px;text-align: center;" >
+{#                             <div class="d-inline" style="width: 330px;position: absolute;left : 50%;margin-left:400px;text-align: center;" >
                                 <a href="{{path('group_update', { 'cn': group.cn, 'liste': 'mesgroupes'})}}">
                                     <img class="jqtip ui-button" align="absmiddle" src="{{ asset("build/images/usergroup-edit.png") }}" title="Gérer le groupe {{ group.cn }} "/>
                                 </a>
-                            </div>
+                            </div> #}
                         </dt>
                     {% endfor %}
                 </dl>

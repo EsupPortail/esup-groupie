@@ -5,11 +5,22 @@
     {{ encore_entry_link_tags('css/groupie') }}
     {{ encore_entry_link_tags('css/jquery-ui') }}
     {{ encore_entry_link_tags('css/datatable') }}
+    {# Petite modif pour l'affichage des checkbox dans la table  #}
+    <style>
+        .amui-h-mt-lg
+        {
+            margin-top: 5px;
+            margin-left: auto;
+            margin-right: auto;
+            width: 25px;
+            display: block;
+            margin-bottom: 0px;
+        }
+    </style>
 {% endblock %}
 
 {% block app_body %}
     <div style="padding: 15px">
-
         <h1 class="h1-groupie">Modification des attributs d'un utilisateur</h1>
         {% set hilightColor='#C7FE74' %}
         {% if app.session.flashbag.has('flash-notice') %}
@@ -100,12 +111,6 @@
         <br>
         <br>
 
-    </div>
-    <div class="amui-a-btn" style="text-align: left">
-        <button class="amui-a-btn is--sm is--default" type="button" onclick="history.back()">
-            <img src="{{asset('build/images/prev-green.png')}}" alt=""/>
-            &nbsp;Retour
-        </button>
     </div>
 
 {% endblock %}
