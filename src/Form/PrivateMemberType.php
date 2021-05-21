@@ -13,7 +13,8 @@ class PrivateMemberType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->add('member', CheckboxType::class, array(
-                      'required'  => false)
+                      'required'  => false,
+                      'label' => false)
                      );
     }
 
