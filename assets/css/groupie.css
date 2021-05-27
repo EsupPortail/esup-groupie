@@ -147,3 +147,7 @@ a:hover.button-add  {
     min-width: 6rem;
 }
 
+.amui-l-app-layout .amui-m-footer{
+    margin-left: 96px;
+}
+
