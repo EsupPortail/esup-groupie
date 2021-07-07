@@ -62,7 +62,7 @@ class AjaxController extends AbstractController
 
         // On déclare le LDAP
         try {
-            $ldap = Ldap::create('ext_ldap', array('connection_string' => 'ldaps://ldapmaitre.univ-amu.fr'));
+            $ldap = Ldap::create('ext_ldap', array('connection_string' => getenv("connection_string")));
             $ldap->bind(getenv("relative_dn"), getenv("ldappassword"));
         }catch (ConnectionException $e) {
             throw new \Exception(sprintf('Erreur connexion LDAP.'), 0, $e);
@@ -134,7 +134,7 @@ class AjaxController extends AbstractController
 
         // On déclare le LDAP
         try {
-            $ldap = Ldap::create('ext_ldap', array('connection_string' => 'ldaps://ldapmaitre.univ-amu.fr'));
+            $ldap = Ldap::create('ext_ldap', array('connection_string' => getenv("connection_string")));
             $ldap->bind(getenv("relative_dn"), getenv("ldappassword"));
         }catch (ConnectionException $e) {
             throw new \Exception(sprintf('Erreur connexion LDAP.'), 0, $e);
@@ -197,7 +197,7 @@ class AjaxController extends AbstractController
 
         // On déclare le LDAP
         try {
-            $ldap = Ldap::create('ext_ldap', array('connection_string' => 'ldaps://ldapmaitre.univ-amu.fr'));
+            $ldap = Ldap::create('ext_ldap', array('connection_string' => getenv("connection_string")));
             $ldap->bind(getenv("relative_dn"), getenv("ldappassword"));
         }catch (ConnectionException $e) {
             throw new \Exception(sprintf('Erreur connexion LDAP.'), 0, $e);

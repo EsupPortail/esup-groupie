@@ -84,7 +84,7 @@ class GroupController extends AbstractController {
 
         // On déclare le LDAP
         try {
-            $ldap = Ldap::create('ext_ldap', array('connection_string' => 'ldaps://ldapmaitre.univ-amu.fr'));
+            $ldap = Ldap::create('ext_ldap', array('connection_string' => getenv("connection_string")));
             $ldap->bind(getenv("relative_dn"), getenv("ldappassword"));
         }catch (ConnectionException $e) {
             throw new \Exception(sprintf('Erreur connexion LDAP.'), 0, $e);
@@ -161,7 +161,7 @@ class GroupController extends AbstractController {
 
         // On déclare le LDAP
         try {
-            $ldap = Ldap::create('ext_ldap', array('connection_string' => 'ldaps://ldapmaitre.univ-amu.fr'));
+            $ldap = Ldap::create('ext_ldap', array('connection_string' => getenv("connection_string")));
             $ldap->bind(getenv("relative_dn"), getenv("ldappassword"));
         }catch (ConnectionException $e) {
             throw new \Exception(sprintf('Erreur connexion LDAP.'), 0, $e);
@@ -212,7 +212,7 @@ class GroupController extends AbstractController {
 
         // On déclare le LDAP
         try {
-            $ldap = Ldap::create('ext_ldap', array('connection_string' => 'ldaps://ldapmaitre.univ-amu.fr'));
+            $ldap = Ldap::create('ext_ldap', array('connection_string' => 'ldap://ldapmaitre.univ-amu.fr:389'));
             $ldap->bind(getenv("relative_dn"), getenv("ldappassword"));
         }catch (ConnectionException $e) {
             throw new \Exception(sprintf('Erreur connexion LDAP.'), 0, $e);
@@ -282,7 +282,7 @@ class GroupController extends AbstractController {
 
         // On déclare le LDAP
         try {
-            $ldap = Ldap::create('ext_ldap', array('connection_string' => 'ldaps://ldapmaitre.univ-amu.fr'));
+            $ldap = Ldap::create('ext_ldap', array('connection_string' => getenv("connection_string")));
             $ldap->bind(getenv("relative_dn"), getenv("ldappassword"));
         }catch (ConnectionException $e) {
             throw new \Exception(sprintf('Erreur connexion LDAP.'), 0, $e);
@@ -290,7 +290,7 @@ class GroupController extends AbstractController {
 
         // On déclare le LDAP
         try {
-            $ldap = Ldap::create('ext_ldap', array('connection_string' => 'ldaps://ldapmaitre.univ-amu.fr'));
+            $ldap = Ldap::create('ext_ldap', array('connection_string' => getenv("connection_string")));
             $ldap->bind(getenv("relative_dn"), getenv("ldappassword"));
         }catch (ConnectionException $e) {
             throw new \Exception(sprintf('Erreur connexion LDAP.'), 0, $e);
@@ -357,7 +357,7 @@ class GroupController extends AbstractController {
         // Récupération des groupes privés dont l'utilisateur courant est membre
         // On déclare le LDAP
         try {
-            $ldap = Ldap::create('ext_ldap', array('connection_string' => 'ldaps://ldapmaitre.univ-amu.fr'));
+            $ldap = Ldap::create('ext_ldap', array('connection_string' => getenv("connection_string")));
             $ldap->bind(getenv("relative_dn"), getenv("ldappassword"));
         }catch (ConnectionException $e) {
             throw new \Exception(sprintf('Erreur connexion LDAP.'), 0, $e);
@@ -410,7 +410,7 @@ class GroupController extends AbstractController {
 
             // On déclare le LDAP
             try {
-                $ldap = Ldap::create('ext_ldap', array('connection_string' => 'ldaps://ldapmaitre.univ-amu.fr'));
+                $ldap = Ldap::create('ext_ldap', array('connection_string' => getenv("connection_string")));
                 $ldap->bind(getenv("relative_dn"), getenv("ldappassword"));
             }catch (ConnectionException $e) {
                 throw new \Exception(sprintf('Erreur connexion LDAP.'), 0, $e);
@@ -563,7 +563,7 @@ class GroupController extends AbstractController {
 
         // On déclare le LDAP
         try {
-            $ldap = Ldap::create('ext_ldap', array('connection_string' => 'ldaps://ldapmaitre.univ-amu.fr'));
+            $ldap = Ldap::create('ext_ldap', array('connection_string' => getenv("connection_string")));
             $ldap->bind(getenv("relative_dn"), getenv("ldappassword"));
         }catch (ConnectionException $e) {
             throw new \Exception(sprintf('Erreur connexion LDAP.'), 0, $e);
@@ -806,7 +806,7 @@ class GroupController extends AbstractController {
 
         // On déclare le LDAP
         try {
-            $ldap = Ldap::create('ext_ldap', array('connection_string' => 'ldaps://ldapmaitre.univ-amu.fr'));
+            $ldap = Ldap::create('ext_ldap', array('connection_string' => getenv("connection_string")));
             $ldap->bind(getenv("relative_dn"), getenv("ldappassword"));
         }catch (ConnectionException $e) {
             throw new \Exception(sprintf('Erreur connexion LDAP.'), 0, $e);
@@ -924,7 +924,7 @@ class GroupController extends AbstractController {
         }
 // On déclare le LDAP
         try {
-            $ldap = Ldap::create('ext_ldap', array('connection_string' => 'ldaps://ldapmaitre.univ-amu.fr'));
+            $ldap = Ldap::create('ext_ldap', array('connection_string' => getenv("connection_string")));
             $ldap->bind(getenv("relative_dn"), getenv("ldappassword"));
         }catch (ConnectionException $e) {
             throw new \Exception(sprintf('Erreur connexion LDAP.'), 0, $e);
@@ -1000,7 +1000,7 @@ class GroupController extends AbstractController {
 
             // On déclare le LDAP
             try {
-                $ldap = Ldap::create('ext_ldap', array('connection_string' => 'ldaps://ldapmaitre.univ-amu.fr'));
+                $ldap = Ldap::create('ext_ldap', array('connection_string' => getenv("connection_string")));
                 $ldap->bind(getenv("relative_dn"), getenv("ldappassword"));
             }catch (ConnectionException $e) {
                 throw new \Exception(sprintf('Erreur connexion LDAP.'), 0, $e);
@@ -1115,7 +1115,7 @@ class GroupController extends AbstractController {
 
                 // On déclare le LDAP
                 try {
-                    $ldap = Ldap::create('ext_ldap', array('connection_string' => 'ldaps://ldapmaitre.univ-amu.fr'));
+                    $ldap = Ldap::create('ext_ldap', array('connection_string' => getenv("connection_string")));
                     $ldap->bind(getenv("relative_dn"), getenv("ldappassword"));
                 }catch (ConnectionException $e) {
                     throw new \Exception(sprintf('Erreur connexion LDAP.'), 0, $e);
@@ -1198,7 +1198,7 @@ class GroupController extends AbstractController {
         //Suppression du groupe dans le LDAP
         // On déclare le LDAP
         try {
-            $ldap = Ldap::create('ext_ldap', array('connection_string' => 'ldaps://ldapmaitre.univ-amu.fr'));
+            $ldap = Ldap::create('ext_ldap', array('connection_string' => getenv("connection_string")));
             $ldap->bind(getenv("relative_dn"), getenv("ldappassword"));
         }catch (ConnectionException $e) {
             throw new \Exception(sprintf('Erreur connexion LDAP.'), 0, $e);
@@ -1253,7 +1253,7 @@ class GroupController extends AbstractController {
         // Recherche des groupes dans le LDAP
         // On déclare le LDAP
         try {
-            $ldap = Ldap::create('ext_ldap', array('connection_string' => 'ldaps://ldapmaitre.univ-amu.fr'));
+            $ldap = Ldap::create('ext_ldap', array('connection_string' => getenv("connection_string")));
             $ldap->bind(getenv("relative_dn"), getenv("ldappassword"));
         }catch (ConnectionException $e) {
             throw new \Exception(sprintf('Erreur connexion LDAP.'), 0, $e);
@@ -1290,7 +1290,7 @@ class GroupController extends AbstractController {
         // Suppression du groupe dans le LDAP
 // On déclare le LDAP
         try {
-            $ldap = Ldap::create('ext_ldap', array('connection_string' => 'ldaps://ldapmaitre.univ-amu.fr'));
+            $ldap = Ldap::create('ext_ldap', array('connection_string' => getenv("connection_string")));
             $ldap->bind(getenv("relative_dn"), getenv("ldappassword"));
         }catch (ConnectionException $e) {
             throw new \Exception(sprintf('Erreur connexion LDAP.'), 0, $e);
@@ -1357,7 +1357,7 @@ class GroupController extends AbstractController {
 
         // On déclare le LDAP
         try {
-            $ldap = Ldap::create('ext_ldap', array('connection_string' => 'ldaps://ldapmaitre.univ-amu.fr'));
+            $ldap = Ldap::create('ext_ldap', array('connection_string' => getenv("connection_string")));
             $ldap->bind(getenv("relative_dn"), getenv("ldappassword"));
         }catch (ConnectionException $e) {
             throw new \Exception(sprintf('Erreur connexion LDAP.'), 0, $e);
@@ -1481,7 +1481,7 @@ class GroupController extends AbstractController {
         $uid = $this->container->get('security.token_storage')->getToken()->getAttribute("uid");
 // On déclare le LDAP
         try {
-            $ldap = Ldap::create('ext_ldap', array('connection_string' => 'ldaps://ldapmaitre.univ-amu.fr'));
+            $ldap = Ldap::create('ext_ldap', array('connection_string' => getenv("connection_string")));
             $ldap->bind(getenv("relative_dn"), getenv("ldappassword"));
         }catch (ConnectionException $e) {
             throw new \Exception(sprintf('Erreur connexion LDAP.'), 0, $e);
@@ -1524,7 +1524,7 @@ class GroupController extends AbstractController {
 
         // On déclare le LDAP
         try {
-            $ldap = Ldap::create('ext_ldap', array('connection_string' => 'ldaps://ldapmaitre.univ-amu.fr'));
+            $ldap = Ldap::create('ext_ldap', array('connection_string' => getenv("connection_string")));
             $ldap->bind(getenv("relative_dn"), getenv("ldappassword"));
         }catch (ConnectionException $e) {
             throw new \Exception(sprintf('Erreur connexion LDAP.'), 0, $e);
@@ -1677,7 +1677,7 @@ class GroupController extends AbstractController {
 
 // On déclare le LDAP
         try {
-            $ldap = Ldap::create('ext_ldap', array('connection_string' => 'ldaps://ldapmaitre.univ-amu.fr'));
+            $ldap = Ldap::create('ext_ldap', array('connection_string' => getenv("connection_string")));
             $ldap->bind(getenv("relative_dn"), getenv("ldappassword"));
         }catch (ConnectionException $e) {
             throw new \Exception(sprintf('Erreur connexion LDAP.'), 0, $e);
@@ -1959,7 +1959,7 @@ class GroupController extends AbstractController {
 
         // On déclare le LDAP
         try {
-            $ldap = Ldap::create('ext_ldap', array('connection_string' => 'ldaps://ldapmaitre.univ-amu.fr'));
+            $ldap = Ldap::create('ext_ldap', array('connection_string' => getenv("connection_string")));
             $ldap->bind(getenv("relative_dn"), getenv("ldappassword"));
         }catch (ConnectionException $e) {
             throw new \Exception(sprintf('Erreur connexion LDAP.'), 0, $e);
