@@ -337,9 +337,18 @@ class LdapFonctions
             if ($filter !== null) {
                 // Test amu groupfilter :
                 // on verifie que le filtre ldap est valide
-                // si ce n'est pas un filtre pour bdd
                 $pos = strpos($filter, "dbi");
-                if ($pos == false) {
+                if ($pos === 0) {
+                    // C'est un filtre pour bdd, on ne vérifie pas plus
+                    try {
+                        $entry->setAttribute($this->config_groups['groupfilter'], [$filter]);
+                        $entryManager->update($entry);
+                        return (true);
+                    }catch (\Exception $e) {
+                        return(false);
+                    }
+                } else {
+                    // c'est un filtre ldap, on teste
                     $queryTest = $this->ldap->query($this->base_dn, $filter);
                     try {
                         $resultTest = $queryTest->execute();
@@ -352,8 +361,6 @@ class LdapFonctions
                     } catch (\Exception $e) {
                         return (2);
                     }
-                }else {
-                    return (false);
                 }
             }
         }catch (\Exception $e) {
@@ -367,16 +374,24 @@ class LdapFonctions
      * Tester la validité amuGroupFilter
      */
     public function testAmugroupfilter($filter) {
-        $queryTest = $this->ldap->query($this->base_dn, $filter);
-        try {
-            $resultTest = $queryTest->execute();
-            if (sizeof($resultTest) > 0) {
-                return true;
-            } else {
+        // On vérifie si filtre LDAP pour filtre base de données
+        $pos = strpos($filter, "dbi");
+        if ($pos === 0) {
+            // filtre BDD, on ne vérifie pas la validité
+            return true;
+        } else {
+            // filtre LDAP, on teste si le filtre est ok
+            $queryTest = $this->ldap->query($this->base_dn, $filter);
+            try {
+                $resultTest = $queryTest->execute();
+                if (sizeof($resultTest) > 0) {
+                    return true;
+                } else {
+                    return false;
+                }
+            } catch (\Exception $e) {
                 return false;
             }
-        } catch (\Exception $e) {
-            return false;
         }
 
     }
