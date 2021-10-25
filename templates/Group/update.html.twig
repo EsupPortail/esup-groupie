@@ -43,7 +43,12 @@
                 </div>
             </center>
         {% endif %}
-
+        <br>
+        {% if is_granted('ROLE_DOSI') %}
+            {% if group.amugroupfilter != '' %}
+                <h3>  <b>amuGroupfilter</b> : {{ group.amugroupfilter }} </h3>
+            {% endif %}
+        {% endif %}
         <h3>Nombre de membres du groupe <b> {{ group.cn }} </b> : {{ nb_membres }}</h3>
         <br>
         <div>
