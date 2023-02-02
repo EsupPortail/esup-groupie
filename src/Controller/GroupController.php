@@ -94,7 +94,7 @@ class GroupController extends AbstractController {
         $ldapfonctions->SetLdap($ldap, getenv("base_dn"), $this->config_users, $this->config_groups, $this->config_private);
 
         // Récupération des groupes dont l'utilisateur courant est administrateur (on ne récupère que les groupes publics)
-        $arData = $ldapfonctions->recherche("(objectClass=".$this->config_groups['object_class'].")", array($this->config_groups['cn'], $this->config_groups['desc'], $this->config_groups['groupfilter']), $this->config_groups['cn']);
+        $arData = $ldapfonctions->recherche("(objectClass=".$this->config_groups['object_class'][0].")", array($this->config_groups['cn'], $this->config_groups['desc'], $this->config_groups['groupfilter']), $this->config_groups['cn']);
 
         $groups = new ArrayCollection();
         for ($i=0; $i<sizeof($arData); $i++) {
@@ -170,7 +170,7 @@ class GroupController extends AbstractController {
         // On récupère le service ldapfonctions
         $ldapfonctions->SetLdap($ldap, getenv("base_dn"), $this->config_users, $this->config_groups, $this->config_private);
         // Récupération tous les groupes du LDAP
-        $arData = $ldapfonctions->recherche("(objectClass=".$this->config_groups['object_class'].")", array($this->config_groups['cn'], $this->config_groups['desc'], $this->config_groups['groupfilter']), $this->config_groups['cn']);
+        $arData = $ldapfonctions->recherche("(objectClass=".$this->config_groups['object_class'][0].")", array($this->config_groups['cn'], $this->config_groups['desc'], $this->config_groups['groupfilter']), $this->config_groups['cn']);
          
         // Initialisation tableau des entités Group
         $groups = new ArrayCollection();
@@ -222,7 +222,7 @@ class GroupController extends AbstractController {
         $ldapfonctions->SetLdap($ldap, getenv("base_dn"), $this->config_users, $this->config_groups, $this->config_private);
 
         // Récupération des groupes dont l'utilisateur courant est administrateur (on ne récupère que les groupes publics)
-        $arData = $ldapfonctions->recherche($this->config_groups['groupadmin']."=".$this->config_users['uid']."=".$this->container->get('security.token_storage')->getToken()->getAttribute("uid").",".$this->config_users['people_branch'].",".$this->base, array($this->config_groups['cn'], $this->config_groups['desc'], $this->config_groups['groupfilter']), $this->config_groups['cn']);
+        $arData = $ldapfonctions->recherche($this->config_groups['groupadmin']."=".$this->config_users['login']."=".$this->container->get('security.token_storage')->getToken()->getAttribute("uid").",".$this->config_users['people_branch'].",".$this->base, array($this->config_groups['cn'], $this->config_groups['desc'], $this->config_groups['groupfilter']), $this->config_groups['cn']);
 
         // Initialisation tableau des entités Group
         $groups = new ArrayCollection();
@@ -300,7 +300,7 @@ class GroupController extends AbstractController {
         $ldapfonctions->SetLdap($ldap, getenv("base_dn"), $this->config_users, $this->config_groups, $this->config_private);
 
         // Récupération des groupes dont l'utilisateur courant est administrateur (on ne récupère que les groupes publics)
-        $arData = $ldapfonctions->recherche($this->config_groups['member']."=".$this->config_users['uid']."=".$this->container->get('security.token_storage')->getToken()->getAttribute("uid").",".$this->config_users['people_branch'].",".$this->base, array($this->config_groups['cn'], $this->config_groups['desc'], $this->config_groups['groupfilter']), $this->config_groups['cn']);
+        $arData = $ldapfonctions->recherche($this->config_groups['member']."=".$this->config_users['login']."=".$this->container->get('security.token_storage')->getToken()->getAttribute("uid").",".$this->config_users['people_branch'].",".$this->base, array($this->config_groups['cn'], $this->config_groups['desc'], $this->config_groups['groupfilter']), $this->config_groups['cn']);
         
         // Initialisation du tableau d'entités Group
         $groups = new ArrayCollection();
@@ -367,7 +367,7 @@ class GroupController extends AbstractController {
         $ldapfonctions->SetLdap($ldap, getenv("base_dn"), $this->config_users, $this->config_groups, $this->config_private);
 
         // Recherche des groupes privés de l'utilisateur
-        $result = $ldapfonctions->recherche($this->config_groups['member']."=".$this->config_users['uid']."=".$this->container->get('security.token_storage')->getToken()->getAttribute("uid").",".$this->config_users['people_branch'].",".$this->base, array($this->config_groups['cn'], $this->config_groups['desc']), $this->config_groups['cn']);
+        $result = $ldapfonctions->recherche($this->config_groups['member']."=".$this->config_users['login']."=".$this->container->get('security.token_storage')->getToken()->getAttribute("uid").",".$this->config_users['people_branch'].",".$this->base, array($this->config_groups['cn'], $this->config_groups['desc']), $this->config_groups['cn']);
         
         // Initialisation du tableau d'entités Group
         $groups = new ArrayCollection();
@@ -429,18 +429,18 @@ class GroupController extends AbstractController {
                         return $this->redirect($this->generateUrl('group_search', array('opt'=>$opt, 'uid'=>$uid)));
                     }
                     // Recherche exacte des groupes dans le LDAP
-                    $arData=$ldapfonctions->recherche("(&(objectClass=".$this->config_groups['object_class'].")(".$this->config_groups['cn']."=" . $groupsearch->getCn() . "))", array($this->config_groups['cn'], $this->config_groups['desc'], $this->config_groups['groupfilter']), $this->config_groups['cn']);
+                    $arData=$ldapfonctions->recherche("(&(objectClass=".$this->config_groups['object_class'][0].")(".$this->config_groups['cn']."=" . $groupsearch->getCn() . "))", array($this->config_groups['cn'], $this->config_groups['desc'], $this->config_groups['groupfilter']), $this->config_groups['cn']);
                 }
                 else {
                     // Recherche avec * des groupes dans le LDAP directement 
-                    $arData=$ldapfonctions->recherche("(&(objectClass=".$this->config_groups['object_class'].")(".$this->config_groups['cn']."=*" . $groupsearch->getCn() . "*))",array($this->config_groups['cn'],$this->config_groups['desc'],$this->config_groups['groupfilter']), $this->config_groups['cn']);
+                    $arData=$ldapfonctions->recherche("(&(objectClass=".$this->config_groups['object_class'][0].")(".$this->config_groups['cn']."=*" . $groupsearch->getCn() . "*))",array($this->config_groups['cn'],$this->config_groups['desc'],$this->config_groups['groupfilter']), $this->config_groups['cn']);
                 }
                 
                 // si c'est un gestionnaire, on ne renvoie que les groupes dont il est admin
                 $tab_cn_admin = array();
                 if (true === $this->get('security.authorization_checker')->isGranted('ROLE_GESTIONNAIRE')) {
                     // Recup des groupes dont l'utilisateur est admin
-                    $arDataAdmin = $ldapfonctions->recherche($this->config_groups['groupadmin']."=".$this->config_users['uid']."=".$this->container->get('security.token_storage')->getToken()->getAttribute("uid").",".$this->config_users['people_branch'].",".$this->base,array($this->config_groups['cn'], $this->config_groups['desc'], $this->config_groups['groupfilter']), $this->config_groups['cn']);
+                    $arDataAdmin = $ldapfonctions->recherche($this->config_groups['groupadmin']."=".$this->config_users['login']."=".$this->container->get('security.token_storage')->getToken()->getAttribute("uid").",".$this->config_users['people_branch'].",".$this->base,array($this->config_groups['cn'], $this->config_groups['desc'], $this->config_groups['groupfilter']), $this->config_groups['cn']);
                     for($i=0;$i<sizeof($arDataAdmin);$i++)
                         $tab_cn_admin[$i] = $arDataAdmin[$i]->getAttribute($this->config_groups['cn'])[0];
                 }
@@ -576,7 +576,7 @@ class GroupController extends AbstractController {
         if (true === $this->get('security.authorization_checker')->isGranted('ROLE_GESTIONNAIRE')) {
             $tab_cn_admin_login = array();
             // Recup des groupes dont l'utilisateur courant (logué) est admin
-            $arDataAdminLogin = $ldapfonctions->recherche($this->config_groups['groupadmin']."=".$this->config_users['uid']."=".$this->container->get('security.token_storage')->getToken()->getAttribute("uid").",".$this->config_users['people_branch'].",".$this->base,array($this->config_groups['cn'], $this->config_groups['desc'], $this->config_groups['groupfilter']), $this->config_groups['cn']);
+            $arDataAdminLogin = $ldapfonctions->recherche($this->config_groups['groupadmin']."=".$this->config_users['login']."=".$this->container->get('security.token_storage')->getToken()->getAttribute("uid").",".$this->config_users['people_branch'].",".$this->base,array($this->config_groups['cn'], $this->config_groups['desc'], $this->config_groups['groupfilter']), $this->config_groups['cn']);
             for($i=0;$i<sizeof($arDataAdminLogin);$i++)
                 $tab_cn_admin_login[$i] = $arDataAdminLogin[$i]->getAttribute($this->config_groups['cn'])[0];
         }
@@ -585,7 +585,7 @@ class GroupController extends AbstractController {
         $user = new User();
         $user->setUid($uid);
         // Récup infos utilisateur dans le LDAP
-        $arDataUser=$ldapfonctions->recherche($this->config_users['uid']."=".$uid, array($this->config_users['displayname'], $this->config_groups['memberof']), $this->config_users['uid']);
+        $arDataUser=$ldapfonctions->recherche($this->config_users['login']."=".$uid, array($this->config_users['displayname'], $this->config_groups['memberof']), $this->config_users['login']);
         $user->setDisplayname($arDataUser[0]->getAttribute($this->config_users['displayname'])[0]);
         
         // Utilisateur initial pour détecter les modifications
@@ -602,7 +602,7 @@ class GroupController extends AbstractController {
         }
 
         // Récupération des groupes dont l'utilisateur recherché est admin
-        $arDataAdmin=$ldapfonctions->recherche($this->config_groups['groupadmin']."=".$this->config_users['uid']."=".$uid.",".$this->config_users['people_branch'].",".$this->base,array($this->config_groups['cn'], $this->config_groups['desc'], $this->config_groups['groupfilter']), $this->config_groups['cn']);
+        $arDataAdmin=$ldapfonctions->recherche($this->config_groups['groupadmin']."=".$this->config_users['login']."=".$uid.",".$this->config_users['people_branch'].",".$this->base,array($this->config_groups['cn'], $this->config_groups['desc'], $this->config_groups['groupfilter']), $this->config_groups['cn']);
         $tab_cn_admin = array();
         for($i=0;$i<sizeof($arDataAdmin);$i++) {
             $tab_cn_admin[$i] = $arDataAdmin[$i]->getAttribute($this->config_groups['cn'])[0];
@@ -617,11 +617,11 @@ class GroupController extends AbstractController {
             }
             
             // Recherche exacte sur le cn sélectionné dans le LDAP
-            $arData=$ldapfonctions->recherche("(&(objectClass=".$this->config_groups['object_class'].")(".$this->config_groups['cn']."=" . $cn_search . "))",array($this->config_groups['cn'],$this->config_groups['desc'],$this->config_groups['groupfilter']), $this->config_groups['cn']);
+            $arData=$ldapfonctions->recherche("(&(objectClass=".$this->config_groups['object_class'][0].")(".$this->config_groups['cn']."=" . $cn_search . "))",array($this->config_groups['cn'],$this->config_groups['desc'],$this->config_groups['groupfilter']), $this->config_groups['cn']);
         }
         else {
             // Recherche avec * dans le LDAP
-            $arData=$ldapfonctions->recherche("(&(objectClass=".$this->config_groups['object_class'].")(".$this->config_groups['cn']."=*" . $cn_search . "*))",array($this->config_groups['cn'],$this->config_groups['desc'],$this->config_groups['groupfilter']), $this->config_groups['cn']);
+            $arData=$ldapfonctions->recherche("(&(objectClass=".$this->config_groups['object_class'][0].")(".$this->config_groups['cn']."=*" . $cn_search . "*))",array($this->config_groups['cn'],$this->config_groups['desc'],$this->config_groups['groupfilter']), $this->config_groups['cn']);
         }
 
         // Récupération des groupes publics issus de la recherche
@@ -816,7 +816,7 @@ class GroupController extends AbstractController {
         $ldapfonctions->SetLdap($ldap, getenv("base_dn"), $this->config_users, $this->config_groups, $this->config_private);
 
         // Récupération du groupe recherché
-        $result = $ldapfonctions->recherche("(&(objectClass=".$this->config_groups['object_class'].")(".$this->config_groups['cn']."=" . $cn . "))", array($this->config_groups['cn'], $this->config_groups['desc'], $this->config_groups['groupfilter']), $this->config_groups['cn']);
+        $result = $ldapfonctions->recherche("(&(objectClass=".$this->config_groups['object_class'][0].")(".$this->config_groups['cn']."=" . $cn . "))", array($this->config_groups['cn'], $this->config_groups['desc'], $this->config_groups['groupfilter']), $this->config_groups['cn']);
         if (isset($result[0]->getAttribute($this->config_groups['groupfilter'])[0]))
             $amugroupfilter = $result[0]->getAttribute($this->config_groups['groupfilter'])[0];
         else
@@ -829,7 +829,7 @@ class GroupController extends AbstractController {
         // on remplit le tableau d'entités
         for ($i=0; $i<sizeof($arUsers); $i++) {
             $users[$i] = new User();
-            $users[$i]->setUid($arUsers[$i]->getAttribute($this->config_users['uid'])[0]);
+            $users[$i]->setUid($arUsers[$i]->getAttribute($this->config_users['login'])[0]);
             $users[$i]->setSn($arUsers[$i]->getAttribute($this->config_users['name'])[0]);
             $users[$i]->setDisplayname($arUsers[$i]->getAttribute($this->config_users['displayname'])[0]);
             if ($mail=='true')
@@ -856,10 +856,10 @@ class GroupController extends AbstractController {
             $nb_admins = sizeof($arAdmins[0]->getAttribute($this->config_groups['groupadmin']));
             // on remplit le tableau d'entités
             for ($i=0; $i<sizeof($arAdmins[0]->getAttribute($this->config_groups['groupadmin'])); $i++) {
-                $uid = preg_replace("/(".$this->config_users['uid']."=)(([A-Za-z0-9:._-]{1,}))(,ou=.*)/", "$3", $arAdmins[0]->getAttribute($this->config_groups['groupadmin'])[$i]);
+                $uid = preg_replace("/(".$this->config_users['login']."=)(([A-Za-z0-9:._-]{1,}))(,ou=.*)/", "$3", $arAdmins[0]->getAttribute($this->config_groups['groupadmin'])[$i]);
                 $result = $ldapfonctions->getInfosUser($uid);
                 $admins[$i] = new User();
-                $admins[$i]->setUid($result[0]->getAttribute($this->config_users['uid'])[0]);
+                $admins[$i]->setUid($result[0]->getAttribute($this->config_users['login'])[0]);
                 $admins[$i]->setSn($result[0]->getAttribute($this->config_users['name'])[0]);
                 $admins[$i]->setDisplayname($result[0]->getattribute($this->config_users['displayname'])[0]);
                 if (isset($result[0]->getAttribute($this->config_users['mail'])[0]))
@@ -950,7 +950,7 @@ class GroupController extends AbstractController {
                  
         for ($i=0; $i<sizeof($arUsers); $i++) {
             $users[$i] = new User();
-            $users[$i]->setUid($arUsers[$i]->getAttribute($this->config_users['uid'])[0]);
+            $users[$i]->setUid($arUsers[$i]->getAttribute($this->config_users['login'])[0]);
             $users[$i]->setSn($arUsers[$i]->getAttribute($this->config_users['name'])[0]);
             $users[$i]->setDisplayname($arUsers[$i]->getAttribute($this->config_users['displayname'])[0]);
             $users[$i]->setMail($arUsers[$i]->getAttribute($this->config_users['mail'])[0]);
@@ -1030,7 +1030,7 @@ class GroupController extends AbstractController {
             $adm = $this->container->get('security.token_storage')->getToken()->getAttribute("uid");
                 
             // Création du groupe dans le LDAP
-            $infogroup = $group->infosGroupeLdap();
+            $infogroup = $group->infosGroupeLdap($this->config_groups['cn'], $this->config_groups['desc'], $this->config_groups['groupfilter'], $this->config_groups['object_class']);
             $b =$ldapfonctions->createGroupeLdap("cn=".$group->getCn().", ou=groups, dc=univ-amu, dc=fr", $infogroup);
             if ($b==true) {          
                 // affichage groupe créé
@@ -1262,7 +1262,7 @@ class GroupController extends AbstractController {
         // On récupère le service ldapfonctions
         $ldapfonctions->SetLdap($ldap, getenv("base_dn"), $this->config_users, $this->config_groups, $this->config_private);
 
-        $arData = $ldapfonctions->recherche("(&(objectClass=".$this->config_groups['object_class'].")(".$this->config_groups['cn']."=".$this->config_private['prefix'].":".$uid.":*))",array($this->config_groups['cn'],$this->config_groups['desc']), $this->config_groups['cn']);
+        $arData = $ldapfonctions->recherche("(&(objectClass=".$this->config_groups['object_class'][0].")(".$this->config_groups['cn']."=".$this->config_private['prefix'].":".$uid.":*))",array($this->config_groups['cn'],$this->config_groups['desc']), $this->config_groups['cn']);
     
         $groups = new ArrayCollection();
         for ($i=0; $i<sizeof($arData); $i++) {
@@ -1304,7 +1304,7 @@ class GroupController extends AbstractController {
         // Dans le cas d'un gestionnaire
         if (true === $this->get('security.authorization_checker')->isGranted('ROLE_MEMBRE')) {
             // Recup des groupes privés de l'utilisateur
-            $result = $ldapfonctions->recherche("(&(objectClass=".$this->config_groups['object_class'].")(".$this->config_groups['cn']."=".$this->config_private['prefix'].":".$adm.":*))", array($this->config_groups['cn'], $this->config_groups['desc']), $this->config_groups['cn']);
+            $result = $ldapfonctions->recherche("(&(objectClass=".$this->config_groups['object_class'][0].")(".$this->config_groups['cn']."=".$this->config_private['prefix'].":".$adm.":*))", array($this->config_groups['cn'], $this->config_groups['desc']), $this->config_groups['cn']);
             for($i=0;$i<sizeof($result);$i++) {
                 if ($cn==$result[$i]->getAttribute($this->config_groups['cn'])[0]) {
                     $flag = "ok";
@@ -1491,7 +1491,7 @@ class GroupController extends AbstractController {
         $ldapfonctions->SetLdap($ldap, getenv("base_dn"), $this->config_users, $this->config_groups, $this->config_private);
 
         // Recherche des groupes dans le LDAP
-        $result = $ldapfonctions->recherche("(&(objectClass=".$this->config_groups['object_class'].")(".$this->config_groups['cn']."=".$this->config_private['prefix'].":".$uid.":*))", array($this->config_groups['cn'], $this->config_groups['desc']), $this->config_groups['cn']);
+        $result = $ldapfonctions->recherche("(&(objectClass=".$this->config_groups['object_class'][0].")(".$this->config_groups['cn']."=".$this->config_private['prefix'].":".$uid.":*))", array($this->config_groups['cn'], $this->config_groups['desc']), $this->config_groups['cn']);
     
         $groups = new ArrayCollection();
         for ($i=0; $i<sizeof($result); $i++) {
@@ -1537,7 +1537,7 @@ class GroupController extends AbstractController {
         // Dans le cas d'un utilisateur
         if (true === $this->get('security.authorization_checker')->isGranted('ROLE_MEMBRE')) {
             // Recup des groupes dont l'utilisateur est admin
-            $arDataAdminLogin = $ldapfonctions->recherche("(&(objectClass=".$this->config_groups['object_class'].")(".$this->config_groups['cn']."=".$this->config_private['prefix'].":".$this->container->get('security.token_storage')->getToken()->getAttribute("uid").":*))", array($this->config_groups['cn'], $this->config_groups['desc']) , $this->config_groups['cn']);
+            $arDataAdminLogin = $ldapfonctions->recherche("(&(objectClass=".$this->config_groups['object_class'][0].")(".$this->config_groups['cn']."=".$this->config_private['prefix'].":".$this->container->get('security.token_storage')->getToken()->getAttribute("uid").":*))", array($this->config_groups['cn'], $this->config_groups['desc']) , $this->config_groups['cn']);
             for($i=0;$i<sizeof($arDataAdminLogin);$i++) {
                 if ($cn==$arDataAdminLogin[$i]->getAttribute($this->config_groups['cn'])[0]) {
                     $flag = "ok";
@@ -1560,7 +1560,7 @@ class GroupController extends AbstractController {
         // Affichage des membres  
         for ($i=0; $i<sizeof($arUsers); $i++) {
             $members[$i] = new Member();
-            $members[$i]->setUid($arUsers[$i]->getAttribute($this->config_users['uid'])[0]);
+            $members[$i]->setUid($arUsers[$i]->getAttribute($this->config_users['login'])[0]);
             $members[$i]->setDisplayname($arUsers[$i]->getAttribute($this->config_users['displayname'])[0]);
             $members[$i]->setMail($arUsers[$i]->getAttribute($this->config_users['mail'])[0]);
             $members[$i]->setTel($arUsers[$i]->getAttribute($this->config_users['tel'])[0]);
@@ -1569,7 +1569,7 @@ class GroupController extends AbstractController {
            
             // Idem pour groupini
             $membersini[$i] = new Member();
-            $membersini[$i]->setUid($arUsers[$i]->getAttribute($this->config_users['uid'])[0]);
+            $membersini[$i]->setUid($arUsers[$i]->getAttribute($this->config_users['login'])[0]);
             $membersini[$i]->setDisplayname($arUsers[$i]->getAttribute($this->config_users['displayname'])[0]);
             $membersini[$i]->setMail($arUsers[$i]->getAttribute($this->config_users['mail'])[0]);
             $membersini[$i]->setTel($arUsers[$i]->getAttribute($this->config_users['tel'])[0]);
@@ -1690,7 +1690,7 @@ class GroupController extends AbstractController {
         // Dans le cas d'un gestionnaire
         if (true === $this->get('security.authorization_checker')->isGranted('ROLE_GESTIONNAIRE')) {
             // Recup des groupes dont l'utilisateur est admin
-            $arDataAdminLogin = $ldapfonctions->recherche($this->config_groups['groupadmin']."=".$this->config_users['uid']."=".$this->container->get('security.token_storage')->getToken()->getAttribute("uid").",".$this->config_users['people_branch'].",".$this->base,array($this->config_groups['cn'], $this->config_groups['desc'], $this->config_groups['groupfilter']), $this->config_groups['cn']);
+            $arDataAdminLogin = $ldapfonctions->recherche($this->config_groups['groupadmin']."=".$this->config_users['login']."=".$this->container->get('security.token_storage')->getToken()->getAttribute("uid").",".$this->config_users['people_branch'].",".$this->base,array($this->config_groups['cn'], $this->config_groups['desc'], $this->config_groups['groupfilter']), $this->config_groups['cn']);
             for($i=0;$i<sizeof($arDataAdminLogin);$i++)
             {
                 if ($cn==$arDataAdminLogin[$i]->getAttribute($this->config_groups['cn'])[0]) {
@@ -1730,7 +1730,7 @@ class GroupController extends AbstractController {
         // Affichage des membres  
         for ($i=0; $i<$nb_members; $i++) {
             $members[$i] = new Member();
-            $members[$i]->setUid($arUsers[$i]->getAttribute($this->config_users['uid'])[0]);
+            $members[$i]->setUid($arUsers[$i]->getAttribute($this->config_users['login'])[0]);
             $members[$i]->setDisplayname($arUsers[$i]->getAttribute($this->config_users['displayname'])[0]);
             if (isset($arUsers[$i]->getAttribute($this->config_users['mail'])[0]))
                 $members[$i]->setMail($arUsers[$i]->getAttribute($this->config_users['mail'])[0]);
@@ -1753,7 +1753,7 @@ class GroupController extends AbstractController {
            
             // Idem pour groupini
             $membersini[$i] = new Member();
-            $membersini[$i]->setUid($arUsers[$i]->getAttribute($this->config_users['uid'])[0]);
+            $membersini[$i]->setUid($arUsers[$i]->getAttribute($this->config_users['login'])[0]);
             $membersini[$i]->setDisplayname($arUsers[$i]->getAttribute($this->config_users['displayname'])[0]);
             if (isset($arUsers[$i]->getAttribute($this->config_users['mail'])[0]))
                 $membersini[$i]->setMail($arUsers[$i]->getAttribute($this->config_users['mail'])[0]);
@@ -1777,8 +1777,8 @@ class GroupController extends AbstractController {
             // on teste si le membre est aussi admin
             if (null !== $arAdmins[0]->getAttribute($this->config_groups['groupadmin'])) {
                 for ($j = 0; $j < sizeof($arAdmins[0]->getAttribute($this->config_groups['groupadmin'])); $j++) {
-                    $uid = preg_replace("/(".$this->config_users['uid']."=)(([A-Za-z0-9:._-]{1,}))(,ou=.*)/", "$3", $arAdmins[0]->getAttribute($this->config_groups['groupadmin'])[$j]);
-                    if ($uid == $arUsers[$i]->getAttribute($this->config_users['uid'])[0]) {
+                    $uid = preg_replace("/(".$this->config_users['login']."=)(([A-Za-z0-9:._-]{1,}))(,ou=.*)/", "$3", $arAdmins[0]->getAttribute($this->config_groups['groupadmin'])[$j]);
+                    if ($uid == $arUsers[$i]->getAttribute($this->config_users['login'])[0]) {
                         $members[$i]->setAdmin(TRUE);
                         $membersini[$i]->setAdmin(TRUE);
                         $flagMembers[$j] = TRUE;
@@ -1793,10 +1793,10 @@ class GroupController extends AbstractController {
             for ($j = 0; $j < sizeof($arAdmins[0]->getAttribute($this->config_groups['groupadmin'])); $j++) {
                 if ($flagMembers[$j] == FALSE) {
                     // si l'admin n'est pas membre du groupe, il faut aller récupérer ses infos dans le LDAP
-                    $uid = preg_replace("/(".$this->config_users['uid']."=)(([A-Za-z0-9:._-]{1,}))(,ou=.*)/", "$3", $arAdmins[0]->getAttribute($this->config_groups['groupadmin'])[$j]);
+                    $uid = preg_replace("/(".$this->config_users['login']."=)(([A-Za-z0-9:._-]{1,}))(,ou=.*)/", "$3", $arAdmins[0]->getAttribute($this->config_groups['groupadmin'])[$j]);
                     $result = $ldapfonctions->getInfosUser($uid);
                     $memb = new Member();
-                    $memb->setUid($result[0]->getAttribute($this->config_users['uid'])[0]);
+                    $memb->setUid($result[0]->getAttribute($this->config_users['login'])[0]);
                     $memb->setDisplayname($result[0]->getAttribute($this->config_users['displayname'])[0]);
                     if (isset($result[0]->getAttribute($this->config_users['mail'])[0]))
                         $memb->setMail($result[0]->getAttribute($this->config_users['mail'])[0]);
@@ -1820,7 +1820,7 @@ class GroupController extends AbstractController {
 
                     // Idem pour groupini
                     $membini = new Member();
-                    $membini->setUid($result[0]->getAttribute($this->config_users['uid'])[0]);
+                    $membini->setUid($result[0]->getAttribute($this->config_users['login'])[0]);
                     $membini->setDisplayname($result[0]->getAttribute($this->config_users['displayname'])[0]);
                     if (isset($result[0]->getAttribute($this->config_users['mail'])[0]))
                         $membini->setMail($result[0]->getAttribute($this->config_users['mail'])[0]);
@@ -1972,7 +1972,7 @@ class GroupController extends AbstractController {
         // Dans le cas d'un gestionnaire
         if (true === $this->get('security.authorization_checker')->isGranted('ROLE_GESTIONNAIRE')) {
             // Recup des groupes dont l'utilisateur est admin
-            $arDataAdminLogin = $ldapfonctions->recherche($this->config_groups['groupadmin']."=".$this->config_users['uid']."=".$this->container->get('security.token_storage')->getToken()->getAttribute("uid").",".$this->config_users['people_branch'].",".$this->base,array($this->config_groups['cn'], $this->config_groups['desc'], $this->config_groups['groupfilter']), $this->config_groups['cn']);
+            $arDataAdminLogin = $ldapfonctions->recherche($this->config_groups['groupadmin']."=".$this->config_users['login']."=".$this->container->get('security.token_storage')->getToken()->getAttribute("uid").",".$this->config_users['people_branch'].",".$this->base,array($this->config_groups['cn'], $this->config_groups['desc'], $this->config_groups['groupfilter']), $this->config_groups['cn']);
             for($i=0;$i<sizeof($arDataAdminLogin);$i++)
             {
                 if ($cn==$arDataAdminLogin[$i]->getAttribute($this->config_groups['cn'])[0]) {
@@ -2002,7 +2002,7 @@ class GroupController extends AbstractController {
         for ($i=0; $i<$nb_members; $i++)
         {
             // Recup uid des membres
-            $u = $arUsers[$i]->getAttribute($this->config_users['uid'])[0];
+            $u = $arUsers[$i]->getAttribute($this->config_users['login'])[0];
             $dn_group = $this->config_groups['cn']."=" . $cn . ", ".$this->config_groups['group_branch'].", ".$this->base;
 
             // Suppression des membres
