@@ -160,7 +160,7 @@ class AjaxController extends AbstractController
         } else {
             for($Cpt=0;$Cpt < $NbEnreg ;$Cpt++)             
             {                
-                $arrayGroups[$Cpt+1]['label']  = $arData[$Cpt]->getAttribute('uid')[0];
+                $arrayGroups[$Cpt+1]['label']  = $arData[$Cpt]->getAttribute($this->config_users['login'])[0];
             }
         }
 

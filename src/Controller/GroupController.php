@@ -290,14 +290,6 @@ class GroupController extends AbstractController {
             throw new \Exception(sprintf('Erreur connexion LDAP.'), 0, $e);
         }
 
-        // On déclare le LDAP
-        try {
-            $ldap = Ldap::create('ext_ldap', array('connection_string' => getenv("connection_string")));
-            $ldap->bind(getenv("relative_dn"), getenv("ldappassword"));
-        }catch (ConnectionException $e) {
-            throw new \Exception(sprintf('Erreur connexion LDAP.'), 0, $e);
-        }
-
         // On récupère le service ldapfonctions
         $ldapfonctions->SetLdap($ldap, getenv("base_dn"), $this->config_users, $this->config_groups, $this->config_private);
 
