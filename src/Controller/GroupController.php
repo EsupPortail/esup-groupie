@@ -112,7 +112,8 @@ class GroupController extends AbstractController {
                 $groups[$i]->setAmugroupadmin("");
 
                 // Mise en forme pour la présentation "dossier" avec javascript
-                $arEtages = preg_split('/[:]+/', $arData[$i]->getAttribute($this->config_groups['cn'])[0]);
+                $separator = $this->config_groups['separator'];
+                $arEtages = preg_split('/['.$separator.']+/', $arData[$i]->getAttribute($this->config_groups['cn'])[0]);
                 $NbEtages = count($arEtages);
                 $groups[$i]->setEtages($arEtages);
                 $groups[$i]->setNbetages($NbEtages);
@@ -239,7 +240,8 @@ class GroupController extends AbstractController {
             $groups[$i]->setAmugroupadmin("");
             
             // Mise en forme pour la présentation "dossier" avec javascript
-            $arEtages = preg_split('/[:]+/', $arData[$i]->getAttribute($this->config_groups['cn'])[0]);
+            $separator = $this->config_groups['separator'];
+            $arEtages = preg_split('/['.$separator.']+/', $arData[$i]->getAttribute($this->config_groups['cn'])[0]);
             $NbEtages = count($arEtages);
             $groups[$i]->setEtages($arEtages);
             $groups[$i]->setNbetages($NbEtages);
@@ -318,7 +320,8 @@ class GroupController extends AbstractController {
                 }
 
                 // Mise en forme pour la présentation "dossier" avec javascript
-                $arEtages = preg_split('/[:]+/', $arData[$i]->getAttribute($this->config_groups['cn'])[0]);
+                $separator = $this->config_groups['separator'];
+                $arEtages = preg_split('/['.$separator.']+/', $arData[$i]->getAttribute($this->config_groups['cn'])[0]);
                 $NbEtages = count($arEtages);
                 $groups[$i]->setEtages($arEtages);
                 $groups[$i]->setNbetages($NbEtages);
