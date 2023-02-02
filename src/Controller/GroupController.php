@@ -1034,7 +1034,7 @@ class GroupController extends AbstractController {
                 
             // Création du groupe dans le LDAP
             $infogroup = $group->infosGroupeLdap($this->config_groups['cn'], $this->config_groups['desc'], $this->config_groups['groupfilter'], $this->config_groups['object_class']);
-            $b =$ldapfonctions->createGroupeLdap("cn=".$group->getCn().", ou=groups, dc=univ-amu, dc=fr", $infogroup);
+            $b =$ldapfonctions->createGroupeLdap($this->config_groups['cn']."=".$group->getCn().",".$this->config_groups['group_branch'].",".getenv("base_dn") , $infogroup);
             if ($b==true) {          
                 // affichage groupe créé
                 $this->get('session')->getFlashBag()->add('flash-notice', 'Le groupe a bien été créé');
