@@ -593,7 +593,7 @@ class GroupController extends AbstractController {
         $tab = array_splice($tab_memberof, 1);
         $tab_cn = array();
         foreach($tab as $dn) {
-            $tab_cn[] = preg_replace("/(".$this->config_groups['cn']."=)(([A-Za-z0-9:._-]{1,}))(,".$this->config_groups['group_branch'].".*)/", "$3", $dn);
+            $tab_cn[] = preg_replace("/(".$this->config_groups['cn']."=)(([A-Za-z0-9:._-]{1,}))(,".$this->config_groups['group_branch'].".*)/", "$3", strtolower($dn));
         }
 
         // Récupération des groupes dont l'utilisateur recherché est admin
@@ -851,7 +851,7 @@ class GroupController extends AbstractController {
             $nb_admins = sizeof($arAdmins[0]->getAttribute($this->config_groups['groupadmin']));
             // on remplit le tableau d'entités
             for ($i=0; $i<sizeof($arAdmins[0]->getAttribute($this->config_groups['groupadmin'])); $i++) {
-                $uid = preg_replace("/(".$this->config_users['login']."=)(([A-Za-z0-9:._-]{1,}))(,ou=.*)/", "$3", $arAdmins[0]->getAttribute($this->config_groups['groupadmin'])[$i]);
+                $uid = preg_replace("/(".$this->config_users['login']."=)(([A-Za-z0-9:._-]{1,}))(,ou=.*)/", "$3", strtolower($arAdmins[0]->getAttribute($this->config_groups['groupadmin'])[$i]));
                 $result = $ldapfonctions->getInfosUser($uid);
                 $admins[$i] = new User();
                 $admins[$i]->setUid($result[0]->getAttribute($this->config_users['login'])[0]);
@@ -1772,7 +1772,7 @@ class GroupController extends AbstractController {
             // on teste si le membre est aussi admin
             if (null !== $arAdmins[0]->getAttribute($this->config_groups['groupadmin'])) {
                 for ($j = 0; $j < sizeof($arAdmins[0]->getAttribute($this->config_groups['groupadmin'])); $j++) {
-                    $uid = preg_replace("/(".$this->config_users['login']."=)(([A-Za-z0-9:._-]{1,}))(,ou=.*)/", "$3", $arAdmins[0]->getAttribute($this->config_groups['groupadmin'])[$j]);
+                    $uid = preg_replace("/(".$this->config_users['login']."=)(([A-Za-z0-9:._-]{1,}))(,ou=.*)/", "$3", strtolower($arAdmins[0]->getAttribute($this->config_groups['groupadmin'])[$j]));
                     if ($uid == $arUsers[$i]->getAttribute($this->config_users['login'])[0]) {
                         $members[$i]->setAdmin(TRUE);
                         $membersini[$i]->setAdmin(TRUE);
@@ -1788,7 +1788,7 @@ class GroupController extends AbstractController {
             for ($j = 0; $j < sizeof($arAdmins[0]->getAttribute($this->config_groups['groupadmin'])); $j++) {
                 if ($flagMembers[$j] == FALSE) {
                     // si l'admin n'est pas membre du groupe, il faut aller récupérer ses infos dans le LDAP
-                    $uid = preg_replace("/(".$this->config_users['login']."=)(([A-Za-z0-9:._-]{1,}))(,ou=.*)/", "$3", $arAdmins[0]->getAttribute($this->config_groups['groupadmin'])[$j]);
+                    $uid = preg_replace("/(".$this->config_users['login']."=)(([A-Za-z0-9:._-]{1,}))(,ou=.*)/", "$3", strtolower($arAdmins[0]->getAttribute($this->config_groups['groupadmin'])[$j]));
                     $result = $ldapfonctions->getInfosUser($uid);
                     $memb = new Member();
                     $memb->setUid($result[0]->getAttribute($this->config_users['login'])[0]);

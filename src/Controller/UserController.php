@@ -114,7 +114,7 @@ class UserController extends AbstractController {
         foreach($tab as $dn) {
             // on ne récupère que les groupes publics
             if (!strstr($dn, $this->config_private['private_branch'])) {
-                $tab_cn[] = preg_replace("/(".$this->config_groups['cn']."=)(([A-Za-z0-9:_-]{1,}))(,ou=.*)/", "$3", $dn);
+                $tab_cn[] = preg_replace("/(".$this->config_groups['cn']."=)(([A-Za-z0-9:_-]{1,}))(,ou=.*)/", "$3", strtolower($dn));
                 $nb_public++;
             }
         }
@@ -404,7 +404,7 @@ class UserController extends AbstractController {
             // Tableau des groupes de l'utilisateur
             $tab_cn = array();
             foreach($tab as $dn)
-                $tab_cn[] = preg_replace("/(".$this->config_groups['cn']."=)(([A-Za-z0-9:._-]{1,}))(,ou=.*)/", "$3", $dn);
+                $tab_cn[] = preg_replace("/(".$this->config_groups['cn']."=)(([A-Za-z0-9:._-]{1,}))(,ou=.*)/", "$3", strtolower($dn));
 
             // Recherche des admins du groupe dans le LDAP
             $arAdmins = $ldapfonctions->getAdminsGroup($cn);
@@ -442,7 +442,7 @@ class UserController extends AbstractController {
             if (isset($arAdmins[0]->getAttribute($this->config_groups['groupadmin'])["count"])){
                 for ($j=0; $j<sizeof($arAdmins[0]->getAttribute($this->config_groups['groupadmin'])); $j++) {
                     // récupération des uid des admin du groupe
-                    $uid_admins = preg_replace("/(".$this->config_users['login']."=)(([A-Za-z0-9:._-]{1,}))(,ou=.*)/", "$3", $arAdmins[0]->getAttribute($this->config_groups['groupadmin'])[$j]);
+                    $uid_admins = preg_replace("/(".$this->config_users['login']."=)(([A-Za-z0-9:._-]{1,}))(,ou=.*)/", "$3", strtolower($arAdmins[0]->getAttribute($this->config_groups['groupadmin'])[$j]));
                     if ($uid == $uid_admins) {
                         $membership->setAdminof(TRUE);
                         $membershipini->setAdminof(TRUE);
@@ -618,7 +618,7 @@ class UserController extends AbstractController {
             // Tableau des groupes de l'utilisateur
             $tab_cn = array();
             foreach($tab as $dn)
-                $tab_cn[] = preg_replace("/(".$this->config_groups['cn']."=)(([A-Za-z0-9:._-]{1,}))(,ou=.*)/", "$3", $dn);
+                $tab_cn[] = preg_replace("/(".$this->config_groups['cn']."=)(([A-Za-z0-9:._-]{1,}))(,ou=.*)/", "$3", strtolower($dn));
 
             // On teste si le user est déjà membre du groupe
             $FlagMemb = FALSE;
@@ -927,7 +927,7 @@ class UserController extends AbstractController {
                     $tab = array_splice($tab_members, 1);
                     $tab_cn = array();
                     foreach($tab as $dn) 
-                        $tab_cn[] = preg_replace("/(".$this->config_groups['cn']."=)(([A-Za-z0-9:_-]{1,}))(,ou=.*)/", "$3", $dn);
+                        $tab_cn[] = preg_replace("/(".$this->config_groups['cn']."=)(([A-Za-z0-9:_-]{1,}))(,ou=.*)/", "$3", strtolower($dn));
                     $user->setMemberof($tab_cn); 
 
                     $users[] = $user; 
@@ -1054,7 +1054,7 @@ class UserController extends AbstractController {
                             $arGroups = array_splice($tab_memb, 1);
                             $stop=0;
                             foreach($arGroups as $dn)  {
-                                $c = preg_replace("/(".$this->config_groups['cn']."=)(([A-Za-z0-9:_-]{1,}))(,ou=.*)/", "$3", $dn);
+                                $c = preg_replace("/(".$this->config_groups['cn']."=)(([A-Za-z0-9:_-]{1,}))(,ou=.*)/", "$3", strtolower($dn));
                                 if ($c==$cn) {
                                     // l'utilisateur est déjà membre de ce groupe
                                     $stop = 1;
@@ -1108,7 +1108,7 @@ class UserController extends AbstractController {
                             $arGroups = array_splice($tab_r, 1);
                             $stop=0;
                             foreach($arGroups as $dn) {
-                                $c = preg_replace("/(".$this->config_groups['cn']."=)(([A-Za-z0-9:_-]{1,}))(,ou=.*)/", "$3", $dn);
+                                $c = preg_replace("/(".$this->config_groups['cn']."=)(([A-Za-z0-9:_-]{1,}))(,ou=.*)/", "$3", strtolower($dn));
                                 if ($c==$cn) {
                                     // l'utilisateur est déjà membre de ce groupe
                                     $stop = 1;
