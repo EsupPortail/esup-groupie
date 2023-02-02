@@ -72,7 +72,7 @@ class AjaxController extends AbstractController
         $ldapfonctions->SetLdap($ldap, getenv("base_dn"), $this->config_users, $this->config_groups, $this->config_private);
 
         // Récupération des groupes (on ne récupère que les groupes publics)
-        $arData = $ldapfonctions->recherche("(&(objectClass=".$this->config_groups['object_class'][0].")(".$this->config_groups['cn']."=*".$term."*))", array($this->config_groups['cn']), $this->config_groups['cn']);
+        $arData = $ldapfonctions->recherche("(&(objectClass=".$this->config_groups['object_class'][0].")(".$this->config_groups['cn']."=*".$term."*))", array($this->config_groups['cn']), 1, $this->config_groups['cn']);
 
         // on ne garde que les groupes publics
         for ($i=0; $i<sizeof($arData); $i++) {
@@ -144,7 +144,7 @@ class AjaxController extends AbstractController
         $ldapfonctions->SetLdap($ldap, getenv("base_dn"), $this->config_users, $this->config_groups, $this->config_private);
 
         // Récupération des uid
-        $arData = $ldapfonctions->recherche("(&(".$this->config_users['login']."=".$term."*)".$this->config_users['filter'].")", array($this->config_users['login']), $this->config_users['login']);
+        $arData = $ldapfonctions->recherche("(&(".$this->config_users['login']."=".$term."*)".$this->config_users['filter'].")", array($this->config_users['login']), 0, $this->config_users['login']);
 
         $NbEnreg = sizeof($arData);
         // si on a plus de 20 entrées, on affiche que le résultat partiel
@@ -211,6 +211,7 @@ class AjaxController extends AbstractController
             $arData = $ldapfonctions->recherche(
             "(&(".$this->config_users['name']."=".$term.")".$this->config_users['filter'].")",
             array($this->config_users['name'], $this->config_users['givenname'], $this->config_users['login']),
+                0,
                 $this->config_users['name']    );
         }
         else
@@ -218,6 +219,7 @@ class AjaxController extends AbstractController
             $arData = $ldapfonctions->recherche(
             "(&(".$this->config_users['name']."=".$term."*)".$this->config_users['filter'].")",
             array($this->config_users['name'], $this->config_users['givenname'], $this->config_users['login']),
+                0,
                 $this->config_users['name']    );
         }
        
