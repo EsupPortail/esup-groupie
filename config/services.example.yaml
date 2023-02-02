@@ -79,7 +79,7 @@ services:
             - 'create'
         arguments:
             - 'ext_ldap'
-            - connection_string: ldaps://ldap.fr:636
+            - connection_string: '%env(connection_string)'
               version: 3
               encryption: 'none'
 
