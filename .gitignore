@@ -1,5 +1,5 @@
 /config/services.yaml
 .env
 /node_modules
-/public
+/public/build
 /vendor

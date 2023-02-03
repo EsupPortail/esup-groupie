@@ -35,7 +35,10 @@ parameters:
         site: amuSite
         filter: (&(!(eduPersonPrimaryAffiliation=student))(!(eduPersonPrimaryAffiliation=alum))(amuDateValidation=*))
     groups:
-        object_class: groupOfNames
+        object_class:
+            - groupOfNames
+            - AMUGroup
+            - top
         group_branch: ou=groups
         cn: cn
         desc: description
@@ -43,6 +46,7 @@ parameters:
         memberof: memberOf
         groupfilter: amuGroupFilter
         groupadmin: amuGroupAdmin
+        separator: ':'
     private:
         private_branch: ou=private
         prefix: amu:perso
