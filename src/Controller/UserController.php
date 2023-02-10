@@ -623,7 +623,8 @@ class UserController extends AbstractController {
         else {
             $user->setDisplayname($arDataUser[0]->getAttribute($this->config_users['displayname'])[0]);
             $tab_groups = $arDataUser[0]->getAttribute($this->config_groups['memberof']);
-            $tab = array_splice($tab_groups, 1);
+            //$tab = array_splice($tab_groups, 1);
+            $tab = $tab_groups;
             // Tableau des groupes de l'utilisateur
             $tab_cn = array();
             foreach($tab as $dn)
@@ -939,7 +940,8 @@ class UserController extends AbstractController {
                     // Récupération du cn des groupes (memberof)
                     $tab = array();
                     $tab_members = $arData[0]->getAttribute($this->config_groups['memberof']);
-                    $tab = array_splice($tab_members, 1);
+                    //$tab = array_splice($tab_members, 1);
+                    $tab = $tab_members;
                     $tab_cn = array();
                     foreach($tab as $dn) 
                         $tab_cn[] = preg_replace("/(".$this->config_groups['cn']."=)(([A-Za-z0-9:_-]{1,}))(,ou=.*)/", "$3", strtolower($dn));
@@ -1068,7 +1070,8 @@ class UserController extends AbstractController {
                         else {
                             // Récupération des appartenances de l'utilisateur à ajouter
                             $tab_memb = $r[0]->getAttribute($this->config_groups['memberof']);
-                            $arGroups = array_splice($tab_memb, 1);
+                            //$arGroups = array_splice($tab_memb, 1);
+                            $arGroups = $tab_memb;
                             $stop=0;
                             foreach($arGroups as $dn)  {
                                 $c = preg_replace("/(".$this->config_groups['cn']."=)(([A-Za-z0-9:_-]{1,}))(,ou=.*)/", "$3", strtolower($dn));
@@ -1122,7 +1125,8 @@ class UserController extends AbstractController {
                         else {
                             // Récupération des appartenances de l'utilisateur à ajouter
                             $tab_r = $r[0]->getAttribute($this->config_groups['memberof']);
-                            $arGroups = array_splice($tab_r, 1);
+                            //$arGroups = array_splice($tab_r, 1);
+                            $arGroups = $tab_r;
                             $stop=0;
                             foreach($arGroups as $dn) {
                                 $c = preg_replace("/(".$this->config_groups['cn']."=)(([A-Za-z0-9:_-]{1,}))(,ou=.*)/", "$3", strtolower($dn));
