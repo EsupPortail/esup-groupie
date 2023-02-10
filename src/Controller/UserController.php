@@ -86,11 +86,13 @@ class UserController extends AbstractController {
         $ldapfonctions->SetLdap($ldap, getenv("base_dn"), $this->config_users, $this->config_groups, $this->config_private);
 
         // Dans le cas d'un gestionnaire
+        // On recupère son dn
+        $result = $ldapfonctions->recherche($this->config_users['login']."=". $this->container->get('security.token_storage')->getToken()->getAttribute("uid"), array('dn'), 0, "no");
+        $dnUser = $result[0]->getDn();
         if (true === $this->get('security.authorization_checker')->isGranted('ROLE_GESTIONNAIRE')) {
             // Recup des groupes dont l'utilisateur est admin
-            $arDataAdminLogin = $ldapfonctions->recherche($this->config_groups['groupadmin']."=".$this->config_users['login']."=".$this->container->get('security.token_storage')->getToken()->getAttribute("uid").",".$this->config_users['people_branch'].",".$this->base,array($this->config_groups['cn'], $this->config_groups['desc'], $this->config_groups['groupfilter']), 1, $this->config_groups['cn']);
-            for($i=0;$i<sizeof($arDataAdminLogin);$i++)
-            {
+            $arDataAdminLogin = $ldapfonctions->recherche($this->config_groups['groupadmin']."=".$this->config_users['login']."=".$dnUser, array($this->config_groups['cn'], $this->config_groups['desc'], $this->config_groups['groupfilter']), 1, $this->config_groups['cn']);
+            for($i=0;$i<sizeof($arDataAdminLogin);$i++) {
                 $tab_cn_admin_login[$i] = $arDataAdminLogin[$i]->getAttribute($this->config_groups['cn'])[0];
             }
         }
@@ -132,7 +134,10 @@ class UserController extends AbstractController {
         $userini->setMemberof($tab_cn); 
         
         // Récupération des groupes dont l'utilisateur est admin
-        $arDataAdmin = $ldapfonctions->recherche($this->config_groups['groupadmin']."=".$this->config_users['login']."=".$uid.",".$this->config_users['people_branch'].",".$this->base,array($this->config_groups['cn'], $this->config_groups['desc'], $this->config_groups['groupfilter']), 1, $this->config_groups['cn']);
+        // On recupère son dn
+        $result = $ldapfonctions->recherche($this->config_users['login']."=". $uid, array('dn'), 0, "no");
+        $dnUser = $result[0]->getDn();
+        $arDataAdmin = $ldapfonctions->recherche($this->config_groups['groupadmin']."=".$dnUser,array($this->config_groups['cn'], $this->config_groups['desc'], $this->config_groups['groupfilter']), 1, $this->config_groups['cn']);
         $flagMember = array();
         for($i=0;$i<sizeof($arDataAdmin);$i++)
             $flagMember[$i] = FALSE;
@@ -372,7 +377,10 @@ class UserController extends AbstractController {
         $flag = "nok";
         if (true === $this->get('security.authorization_checker')->isGranted('ROLE_GESTIONNAIRE')) {
             // Recup des groupes dont l'utilisateur est admin
-            $arDataAdminLogin = $ldapfonctions->recherche($this->config_groups['groupadmin']."=".$this->config_users['login']."=".$this->container->get('security.token_storage')->getToken()->getAttribute("uid").",".$this->config_users['people_branch'].",".$this->base,array($this->config_groups['cn'], $this->config_groups['desc'], $this->config_groups['groupfilter']), 1, $this->config_groups['cn']);
+            // On recupère son dn
+            $result = $ldapfonctions->recherche($this->config_users['login']."=". $this->container->get('security.token_storage')->getToken()->getAttribute("uid"), array('dn'), 0, "no");
+            $dnUser = $result[0]->getDn();
+            $arDataAdminLogin = $ldapfonctions->recherche($this->config_groups['groupadmin']."=".$this->config_users['login']."=".$dnUser, array($this->config_groups['cn'], $this->config_groups['desc'], $this->config_groups['groupfilter']), 1, $this->config_groups['cn']);
             for($i=0;$i<sizeof($arDataAdminLogin);$i++)
             {
                 if ($cn==$arDataAdminLogin[$i]->getAttribute($this->config_groups['cn'])[0]) {
@@ -698,8 +706,10 @@ class UserController extends AbstractController {
         // On récupère le service ldapfonctions
         $ldapfonctions->SetLdap($ldap, getenv("base_dn"), $this->config_users, $this->config_groups, $this->config_private);
 
-        // Recherche des groupes dont l'utilisateur est membre 
-        $arData = $ldapfonctions->recherche($this->config_groups['member']."=".$this->config_users['login']."=".$uid.",".$this->config_users['people_branch'].",".$this->base,array($this->config_groups['cn'], $this->config_groups['desc'], $this->config_groups['groupfilter']), 1, $this->config_groups['cn']);
+        // Recherche des groupes dont l'utilisateur est membre
+        $result = $ldapfonctions->recherche($this->config_users['member']."=". $uid, array('dn'), 0, "no");
+        $dnUser = $result[0]->getDn();
+        $arData = $ldapfonctions->recherche($this->config_groups['member']."=".$dnUser, array($this->config_groups['cn'], $this->config_groups['desc'], $this->config_groups['groupfilter']), 1, $this->config_groups['cn']);
         for ($i=0; $i<sizeof($arData); $i++) {
             // on ne récupere que les groupes publics
             if (!strstr($arData[$i]->getDn(), $this->config_private['private_branch'])) {
@@ -712,7 +722,9 @@ class UserController extends AbstractController {
         }
                 
         // Récupération des groupes dont l'utilisateur est admin
-        $arDataAdmin=$this->getLdap()->arDatasFilter($this->config_groups['groupadmin']."=".$this->config_users['login']."=".$uid.",".$this->config_users['people_branch'].",".$this->base,array($this->config_groups['cn'], $this->config_groups['desc'], $this->config_groups['groupfilter']));
+        $result = $ldapfonctions->recherche($this->config_users['login']."=". $uid, array('dn'), 0, "no");
+        $dnUser = $result[0]->getDn();
+        $arDataAdmin=$this->getLdap()->arDatasFilter($this->config_groups['groupadmin']."=".$dnUser, array($this->config_groups['cn'], $this->config_groups['desc'], $this->config_groups['groupfilter']));
         for ($i=0; $i<$arDataAdmin["count"]; $i++) {
             $gr_adm = new Group();
             $gr_adm->setCn($arDataAdmin[$i][$this->config_groups['cn']][0]);
@@ -763,8 +775,10 @@ class UserController extends AbstractController {
         // On récupère le service ldapfonctions
         $ldapfonctions->SetLdap($ldap, getenv("base_dn"), $this->config_users, $this->config_groups, $this->config_private);
 
-        // Recherche des groupes dont l'utilisateur est membre 
-        $arData=$ldapfonctions->recherche($this->config_groups['member']."=".$this->config_users['login']."=".$uid.",".$this->config_users['people_branch'].",".$this->base,array($this->config_groups['cn'], $this->config_groups['desc'], $this->config_groups['groupfilter']), 1, $this->config_groups['cn']);
+        // Recherche des groupes dont l'utilisateur est membre
+        $result = $ldapfonctions->recherche($this->config_users['login']."=". $uid, array('dn'), 0, "no");
+        $dnUser = $result[0]->getDn();
+        $arData=$ldapfonctions->recherche($this->config_groups['member']."=".$dnUser, array($this->config_groups['cn'], $this->config_groups['desc'], $this->config_groups['groupfilter']), 1, $this->config_groups['cn']);
         $nb_grp_memb = 0;
 
         for ($i=0; $i<sizeof($arData); $i++) {
@@ -987,7 +1001,9 @@ class UserController extends AbstractController {
         $flag = "nok";
         if (true === $this->get('security.authorization_checker')->isGranted('ROLE_GESTIONNAIRE')) {
             // Recup des groupes dont l'utilisateur est admin
-            $arDataAdminLogin = $ldapfonctions->recherche($this->config_groups['groupadmin']."=".$this->config_users['login']."=".$this->container->get('security.token_storage')->getToken()->getAttribute("uid").",".$this->config_users['people_branch'].",".$this->base,array($this->config_groups['cn'], $this->config_groups['desc'], $this->config_groups['groupfilter']), 1, $this->config_groups['cn']);
+            $result = $ldapfonctions->recherche($this->config_users['login']."=". $this->container->get('security.token_storage')->getToken()->getAttribute("uid"), array('dn'), 0, "no");
+            $dnUser = $result[0]->getDn();
+            $arDataAdminLogin = $ldapfonctions->recherche($this->config_groups['groupadmin']."=".$this->config_users['login']."=".$dnUser, array($this->config_groups['cn'], $this->config_groups['desc'], $this->config_groups['groupfilter']), 1, $this->config_groups['cn']);
             for($i=0;$i<sizeof($arDataAdminLogin);$i++)
             {
                 if ($cn==$arDataAdminLogin[$i]->getAttribute($this->config_groups['cn'])[0]) {

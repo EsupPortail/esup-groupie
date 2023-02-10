@@ -31,16 +31,25 @@ class LdapFonctions
 
     public function recherche($filtre, $restriction, $flagGroup=0, $tri)
     {
+        $branch2 = "";
         if($flagGroup) {
             // on cherche sur la branche des groupes
             $branch = $this->config_groups['group_branch'];
         }else {
             $branch = $this->config_users['people_branch'];
+            $branch2 = $this->config_users['secondary_people_branch'];
         }
 
         // Recherche avec les filtres et restrictions demandés
         $query = $this->ldap->query($branch.','.$this->base_dn, $filtre, array('filter' => $restriction));
-        $arData = $query->execute()->toArray();
+        $arData1 = $query->execute()->toArray();
+        $arData2 = array();
+
+        if ($branch2 != "") {
+            $query = $this->ldap->query($branch2.','.$this->base_dn, $filtre, array('filter' => $restriction));
+            $arData2 = $query->execute()->toArray();
+        }
+        $arData = array_merge($arData1, $arData2);
 
         if ($tri!="no") {
             // Tri des résultats
@@ -114,9 +123,10 @@ class LdapFonctions
      */
     public function addMemberGroup($dn_group, $arUserUid) {
         $arDnMembers = array();
-        foreach ($arUserUid as $uid)
-        {
-            $arDnMembers[] = $this->config_users['login']."=".$uid.",".$this->config_users['people_branch'].",".$this->base_dn;
+        foreach ($arUserUid as $uid) {
+            // $arDnMembers[] = $this->config_users['login']."=".$uid.",".$this->config_users['people_branch'].",".$this->base_dn;
+            $result = $this->recherche($this->config_users['login']."=". $uid, array('dn'), 0, "no");
+            $arDnMembers[] = $result[0]->getDn();
         }
 
         // Entry manager
@@ -144,9 +154,9 @@ class LdapFonctions
      */
     public function delMemberGroup($dn_group, $arUserUid) {
         $arDnMembers = array();
-        foreach ($arUserUid as $uid)
-        {
-            $arDnMembers[] = $this->config_users['login']."=".$uid.",".$this->config_users['people_branch'].",".$this->base_dn;
+        foreach ($arUserUid as $uid) {
+            $result = $this->recherche($this->config_users['login']."=". $uid, array('dn'), 0, "no");
+            $arDnMembers[] = $result[0]->getDn();
         }
 
         // Entry manager
@@ -174,9 +184,9 @@ class LdapFonctions
      */
     public function addAdminGroup($dn_group, $arUserUid) {
         $arDnAdmins = array();
-        foreach ($arUserUid as $uid)
-        {
-            $arDnAdmins[] = $this->config_users['login']."=".$uid.",".$this->config_users['people_branch'].",".$this->base_dn;
+        foreach ($arUserUid as $uid) {
+            $result = $this->recherche($this->config_users['login']."=". $uid, array('dn'), 0, "no");
+            $arDnAdmins[] = $result[0]->getDn();
         }
         // Entry manager
         $entryManager = $this->ldap->getEntryManager();
@@ -204,9 +214,9 @@ class LdapFonctions
     public function delAdminGroup($dn_group, $arUserUid) {
 
         $arDnAdmins = array();
-        foreach ($arUserUid as $uid)
-        {
-            $arDnAdmins[] = $this->config_users['login']."=".$uid.",".$this->config_users['people_branch'].",".$this->base_dn;
+        foreach ($arUserUid as $uid) {
+            $result = $this->recherche($this->config_users['login']."=". $uid, array('dn'), 0, "no");
+            $arDnAdmins[] = $result[0]->getDn();
         }
         // Entry manager
         $entryManager = $this->ldap->getEntryManager();

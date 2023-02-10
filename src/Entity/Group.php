@@ -189,10 +189,6 @@ public function getFlag()
    foreach ($param_objectclass as $param_objectclass) {
        $addgroup['objectClass'][] = $param_objectclass;
    }
-   /*
-   $addgroup['objectClass'][0] = "groupOfNames";
-   $addgroup['objectClass'][1] = "AMUGroup";
-   $addgroup['objectClass'][2] = "top";*/
 
     return($addgroup);
  }

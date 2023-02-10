@@ -22,6 +22,7 @@ parameters:
         facility: LOG_SYSLOG
     users:
         people_branch: ou=people
+        secondary_people_branch: ou=sesame
         login: uid
         name: sn
         givenname: givenName
