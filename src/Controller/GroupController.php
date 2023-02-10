@@ -601,14 +601,15 @@ class GroupController extends AbstractController {
         
         // Mise en forme du tableau contenant les cn des groupes dont l'utilisateur recherché est membre
         $tab_memberof = $arDataUser[0]->getAttribute($this->config_groups['memberof']);
-        $tab = array_splice($tab_memberof, 1);
+//        $tab = array_splice($tab_memberof, 1);
+        $tab = $tab_memberof;
         $tab_cn = array();
         foreach($tab as $dn) {
             $tab_cn[] = preg_replace("/(".$this->config_groups['cn']."=)(([A-Za-z0-9:._-]{1,}))(,".$this->config_groups['group_branch'].".*)/", "$3", strtolower($dn));
         }
 
         // Récupération des groupes dont l'utilisateur recherché est admin
-        $result = $ldapfonctions->recherche($uid, array('dn'), 0, "no");
+        $result = $ldapfonctions->recherche($this->config_users['login']."=".$uid, array('dn'), 0, "no");
         $dnUser = $result[0]->getDn();
         $arDataAdmin=$ldapfonctions->recherche($this->config_groups['groupadmin']."=".$dnUser,array($this->config_groups['cn'], $this->config_groups['desc'], $this->config_groups['groupfilter']), 1, $this->config_groups['cn']);
         $tab_cn_admin = array();
