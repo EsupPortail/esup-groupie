@@ -720,7 +720,7 @@ class GroupController extends AbstractController {
             $m_update = $userupdate->getMemberships();
             
             // Log Mise à jour des membres du groupe
-            openlog(constant($this->config_logs['tag']), LOG_PID | LOG_PERROR, constant($this->config_logs['facility']));
+            openlog($this->config_logs['tag'], LOG_PID | LOG_PERROR, constant($this->config_logs['facility']));
             $adm = $this->container->get('security.token_storage')->getToken()->getAttribute("uid");
             
             // Pour chaque appartenance
@@ -1035,7 +1035,7 @@ class GroupController extends AbstractController {
             }
             
             // Log création de groupe
-            openlog(constant($this->config_logs['tag']), LOG_PID | LOG_PERROR, constant($this->config_logs['facility']));
+            openlog($this->config_logs['tag'], LOG_PID | LOG_PERROR, constant($this->config_logs['facility']));
             $adm = $this->container->get('security.token_storage')->getToken()->getAttribute("uid");
                 
             // Création du groupe dans le LDAP
@@ -1119,7 +1119,7 @@ class GroupController extends AbstractController {
             if ($test>0) {
                 // le nom du groupe est valide, on peut le créer
                 // Log création de groupe
-                openlog(constant($this->config_logs['tag']), LOG_PID | LOG_PERROR, constant($this->config_logs['facility']));
+                openlog($this->config_logs['tag'], LOG_PID | LOG_PERROR, constant($this->config_logs['facility']));
                 $adm = $this->container->get('security.token_storage')->getToken()->getAttribute("uid");
 
                 // On déclare le LDAP
@@ -1201,7 +1201,7 @@ class GroupController extends AbstractController {
     {
         $this->init_config();
         // Log suppression de groupe
-        openlog(constant($this->config_logs['tag']), LOG_PID | LOG_PERROR, constant($this->config_logs['facility']));
+        openlog($this->config_logs['tag'], LOG_PID | LOG_PERROR, constant($this->config_logs['facility']));
         $adm = $this->container->get('security.token_storage')->getToken()->getAttribute("uid");
         
         //Suppression du groupe dans le LDAP
@@ -1293,7 +1293,7 @@ class GroupController extends AbstractController {
     public function del1PrivateAction(Request $request,LdapFonctions $ldapfonctions, $cn) {
         $this->init_config();
         // Log suppression de groupe
-        openlog(constant($this->config_logs['tag']), LOG_PID | LOG_PERROR, constant($this->config_logs['facility']));
+        openlog($this->config_logs['tag'], LOG_PID | LOG_PERROR, constant($this->config_logs['facility']));
         $adm = $this->container->get('security.token_storage')->getToken()->getAttribute("uid");
         
         // Suppression du groupe dans le LDAP
@@ -1392,7 +1392,7 @@ class GroupController extends AbstractController {
             $groupmod = $form->getData();
 
             // Log modif de groupe
-            openlog(constant($this->config_logs['tag']), LOG_PID | LOG_PERROR, constant($this->config_logs['facility']));
+            openlog($this->config_logs['tag'], LOG_PID | LOG_PERROR, constant($this->config_logs['facility']));
             $adm = $this->container->get('security.token_storage')->getToken()->getAttribute("uid");
 
             // Cas particulier de la suppression amugroupfilter
@@ -1601,7 +1601,7 @@ class GroupController extends AbstractController {
             $groupupdate = $editForm->getData();
             
             // Log Mise à jour des membres du groupe
-            openlog(constant($this->config_logs['tag']), LOG_PID | LOG_PERROR, constant($this->config_logs['facility']));
+            openlog($this->config_logs['tag'], LOG_PID | LOG_PERROR, constant($this->config_logs['facility']));
             $adm = $this->container->get('security.token_storage')->getToken()->getAttribute("uid");
             
             // Récup des appartenances
@@ -1871,7 +1871,7 @@ class GroupController extends AbstractController {
             $groupupdate = $editForm->getData();
             
             // Log Mise à jour des membres du groupe
-            openlog(constant($this->config_logs['tag']), LOG_PID | LOG_PERROR, constant($this->config_logs['facility']));
+            openlog($this->config_logs['tag'], LOG_PID | LOG_PERROR, constant($this->config_logs['facility']));
             $adm = $this->container->get('security.token_storage')->getToken()->getAttribute("uid");
             
             $m_update = new ArrayCollection();      
@@ -2008,7 +2008,7 @@ class GroupController extends AbstractController {
         $nb_members = sizeof($arUsers);
 
         // Log Mise àour des membres du groupe
-        openlog(constant($this->config_logs['tag']), LOG_PID | LOG_PERROR, constant($this->config_logs['facility']));
+        openlog($this->config_logs['tag'], LOG_PID | LOG_PERROR, constant($this->config_logs['facility']));
         $adm = $this->container->get('security.token_storage')->getToken()->getAttribute("uid");
 
         // on parcourt tous les membres

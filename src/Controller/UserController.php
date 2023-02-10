@@ -265,7 +265,7 @@ class UserController extends AbstractController {
             $userupdate = $editForm->getData();
              
             // Log modif de groupe
-            openlog(constant($this->config_logs['tag']), LOG_PID | LOG_PERROR, constant($this->config_logs['facility']));
+            openlog($this->config_logs['tag'], LOG_PID | LOG_PERROR, constant($this->config_logs['facility']));
             $adm = $this->container->get('security.token_storage')->getToken()->getAttribute("uid");
             
             // Traitement des données issues de la récup du formulaire
@@ -483,7 +483,7 @@ class UserController extends AbstractController {
                 $userupdate = $editForm->getData();
 
                 // Log modif de groupe
-                openlog(constant($this->config_logs['tag']), LOG_PID | LOG_PERROR, constant($this->config_logs['facility']));
+                openlog($this->config_logs['tag'], LOG_PID | LOG_PERROR, constant($this->config_logs['facility']));
                 $adm = $this->container->get('security.token_storage')->getToken()->getAttribute("uid");
 
                 $m_update = new ArrayCollection();      
@@ -1044,7 +1044,7 @@ class UserController extends AbstractController {
             $tabLignes = explode("\n", $liste_ident);
                 
             // Log ajout sur le groupe
-            openlog(constant($this->config_logs['tag']), LOG_PID | LOG_PERROR, constant($this->config_logs['facility']));
+            openlog($this->config_logs['tag'], LOG_PID | LOG_PERROR, constant($this->config_logs['facility']));
             $adm = $this->container->get('security.token_storage')->getToken()->getAttribute("uid");
                 
             // Boucle sur la liste
