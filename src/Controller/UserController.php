@@ -110,12 +110,13 @@ class UserController extends AbstractController {
         if (isset($arData[0]->getAttribute($this->config_users['tel'])[0]))
             $user->setTel($arData[0]->getAttribute($this->config_users['tel'])[0]);
         $tab_memberof = $arData[0]->getAttribute($this->config_groups['memberof']);
-        $tab = array_splice($tab_memberof, 1);
+//        $tab = array_splice($tab_memberof, 1);
+        $tab = $tab_memberof;
         $tab_cn = array(); 
         $nb_public=0;
         foreach($tab as $dn) {
-            // on ne récupère que les groupes publics
-            if (!strstr($dn, $this->config_private['private_branch'])) {
+            // on ne récupère que les groupes publics et les groupes de la branche configurée
+            if ((!stristr($dn, $this->config_private['private_branch'])) && (stristr($dn, $this->config_groups['group_branch']))) {
                 $tab_cn[] = preg_replace("/(".$this->config_groups['cn']."=)(([A-Za-z0-9:_-]{1,}))(,ou=.*)/", "$3", strtolower($dn));
                 $nb_public++;
             }
@@ -712,7 +713,7 @@ class UserController extends AbstractController {
         $arData = $ldapfonctions->recherche($this->config_groups['member']."=".$dnUser, array($this->config_groups['cn'], $this->config_groups['desc'], $this->config_groups['groupfilter']), 1, $this->config_groups['cn']);
         for ($i=0; $i<sizeof($arData); $i++) {
             // on ne récupere que les groupes publics
-            if (!strstr($arData[$i]->getDn(), $this->config_private['private_branch'])) {
+            if ((!stristr($arData[$i]->getDn(), $this->config_private['private_branch'])) && (stristr($arData[$i]->getDn(), $this->config_groups['group_branch']))) {
                 $gr = new Group();
                 $gr->setCn($arData[$i]->getAttribute($this->config_groups['cn'])[0]);
                 $gr->setDescription($arData[$i]->getAttribute($this->config_groups['desc'])[0]);
@@ -783,7 +784,7 @@ class UserController extends AbstractController {
 
         for ($i=0; $i<sizeof($arData); $i++) {
             // on ne récupere que les groupes privés
-            if (strstr($arData[$i]->getDn(), $this->config_private['private_branch'])) {
+            if (stristr($arData[$i]->getDn(), $this->config_private['private_branch'])) {
                 $gr = new Group();
                 $gr->setCn($arData[$i]->getAttribute($this->config_groups['cn'])[0]);
                 $gr->setDescription($arData[$i]->getAttribute($this->config_groups['desc'])[0]);

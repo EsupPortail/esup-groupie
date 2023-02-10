@@ -99,7 +99,7 @@ class GroupController extends AbstractController {
         $groups = new ArrayCollection();
         for ($i=0; $i<sizeof($arData); $i++) {
             // on ne garde que les groupes publics
-            if (!strstr($arData[$i]->getDn(), $this->config_private['private_branch'])) {
+            if ((!stristr($arData[$i]->getDn(), $this->config_private['private_branch'])) && (stristr($arData[$i]->getDn(), $this->config_groups['group_branch']))) {
                 $groups[$i] = new Group();
                 $groups[$i]->setCn($arData[$i]->getAttribute($this->config_groups['cn'])[0]);
                 $groups[$i]->setDescription($arData[$i]->getAttribute($this->config_groups['desc'])[0]);
@@ -305,7 +305,7 @@ class GroupController extends AbstractController {
         $groups = new ArrayCollection();
         for ($i=0; $i<sizeof($arData); $i++) {
             // on ne garde que les groupes publics
-            if (!strstr($arData[$i]->getDn(), $this->config_private['private_branch'])) {
+            if ((!stristr($arData[$i]->getDn(), $this->config_private['private_branch'])) && (stristr($arData[$i]->getDn(), $this->config_groups['group_branch']))) {
                 $groups[$i] = new Group();
                 $groups[$i]->setCn($arData[$i]->getAttribute($this->config_groups['cn'])[0]);
                 $groups[$i]->setDescription($arData[$i]->getAttribute($this->config_groups['desc'])[0]);
@@ -453,7 +453,7 @@ class GroupController extends AbstractController {
                 $nb = 0;
                 for ($i=0; $i<sizeof($arData); $i++) {
                     // on ne garde que les groupes publics
-                    if (!strstr($arData[$i]->getDn(), $this->config_private['private_branch'])) {
+                    if ((!stristr($arData[$i]->getDn(), $this->config_private['private_branch'])) && (stristr($arData[$i]->getDn(), $this->config_groups['group_branch']))) {
                         $groups[$i] = new Group();
                         $groups[$i]->setCn($arData[$i]->getAttribute($this->config_groups['cn'])[0]);
                         $groups[$i]->setDescription($arData[$i]->getAttribute($this->config_groups['desc'])[0]);
@@ -636,7 +636,7 @@ class GroupController extends AbstractController {
         $cpt=0;
         for ($i=0; $i<sizeof($arData); $i++) {
             // on ne garde que les groupes publics
-            if (!strstr($arData[$i]->getDn(), $this->config_private['private_branch'])) {
+            if ((!stristr($arData[$i]->getDn(), $this->config_private['private_branch'])) && (stristr($arData[$i]->getDn(), $this->config_groups['group_branch']))) {
                 $tab_cn_search[$cpt] = $arData[$i]->getAttribute($this->config_groups['cn'])[0];
                 $cpt++;
             }

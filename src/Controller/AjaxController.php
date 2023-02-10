@@ -76,7 +76,7 @@ class AjaxController extends AbstractController
 
         // on ne garde que les groupes publics
         for ($i=0; $i<sizeof($arData); $i++) {
-            if (!strstr($arData[$i]->getDn(), $this->config_private['private_branch'])) {
+            if ((!stristr($arData[$i]->getDn(), $this->config_private['private_branch'])) && (stristr($arData[$i]->getDn(), $this->config_groups['group_branch']))) {
                 $arDataPub[$cptPub] = $arData[$i];
                 $cptPub++;
             }
