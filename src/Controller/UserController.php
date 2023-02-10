@@ -93,7 +93,7 @@ class UserController extends AbstractController {
             // Recup des groupes dont l'utilisateur est admin
             $arDataAdminLogin = $ldapfonctions->recherche($this->config_groups['groupadmin']."=".$dnUser, array($this->config_groups['cn'], $this->config_groups['desc'], $this->config_groups['groupfilter']), 1, $this->config_groups['cn']);
             for($i=0;$i<sizeof($arDataAdminLogin);$i++) {
-                $tab_cn_admin_login[$i] = $arDataAdminLogin[$i]->getAttribute($this->config_groups['cn'])[0];
+                $tab_cn_admin_login[$i] = strtolower($arDataAdminLogin[$i]->getAttribute($this->config_groups['cn'])[0]);
             }
         }
         
@@ -152,7 +152,6 @@ class UserController extends AbstractController {
         for($i=0; $i<$nb_public;$i++){
             $membership = new Membership();
             $membership->setGroupname($tab_cn[$i]);
-            $membership->setGroupname($tab_cn[$i]);
             $membership->setMemberof(TRUE);
             $membership->setDroits('Aucun');
             
@@ -163,7 +162,7 @@ class UserController extends AbstractController {
             $membershipini->setDroits('Aucun'); 
             // on teste si l'utilisateur est aussi admin du groupe
             for ($j=0; $j<sizeof($arDataAdmin);$j++) {
-                if ($arDataAdmin[$j]->getAttribute($this->config_groups['cn'])[0] == $tab_cn[$i]) {
+                if (strtolower($arDataAdmin[$j]->getAttribute($this->config_groups['cn'])[0]) == $tab_cn[$i]) {
                     $membership->setAdminof(TRUE);
                     $membershipini->setAdminof(TRUE);
                     $flagMember[$j] = TRUE;
@@ -232,7 +231,7 @@ class UserController extends AbstractController {
                 // Gestion droits pour un gestionnaire
                 if (true === $this->get('security.authorization_checker')->isGranted('ROLE_GESTIONNAIRE')) {
                     foreach($tab_cn_admin_login as $cn) {
-                        if ($cn==$arDataAdmin[$i]->getAttribute($this->config_groups['cn'])[0]) {
+                        if ($cn==strtolower($arDataAdmin[$i]->getAttribute($this->config_groups['cn'])[0])) {
                             $membership->setDroits('Modifier');
                             $membershipini->setDroits('Modifier');
                             break;
@@ -409,7 +408,8 @@ class UserController extends AbstractController {
         else {
             $user->setDisplayname($arDataUser[0]->getAttribute($this->config_users['displayname'])[0]);
             $tab_membersof = $arDataUser[0]->getAttribute($this->config_groups['memberof']);
-            $tab = array_splice($tab_membersof, 1);
+//            $tab = array_splice($tab_membersof, 1);
+            $tab = $tab_membersof;
             // Tableau des groupes de l'utilisateur
             $tab_cn = array();
             foreach($tab as $dn)
@@ -708,7 +708,7 @@ class UserController extends AbstractController {
         $ldapfonctions->SetLdap($ldap, getenv("base_dn"), $this->config_users, $this->config_groups, $this->config_private);
 
         // Recherche des groupes dont l'utilisateur est membre
-        $result = $ldapfonctions->recherche($this->config_users['member']."=". $uid, array('dn'), 0, "no");
+        $result = $ldapfonctions->recherche($this->config_users['login']."=". $uid, array('dn'), 0, "no");
         $dnUser = $result[0]->getDn();
         $arData = $ldapfonctions->recherche($this->config_groups['member']."=".$dnUser, array($this->config_groups['cn'], $this->config_groups['desc'], $this->config_groups['groupfilter']), 1, $this->config_groups['cn']);
         for ($i=0; $i<sizeof($arData); $i++) {
