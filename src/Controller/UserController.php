@@ -91,7 +91,7 @@ class UserController extends AbstractController {
         $dnUser = $result[0]->getDn();
         if (true === $this->get('security.authorization_checker')->isGranted('ROLE_GESTIONNAIRE')) {
             // Recup des groupes dont l'utilisateur est admin
-            $arDataAdminLogin = $ldapfonctions->recherche($this->config_groups['groupadmin']."=".$this->config_users['login']."=".$dnUser, array($this->config_groups['cn'], $this->config_groups['desc'], $this->config_groups['groupfilter']), 1, $this->config_groups['cn']);
+            $arDataAdminLogin = $ldapfonctions->recherche($this->config_groups['groupadmin']."=".$dnUser, array($this->config_groups['cn'], $this->config_groups['desc'], $this->config_groups['groupfilter']), 1, $this->config_groups['cn']);
             for($i=0;$i<sizeof($arDataAdminLogin);$i++) {
                 $tab_cn_admin_login[$i] = $arDataAdminLogin[$i]->getAttribute($this->config_groups['cn'])[0];
             }
@@ -380,7 +380,7 @@ class UserController extends AbstractController {
             // On recupère son dn
             $result = $ldapfonctions->recherche($this->config_users['login']."=". $this->container->get('security.token_storage')->getToken()->getAttribute("uid"), array('dn'), 0, "no");
             $dnUser = $result[0]->getDn();
-            $arDataAdminLogin = $ldapfonctions->recherche($this->config_groups['groupadmin']."=".$this->config_users['login']."=".$dnUser, array($this->config_groups['cn'], $this->config_groups['desc'], $this->config_groups['groupfilter']), 1, $this->config_groups['cn']);
+            $arDataAdminLogin = $ldapfonctions->recherche($this->config_groups['groupadmin']."=".$dnUser, array($this->config_groups['cn'], $this->config_groups['desc'], $this->config_groups['groupfilter']), 1, $this->config_groups['cn']);
             for($i=0;$i<sizeof($arDataAdminLogin);$i++)
             {
                 if ($cn==$arDataAdminLogin[$i]->getAttribute($this->config_groups['cn'])[0]) {
@@ -1003,7 +1003,7 @@ class UserController extends AbstractController {
             // Recup des groupes dont l'utilisateur est admin
             $result = $ldapfonctions->recherche($this->config_users['login']."=". $this->container->get('security.token_storage')->getToken()->getAttribute("uid"), array('dn'), 0, "no");
             $dnUser = $result[0]->getDn();
-            $arDataAdminLogin = $ldapfonctions->recherche($this->config_groups['groupadmin']."=".$this->config_users['login']."=".$dnUser, array($this->config_groups['cn'], $this->config_groups['desc'], $this->config_groups['groupfilter']), 1, $this->config_groups['cn']);
+            $arDataAdminLogin = $ldapfonctions->recherche($this->config_groups['groupadmin']."=".$dnUser, array($this->config_groups['cn'], $this->config_groups['desc'], $this->config_groups['groupfilter']), 1, $this->config_groups['cn']);
             for($i=0;$i<sizeof($arDataAdminLogin);$i++)
             {
                 if ($cn==$arDataAdminLogin[$i]->getAttribute($this->config_groups['cn'])[0]) {
