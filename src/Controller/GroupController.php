@@ -830,6 +830,10 @@ class GroupController extends AbstractController {
             $amugroupfilter = $result[0]->getAttribute($this->config_groups['groupfilter'])[0];
         else
             $amugroupfilter = "";
+        if (isset($result[0]->getAttribute($this->config_groups['desc'])[0]))
+            $description = $result[0]->getAttribute($this->config_groups['desc'])[0];
+        else
+            $description = "";
         
         // Recherche des membres dans le LDAP
         //$arUsers = $this->getLdap()->getMembersGroup($cn);
@@ -902,6 +906,7 @@ class GroupController extends AbstractController {
         // Affichage via le fichier twig
         return array('cn' => $cn,
                     'amugroupfilter' => $amugroupfilter,
+                    'description' => $description,
                     'nb_membres' => sizeof($arUsers),
                     'users' => $users,
                     'nb_admins' => $nb_admins,
@@ -1722,6 +1727,10 @@ class GroupController extends AbstractController {
         // Récup du filtre amugroupfilter pour affichage
         $amugroupfilter = $ldapfonctions->getAmuGroupFilter($cn);
         $group->setAmugroupfilter($amugroupfilter);
+
+        // Récup de la description du groupe pour affichage
+        $description = $ldapfonctions->getDescription($cn);
+        $group->setDescription($description);
                
         // Recherche des membres dans le LDAP
         $arUsers = $ldapfonctions->getMembersGroup($cn);

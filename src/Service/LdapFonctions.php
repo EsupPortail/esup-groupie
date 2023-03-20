@@ -278,6 +278,22 @@ class LdapFonctions
         return $amugroupfilter;
     }
 
+    /**
+     * Récupérer la description d'un groupe
+     * @return  \Amu\AppBundle\Service\Ldap
+     */
+    public function getDescription($cn_group) {
+
+        $filtre = $this->config_groups['cn']."=" . $cn_group;
+        $result = $this->recherche($filtre, array($this->config_groups['desc']), 1, $this->config_groups['cn']);
+        if (null !== $result[0]->getAttribute($this->config_groups['desc']))
+            $description = $result[0]->getAttribute($this->config_groups['desc'])[0];
+        else
+            $description = "";
+
+        return $description;
+    }
+
     public function createGroupeLdap($dn, $groupeinfo)
     {
         $entry = new Entry($dn, $groupeinfo);
