@@ -797,6 +797,10 @@ class GroupController extends AbstractController {
      */
     public function seeAction(Request $request, LdapFonctions $ldapfonctions, $cn, $mail, $liste)
     {
+        // Si admin, on a les droits pour modifier le groupe
+        if (true === $this->get('security.authorization_checker')->isGranted('ROLE_ADMIN'))
+            return $this->redirectToRoute('group_update', array('cn' => $cn, 'liste' => $liste));
+
         $this->init_config();
         // Initialisation des tableaux d'entités
         $users = array();
