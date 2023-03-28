@@ -17,6 +17,7 @@ class Membership {
   protected $groupname;
   protected $memberof;
   protected $adminof;
+  protected $creatorof;
   protected $droits;
   
 
@@ -50,6 +51,16 @@ class Membership {
     $this->adminof = $adminof;
  }
 
+    /**
+     * Set creatorof
+     *
+     * @param bool $creatorof
+     */
+    public function setCreatorof($creatorof)
+    {
+        $this->creatorof = $creatorof;
+    }
+
  public function setDroits($droits)
  {
     $this->droits = $droits;
@@ -79,9 +90,18 @@ class Membership {
  public function getAdminof()
  {
     return ($this->adminof);
- } 
- 
-  public function getDroits()
+ }
+
+    /**
+     * Get creatorof
+     *
+     */
+    public function getCreatorof()
+    {
+        return ($this->creatorof);
+    }
+
+    public function getDroits()
  {
     return ($this->droits);
  } 

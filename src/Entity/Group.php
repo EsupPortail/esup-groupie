@@ -18,6 +18,7 @@ class Group {
   protected $members;
   protected $amugroupadmin;
   protected $amugroupfilter;
+  protected $amugroupcreator;
   protected $droits;
   protected $flag;
   
@@ -71,9 +72,18 @@ public function __construct()
  public function setAmugroupadmin($amugroupadmin)
  {
     $this->amugroupadmin = $amugroupadmin;
- } 
+ }
+    /**
+     * Set amugroupcreator
+     *
+     * @param string $amugroupcreator
+     */
+    public function setAmugroupcreator($amugroupcreator)
+    {
+        $this->amugroupcreator = $amugroupcreator;
+    }
 
- public function setDroits($droits)
+    public function setDroits($droits)
  {
     $this->droits = $droits;
  } 
@@ -140,6 +150,11 @@ public function setFlag($flag)
  {
     return($this->amugroupadmin);
  }
+
+    public function getAmugroupcreator()
+    {
+        return($this->amugroupcreator);
+    }
  
  public function getDroits()
  {
