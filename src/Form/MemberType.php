@@ -19,7 +19,11 @@ class MemberType extends AbstractType
                 ->add('admin', CheckboxType::class, array(
                       'required'  => false,
                       'label' => false)
-                     );
+                     )
+                ->add('creator', CheckboxType::class, array(
+                        'required'  => false,
+                        'label' => false)
+                );
     }
 
     public function configureOptions(OptionsResolver $resolver)
