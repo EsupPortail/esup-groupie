@@ -1750,6 +1750,19 @@ class GroupController extends AbstractController {
                 $flagMembers[$i] = FALSE;
             }
         }
+
+        // Recherche des creators dans le LDAP
+        $nb_creators = 0;
+        $arCreators = $ldapfonctions->getCreatorsGroup($cn);
+        $flagCreatMembers = array();
+        $flagCreatAdmins = array();
+        if (null !== $arCreators[0]->getAttribute($this->config_groups['creator'])) {
+            $nb_creators = sizeof($arCreators[0]->getAttribute($this->config_groups['creator']));
+            for ($i = 0; $i < $nb_creators; $i++) {
+                $flagCreatMembers[$i] = FALSE;
+                $flagCreatAdmins[$i] = FALSE;
+            }
+        }
         
         // Affichage des membres  
         for ($i=0; $i<$nb_members; $i++) {
@@ -1774,6 +1787,7 @@ class GroupController extends AbstractController {
                 $members[$i]->setPrimAff("");
             $members[$i]->setMember(TRUE);
             $members[$i]->setAdmin(FALSE);
+            $members[$i]->setCreator(FALSE);
            
             // Idem pour groupini
             $membersini[$i] = new Member();
@@ -1797,6 +1811,7 @@ class GroupController extends AbstractController {
                 $membersini[$i]->setPrimAff("");
             $membersini[$i]->setMember(TRUE);
             $membersini[$i]->setAdmin(FALSE);
+            $membersini[$i]->setCreator(FALSE);
             
             // on teste si le membre est aussi admin
             if (null !== $arAdmins[0]->getAttribute($this->config_groups['groupadmin'])) {
@@ -1806,6 +1821,19 @@ class GroupController extends AbstractController {
                         $members[$i]->setAdmin(TRUE);
                         $membersini[$i]->setAdmin(TRUE);
                         $flagMembers[$j] = TRUE;
+                        break;
+                    }
+                }
+            }
+
+            // on teste si le membre est aussi creator
+            if (null !== $arCreators[0]->getAttribute($this->config_groups['creator'])) {
+                for ($j = 0; $j < sizeof($arCreators[0]->getAttribute($this->config_groups['creator'])); $j++) {
+                    $uid = preg_replace("/(".$this->config_users['login']."=)(([A-Za-z0-9:._-]{1,}))(,ou=.*)/", "$3", strtolower($arAdmins[0]->getAttribute($this->config_groups['creator'])[$j]));
+                    if ($uid == $arUsers[$i]->getAttribute($this->config_users['login'])[0]) {
+                        $members[$i]->setCreator(TRUE);
+                        $membersini[$i]->setCreator(TRUE);
+                        $flagCreatMembers[$j] = TRUE;
                         break;
                     }
                 }
@@ -1840,6 +1868,18 @@ class GroupController extends AbstractController {
                         $memb->setPrimAff("");
                     $memb->setMember(FALSE);
                     $memb->setAdmin(TRUE);
+
+                    // on teste si l'admin est aussi creator
+                    if (null !== $arCreators[0]->getAttribute($this->config_groups['creator'])) {
+                        for ($k = 0; $k < sizeof($arCreators[0]->getAttribute($this->config_groups['creator'])); $k++) {
+                            $uid = preg_replace("/(".$this->config_users['login']."=)(([A-Za-z0-9:._-]{1,}))(,ou=.*)/", "$3", strtolower($arAdmins[0]->getAttribute($this->config_groups['creator'])[$k]));
+                            if ($uid == $arUsers[$i]->getAttribute($this->config_users['login'])[0]) {
+                                $memb[$i]->setCreator(TRUE);
+                                $flagCreatAdmins[$k] = TRUE;
+                                break;
+                            }
+                        }
+                    }
                     $members[] = $memb;
 
                     // Idem pour groupini
@@ -1864,9 +1904,81 @@ class GroupController extends AbstractController {
                         $membini->setPrimAff("");
                     $membini->setMember(FALSE);
                     $membini->setAdmin(TRUE);
+                    // on teste si le membre est aussi creator
+                    if (null !== $arCreators[0]->getAttribute($this->config_groups['creator'])) {
+                        for ($k = 0; $k < sizeof($arCreators[0]->getAttribute($this->config_groups['creator'])); $k++) {
+                            $uid = preg_replace("/(".$this->config_users['login']."=)(([A-Za-z0-9:._-]{1,}))(,ou=.*)/", "$3", strtolower($arAdmins[0]->getAttribute($this->config_groups['creator'])[$k]));
+                            if ($uid == $arUsers[$i]->getAttribute($this->config_users['login'])[0]) {
+                                $memb[$i]->setCreator(TRUE);
+                                $flagCreatAdmins[$k] = TRUE;
+                                break;
+                            }
+                        }
+                    }
                     $membersini[] = $membini;
                 }
             }
+            
+        }
+
+        // Affichage des creators qui ne sont pas membres ni admins
+        if (null !== $arCreators[0]->getAttribute($this->config_groups['creator'])) {
+            for ($j = 0; $j < sizeof($arCreators[0]->getAttribute($this->config_groups['creator'])); $j++) {
+                if (($flagCreatMembers[$j] == FALSE) && ($flagCreatAdmins[$j] == FALSE)) {
+                    // si l'admin n'est pas membre du groupe, il faut aller récupérer ses infos dans le LDAP
+                    $uid = preg_replace("/(".$this->config_users['login']."=)(([A-Za-z0-9:._-]{1,}))(,ou=.*)/", "$3", strtolower($arCreators[0]->getAttribute($this->config_groups['creator'])[$j]));
+                    $result = $ldapfonctions->getInfosUser($uid);
+                    $memb = new Member();
+                    $memb->setUid($result[0]->getAttribute($this->config_users['login'])[0]);
+                    $memb->setDisplayname($result[0]->getAttribute($this->config_users['displayname'])[0]);
+                    if (isset($result[0]->getAttribute($this->config_users['mail'])[0]))
+                        $memb->setMail($result[0]->getAttribute($this->config_users['mail'])[0]);
+                    else
+                        $memb->setMail("");
+                    if (isset($result[0]->getAttribute($this->config_users['tel'])[0]))
+                        $memb->setTel($result[0]->getAttribute($this->config_users['tel'])[0]);
+                    else
+                        $memb->setTel("");
+                    if (isset($result[0]->getAttribute($this->config_users['aff'])[0]))
+                        $memb->setAff($result[0]->getAttribute($this->config_users['aff'])[0]);
+                    else
+                        $memb->setAff("");
+                    if (isset($result[0]->getAttribute($this->config_users['primaff'])[0]))
+                        $memb->setPrimAff($result[0]->getAttribute($this->config_users['primaff'])[0]);
+                    else
+                        $memb->setPrimAff("");
+                    $memb->setMember(FALSE);
+                    $memb->setAdmin(FALSE);
+                    $memb->setCreator(TRUE);
+                    $members[] = $memb;
+
+                    // Idem pour groupini
+                    $membini = new Member();
+                    $membini->setUid($result[0]->getAttribute($this->config_users['login'])[0]);
+                    $membini->setDisplayname($result[0]->getAttribute($this->config_users['displayname'])[0]);
+                    if (isset($result[0]->getAttribute($this->config_users['mail'])[0]))
+                        $membini->setMail($result[0]->getAttribute($this->config_users['mail'])[0]);
+                    else
+                        $membini->setMail("");
+                    if (isset($result[0]->getAttribute($this->config_users['tel'])[0]))
+                        $membini->setTel($result[0]->getAttribute($this->config_users['tel'])[0]);
+                    else
+                        $membini->setTel("");
+                    if (isset($result[0]->getAttribute($this->config_users['aff'])[0]))
+                        $membini->setAff($result[0]->getAttribute($this->config_users['aff'])[0]);
+                    else
+                        $membini->setAff("");
+                    if (isset($result[0]->getAttribute($this->config_users['primaff'])[0]))
+                        $membini->setPrimAff($result[0]->getAttribute($this->config_users['primaff'])[0]);
+                    else
+                        $membini->setPrimAff("");
+                    $membini->setMember(FALSE);
+                    $membini->setAdmin(FALSE);
+                    $memb->setCreator(TRUE);
+                    $membersini[] = $membini;
+                }
+            }
+
         }
         
         $group ->setMembers($members);
@@ -1947,6 +2059,30 @@ class GroupController extends AbstractController {
                         }
                         else {
                             syslog(LOG_ERR, "LDAP ERROR : del_admin by $adm : group : $cn, user : $u ");
+                        }
+                    }
+                }
+                // Traitement des creators
+                // Idem : si changement, on répercute dans le ldap
+                if ($memb->getCreator() != $membi->getCreator()) {
+                    if ($memb->getCreator()) {
+                        $r = $ldapfonctions->addCreatorGroup($dn_group, array($u));
+                        if ($r) {
+                            // Log modif
+                            syslog(LOG_INFO, "add_creator by $adm : group : $cn, user : $u ");
+                        }
+                        else {
+                            syslog(LOG_ERR, "LDAP ERROR : add_creator by $adm : group : $cn, user : $u ");
+                        }
+                    }
+                    else {
+                        $r = $ldapfonctions->delCreatorGroup($dn_group, array($u));
+                        if ($r) {
+                            // Log modif
+                            syslog(LOG_INFO, "del_creator by $adm : group : $cn, user : $u ");
+                        }
+                        else {
+                            syslog(LOG_ERR, "LDAP ERROR : del_creator by $adm : group : $cn, user : $u ");
                         }
                     }
                 }

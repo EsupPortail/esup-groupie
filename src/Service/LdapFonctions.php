@@ -118,6 +118,16 @@ class LdapFonctions
     }
 
     /**
+     * Récupération des creators d'un groupe + infos des membres
+     */
+    public function getCreatorsGroup($groupName) {
+        $filtre = $this->config_groups['cn']."=". $groupName ;
+        $restriction = array($this->config_groups['creator']);
+        $result = $this->recherche($filtre, $restriction, 1, "no");
+        return $result;
+    }
+
+    /**
      * Ajouter un membre dans un groupe
      * @return  \Amu\AppBundle\Service\Ldap
      */
@@ -230,6 +240,65 @@ class LdapFonctions
         $entry = $result[0];
         try {
             $entryManager->removeAttributeValues($entry, $this->config_groups['groupadmin'], $arDnAdmins);
+        }catch (\Exception $e) {
+            return(false);
+        }
+        return(true);
+
+    }
+
+    /**
+     * Ajouter un creator dans un groupe
+     * @return  \Amu\AppBundle\Service\Ldap
+     */
+    public function addCreatorGroup($dn_group, $arUserUid) {
+        $arDnCreators = array();
+        foreach ($arUserUid as $uid) {
+            $result = $this->recherche($this->config_users['login']."=". $uid, array('dn'), 0, "no");
+            $arDnCreators[] = $result[0]->getDn();
+        }
+        // Entry manager
+        $entryManager = $this->ldap->getEntryManager();
+
+        // Finding and updating group
+        $pos = strpos($dn_group, "ou=");
+        $cn = substr($dn_group, 0, $pos-2);
+        $base = substr($dn_group, $pos);
+        $query = $this->ldap->query($base, $cn, array('filter' => array('description')));
+        $result = $query->execute();
+        $entry = $result[0];
+        try {
+            $entryManager->addAttributeValues($entry, $this->config_groups['creator'], $arDnCreators);
+        }catch (\Exception $e) {
+            return(false);
+        }
+        return(true);
+
+    }
+
+    /**
+     * Supprimer un creator d'un groupe
+     * @return  \Amu\AppBundle\Service\Ldap
+     */
+    public function delCreatorGroup($dn_group, $arUserUid) {
+
+        $arDnCreators = array();
+        foreach ($arUserUid as $uid) {
+            $result = $this->recherche($this->config_users['login']."=". $uid, array('dn'), 0, "no");
+            $arDnCreators[] = $result[0]->getDn();
+        }
+        // Entry manager
+        $entryManager = $this->ldap->getEntryManager();
+
+        // Finding and updating group
+        $pos = strpos($dn_group, "ou=");
+        $cn = substr($dn_group, 0, $pos-2);
+        $base = substr($dn_group, $pos);
+        $query = $this->ldap->query($base, $cn, array('filter' => array('description')));
+        $result = $query->execute();
+        $entry = $result[0];
+        try {
+            $entryManager->removeAttributeValues($entry, $this->config_groups['creator'], $arDnCreators);
         }catch (\Exception $e) {
             return(false);
         }

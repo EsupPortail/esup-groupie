@@ -418,6 +418,9 @@ class UserController extends AbstractController {
             // Recherche des admins du groupe dans le LDAP
             $arAdmins = $ldapfonctions->getAdminsGroup($cn);
 
+            // Recherche des creators du groupe dans le LDAP
+            $arCreators = $ldapfonctions->getCreatorsGroup($cn);
+
             // User initial pour détecter les modifications
             $userini = new User();
             $userini->setUid($uid);
@@ -460,6 +463,22 @@ class UserController extends AbstractController {
                     else {
                         $membership->setAdminof(FALSE);
                         $membershipini->setAdminof(FALSE);
+                    }
+                }
+            }
+            // Droits "creator"
+            if (isset($arCreators[0]->getAttribute($this->config_groups['creator'])["count"])){
+                for ($j=0; $j<sizeof($arCreators[0]->getAttribute($this->config_groups['creator'])); $j++) {
+                    // récupération des uid des creators du groupe
+                    $uid_creators = preg_replace("/(".$this->config_users['login']."=)(([A-Za-z0-9:._-]{1,}))(,ou=.*)/", "$3", strtolower($arCreators[0]->getAttribute($this->config_groups['creator'])[$j]));
+                    if ($uid == $uid_creators) {
+                        $membership->setCreatorof(TRUE);
+                        $membershipini->setCreatorof(TRUE);
+                        break;
+                    }
+                    else {
+                        $membership->setCreatorof(FALSE);
+                        $membershipini->setCreatorof(FALSE);
                     }
                 }
             }
@@ -546,6 +565,34 @@ class UserController extends AbstractController {
                             else {
                                 $this->get('session')->getFlashBag()->add('flash-error', 'Erreur lors de la suppression des droits \'admin\'');
                                 syslog(LOG_ERR, "LDAP ERROR : del_admin by $adm : group : $cn, user : $uid");
+                            }
+                        }
+                    }
+
+                    // Traitement des creators
+                    // Si modification des droits, on modifie dans le ldap
+                    if ($memb->getCreatorof() != $membershipsini[$i]->getCreatorof()) {
+                        if ($memb->getCreatorof()) {
+                            $r = $ldapfonctions->addCreatorGroup($dn_group, array($uid));
+                            if ($r) {
+                                // Log modif
+                                syslog(LOG_INFO, "add_creator by $adm : group : $cn, user : $uid");
+                            }
+                            else {
+                                // Affichage notification
+                                $this->get('session')->getFlashBag()->add('flash-error', 'Erreur lors de l\'ajout des droits \'creator\'');
+                                syslog(LOG_ERR, "LDAP ERROR : add_creator by $adm : group : $cn, user : $uid");
+                            }
+                        }
+                        else {
+                            $r = $ldapfonctions->delCreatorGroup($dn_group, array($uid));
+                            if ($r) {
+                                // Log modif
+                                syslog(LOG_INFO, "del_creator by $adm : group : $cn, user : $uid");
+                            }
+                            else {
+                                $this->get('session')->getFlashBag()->add('flash-error', 'Erreur lors de la suppression des droits \'creator\'');
+                                syslog(LOG_ERR, "LDAP ERROR : del_creator by $adm : group : $cn, user : $uid");
                             }
                         }
                     }
