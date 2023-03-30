@@ -1,7 +1,0 @@
-amu_role:
-  rules:
-    - { name: ROLE_MEMBRE,         type: ldap, rule: '(&(memberof=cn=amu:glob:ldap:personnel,ou=groups,dc=univ-amu,dc=fr)(uid=login))' }
-    - { name: ROLE_GESTIONNAIRE,   type: ldap, rule: '(&(memberof=cn=amu:app:grp:grouper:grouper-ent,ou=groups,dc=univ-amu,dc=fr)(uid=login))' }
-    - { name: ROLE_DOSI,           type: ldap, rule: '(&(memberof=cn=amu:svc:dosi:tous,ou=groups,dc=univ-amu,dc=fr)(uid=login))' }
-    - { name: ROLE_PRIVE,          type: ldap, rule: '(&(memberof=cn=amu:svc:dosi:tous,ou=groups,dc=univ-amu,dc=fr)(uid=login))' }
-    - { name: ROLE_ADMIN,          type: ldap, rule: '(&(memberof=cn=amu:adm:app:groupie,ou=groups,dc=univ-amu,dc=fr)(uid=login))' }

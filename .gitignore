@@ -1,5 +1,8 @@
 /config/services.yaml
+/config/packages/cas_guard.yaml
+config/packages/roles.yaml
 .env
 /node_modules
 /public/build
 /vendor
+/var

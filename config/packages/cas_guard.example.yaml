@@ -7,7 +7,7 @@ cas_guard:
   debug:                '%kernel.logs_dir%/%kernel.environment%.guard.log' # Example: phpcas-trace.log
 
   # Enter the hostname of the CAS server.
-  hostname:             ident.univ-amu.fr # Required, Example: example.org
+  hostname:             cas.fr # Required, Example: example.org
 
   # Enter the language for phpcas error and trace. Possible value could be read here: https://github.com/apereo/phpCAS/blob/master/source/CAS.php#L215 .
   language:             CAS_Languages_French # One of "CAS_Languages_English"; "CAS_Languages_French"; "CAS_Languages_Greek"; "CAS_Languages_German"; "CAS_Languages_Japanese"; "CAS_Languages_Spanish"; "CAS_Languages_Catalan"; "CAS_Languages_ChineseSimplified", Example: CAS_Languages_French

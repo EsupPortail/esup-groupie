@@ -90,7 +90,7 @@ services:
               encryption: 'none'
 
     amubundle.cup_service:
-        class: Amu\Bundle\AmuCasBundle\Security\User\CasUserProvider
+        class: App\Bundle\AmuCasBundle\Security\User\CasUserProvider
         #Configuration pour AmuRoleBundle
         calls:
             # Si rôle par login
