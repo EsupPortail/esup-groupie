@@ -5,60 +5,53 @@
         "php": "^7.4",
         "ext-ctype": "*",
         "ext-iconv": "*",
+        "doctrine/doctrine-bundle": "^1.11",
+        "doctrine/doctrine-migrations-bundle": "^3.0",
+        "doctrine/orm": "^2.7",
         "sensio/framework-extra-bundle": "^5.1",
         "symfony/asset": "4.2.*",
+        "symfony/cache": "4.2.*",
+        "symfony/config": "4.2.*",
         "symfony/console": "4.2.*",
+        "symfony/debug": "4.*",
+        "symfony/dependency-injection": "4.2.*",
         "symfony/dotenv": "4.2.*",
+        "symfony/event-dispatcher": "4.1.*",
         "symfony/expression-language": "4.2.*",
         "symfony/flex": "^1.3.1",
         "symfony/form": "4.2.*",
         "symfony/framework-bundle": "4.2.*",
-        "symfony/monolog-bundle": "^3.1",
-        "symfony/orm-pack": "*",
-        "symfony/process": "4.2.*",
-        "symfony/security-bundle": "4.2.*",
-        "symfony/swiftmailer-bundle": "^3.1",
-        "symfony/translation": "4.2.*",
-        "symfony/twig-bundle": "4.2.*",
-        "symfony/validator": "4.2.*",
-        "symfony/web-link": "4.2.*",
-        "symfony/cache": "4.2.*",
-        "symfony/config": "4.2.*",
-        "symfony/debug": "4.*",
-        "symfony/dependency-injection": "4.2.*",
-        "symfony/event-dispatcher": "4.1.*",
         "symfony/http-foundation": "4.*",
         "symfony/http-kernel": "4.2.*",
+        "symfony/intl": "4.*",
+        "symfony/ldap": "4.2.*",
+        "symfony/monolog-bundle": "^3.1",
+        "symfony/options-resolver": "4.2.*",
+        "symfony/process": "4.2.*",
+        "symfony/proxy-manager-bridge": "3.4.*",
+        "laminas/laminas-zendframework-bridge": "1.6.*",
         "symfony/routing": "4.*",
+        "symfony/security-bundle": "4.2.*",
         "symfony/security-core": "4.2.*",
         "symfony/security-csrf": "4.2.*",
         "symfony/security-guard": "4.2.*",
         "symfony/security-http": "4.2.*",
+        "symfony/swiftmailer-bundle": "^3.1",
+        "symfony/translation": "4.2.*",
         "symfony/twig-bridge": "4.2.*",
-        "symfony/options-resolver": "4.2.*",
-        "symfony/intl": "4.*",
+        "symfony/twig-bundle": "4.2.*",
+        "symfony/validator": "4.2.*",
+        "symfony/web-link": "4.2.*",
         "symfony/yaml": "4.2.*",
-        "symfony/ldap": "4.2.*",
-        "amu/charte-graphique-bundle": "3.0.x-dev",
-        "amu/cas-bundle": "^2.0",
-        "amu/role-bundle": "^2.0"
+        "jasig/phpcas": "1.3.8",
+        "symfony/webpack-encore-bundle": "~1.0 | ^2.0",
+        "knplabs/knp-menu-bundle": "^2.0",
+        "alexandret/phpcas-guard-bundle": "1.0.2"
     },
-    "repositories": [
-        {
-            "type": "git",
-            "url": "ssh://gitadmin@projets-dev.univ-amu.fr/CharteGraphiqueBundle"
-        },
-        {
-            "type": "git",
-            "url": "ssh://gitadmin@projets-dev.univ-amu.fr/CasBundle"
-        },
-        {
-            "type": "git",
-            "url": "ssh://gitadmin@projets-dev.univ-amu.fr/RoleBundle"
-        }
-    ],
     "require-dev": {
         "symfony/maker-bundle": "^1.0",
+        "symfony/stopwatch": "4.2.*",
+        "symfony/web-profiler-bundle": "4.2.*",
         "symfony/web-server-bundle": "4.2.*"
     },
     "config": {
@@ -104,7 +97,7 @@
     "extra": {
         "symfony": {
             "allow-contrib": false,
-            "require": "3.4.*"
+            "require": "4.2.*"
         }
     }
 }
