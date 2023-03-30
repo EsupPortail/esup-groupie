@@ -4,7 +4,7 @@ Gestionnaire de groupes GROUPIE
 <h1> Description de Groupie </h1>
 Groupie est un logiciel de gestion de groupes.
 
-Il se compose d'une interface web développée sous Symfony 2.7 et de plusieurs scripts effectuant des opérations sur le LDAP.
+Il se compose d'une interface web développée sous Symfony 4.2 et de plusieurs scripts effectuant des opérations sur le LDAP.
 
 
 Groupie permet de gérer 2 types de groupes :
@@ -65,19 +65,16 @@ Les vues
 --------------------------------------------------------------------------
 On dispose de 5 onglets et de plusieurs sous-menus :
 
-* Groupes institutionnels :
-    * Dont je suis membre
-    * Dont je suis administrateur
-    * Voir tous les groupes
+* Administrer mes groupes 
+* Voir mes appartenances
+* Voir tous les groupes  
 * Recherche :
     * Rechercher un groupe
     * Rechercher une personne
-* Groupes privés :
-    * Dont je suis membre
-    * Dont je suis administrateur
-    * Tous les groupes privés
-* Gestion des groupes
+* Groupes privés 
+* Administrer Groupie
     * Créer un groupe
+    * Modifier un groupe  
     * Supprimer un groupe
 * Aide
     * Aide groupes institutionnels
