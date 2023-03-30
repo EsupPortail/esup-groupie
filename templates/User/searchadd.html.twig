@@ -55,9 +55,6 @@
                     <th style="width: 300px;">Nom complet</th>
                     <th style="width: 120px;">Membre</th>
                     <th style="width: 120px;">Administrateur</th>
-                    {% if is_granted('ROLE_ADMIN') %}
-                        <th style="width: 120px;">Créateur</th>
-                    {% endif %}
                 </tr>
             </thead>
             <tbody>
@@ -68,9 +65,6 @@
                         <td style="vertical-align: middle;">{{user.displayname}}</td>
                         <td style="vertical-align: middle;"> {{ form_widget(m.memberof) }} </td>
                         <td style="vertical-align: middle;"> {{ form_widget(m.adminof) }} </td>
-                        {% if is_granted('ROLE_ADMIN') %}
-                            <td style="vertical-align: middle;"> {{ form_widget(m.creatorof) }} </td>
-                        {% endif %}
                     </tr>
                 {% endfor %}
             </tbody>

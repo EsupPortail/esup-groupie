@@ -87,9 +87,6 @@
                     <th>Affectation principale</th>
                     <th>Membre</th>
                     <th>Administrateur</th>
-                    {% if is_granted('ROLE_ADMIN') %}
-                        <th>Créateur</th>
-                    {% endif %}
                 </tr>
                 </thead>
                 <tbody>
@@ -104,9 +101,6 @@
                         <td style="vertical-align: middle;"> {{ group.members[loop.index0].aff }} </td>
                         <td style="vertical-align: middle;"> {{ form_widget(m.member) }} </td>
                         <td style="vertical-align: middle;"> {{ form_widget(m.admin) }} </td>
-                        {% if is_granted('ROLE_ADMIN') %}
-                            <td style="vertical-align: middle;"> {{ form_widget(m.creator) }} </td>
-                        {% endif %}
                     </tr>
                 {% endfor %}
                 </tbody>
