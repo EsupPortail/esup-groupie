@@ -21,7 +21,6 @@ class User {
   protected $site;
   protected $memberof;
   protected $adminof;
-  protected $creatorof;
   protected $memberships;
   protected $exacte;
 
@@ -145,19 +144,9 @@ class User {
  public function setAdminof($adminof)
  {
     $this->adminof = $adminof;
- }
-
-    /**
-     * Set creatorof
-     *
-     * @param string $creatorof
-     */
-    public function setCreatorof($creatorof)
-    {
-        $this->creatorof = $creatorof;
-    }
-
-    /**
+ } 
+ 
+ /**
   * Set exacte
   *
   * @param bool $exacte
@@ -273,17 +262,9 @@ public function getSite()
  public function getAdminof()
  {
     return ($this->adminof);
- }
-    /**
-     * Get Creatorof
-     *
-     */
-    public function getCreatorof()
-    {
-        return ($this->creatorof);
-    }
+ } 
 
-    public function getMemberships()
+ public function getMemberships()
  {
      return $this->memberships;
  }

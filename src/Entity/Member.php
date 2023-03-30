@@ -22,7 +22,6 @@ class Member {
   protected $primaff;
   protected $member;
   protected $admin;
-  protected $creator;
   
 
   /**
@@ -54,17 +53,6 @@ class Member {
  {
     $this->admin = $admin;
  }
-
-    /**
-     * Set creator
-     *
-     * @param bool $creator
-     */
-    public function setCreator($creator)
-    {
-        $this->creator = $creator;
-    }
-
  /**
   * Set displayname
   *
@@ -180,15 +168,6 @@ class Member {
  public function getAdmin()
  {
     return ($this->admin);
- }
-
-    /**
-     * Get creator
-     *
-     */
-    public function getCreator()
-    {
-        return ($this->creator);
-    }
-
+ } 
+  
 }

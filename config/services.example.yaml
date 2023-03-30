@@ -48,8 +48,6 @@ parameters:
         memberof: memberOf
         groupfilter: amuGroupFilter
         groupadmin: amuGroupAdmin
-        creator: amuGroupCreator
-        owner: owner
         separator: ':'
     private:
         private_branch: ou=private
