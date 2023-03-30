@@ -102,8 +102,9 @@ de nouvelles fonctionnalités comme la modification des noms et caractéristique
 * Récupérer le projet depuis github
 
 <pre>
-git clone https://github.com/peggyfb/groupie.git
+git clone https://github.com/EsupPortail/esup-groupie.git
 </pre>
+
 
 * Lancer :
 

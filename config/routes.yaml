@@ -5,5 +5,5 @@
 #    path: /
 #    defaults: { _controller: 'App\Controller\DefaultController::index' }
 app_cas:
-  resource: Amu\Bundle\AmuCasBundle\Controller\SecurityController
+  resource: App\Bundle\CasBundle\Controller\SecurityController
   type:     annotation
