@@ -1,8 +1,8 @@
 twig:
     path:
         - '%kernel.project_dir%/templates'
-        - '%kernel.project_dir%/vendor/amu/charte-graphique-bundle/Resources/views/bundles/KnpMenu'
-        - '%kernel.project_dir%/vendor/amu/charte-graphique-bundle/Resources/views/bundles/Bootstrap3'
+        - '%kernel.project_dir%/src/Bundle/CharteGraphiqueBundle/Resources/views/bundles/KnpMenu'
+        - '%kernel.project_dir%/src/Bundle/CharteGraphiqueBundle/Resources/views/bundles/Bootstrap3'
         - '%kernel.project_dir%/vendor/knplabs/knp-menu/src/Knp/Menu/Resources/views'
 
     debug: '%kernel.debug%'
