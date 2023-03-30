@@ -1,0 +1,28 @@
+{
+    "name": "amu/role-bundle",
+    "type": "symfony-bundle",
+    "description": "Amu Role Bundle for Symfony3",
+    "homepage": "",
+    "license": "GPL",
+    "authors": [
+        {
+            "name": "AMU-DOSI-Pôle Développement",
+            "email": "dosi-pole-dvpt-php@univ-amu.fr"
+        }
+    ],
+    "support": {
+        "email": "dosi-pole-dvpt-php@univ-amu.fr",
+        "issues": "https://projets-dev.univ-amu.fr/projects/roles/issues",
+        "source": "https://projets-dev.univ-amu.fr/projects/roles/repository"
+    },
+    "require": {
+        "php": "^5.5.9|>=7.0.8",
+        "symfony/framework-bundle": "~3.4 | ^4.0",
+        "amu/cas-bundle": "^2.0"
+    },
+    "autoload": {
+        "psr-4": { "Amu\\Bundle\\AmuRoleBundle\\": "" }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}

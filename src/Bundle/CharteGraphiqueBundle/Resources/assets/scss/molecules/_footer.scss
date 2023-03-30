@@ -1,0 +1,24 @@
+// -----------------------------------------------------------------------------
+// This file contains Footer styles
+// -----------------------------------------------------------------------------
+.amui-m-footer {
+  @media screen and (max-width: 39.9375em) {
+    margin-left: $amui-space-none;
+  }
+
+  align-items: center;
+  background-color: $amui-color-gray-200;
+  border-top: 1px solid $amui-color-gray-300;
+  display: flex;
+  height: 72px; // Top bar header height
+  justify-content: flex-end;
+  padding: $amui-space-ms $amui-space-xxl;
+
+  small {
+    color: $amui-color-gray-500;
+    font-size: $amui-font-size-xs;
+    line-height: 1;
+    text-align: right;
+  }
+}
+// End Molecule footer styles

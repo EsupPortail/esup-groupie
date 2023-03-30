@@ -1,0 +1,333 @@
+// -----------------------------------------------------------------------------
+// This file contains Organism Top bar styles
+// -----------------------------------------------------------------------------
+
+$amui-dropdown-item-padding-x: $amui-space-sm;
+$amui-dropdown-item-padding-y: .6rem;
+$amui-sidebar-bg: $amui-brand-secondary;
+$amui-top-bar-height: 72px;
+
+// Top bar color bg
+$amui-top-bar-color: $amui-brand-primary;
+$amui-top-bar-light: $amui-color-white;
+
+.amui-o-top-bar {
+  background-color: $amui-top-bar-color;
+  border-radius: 0;
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, .1);
+  flex-direction: row;
+  margin: 0;
+  min-height: $amui-top-bar-height;
+  position: relative;
+  width: 100%;
+  z-index: 1;
+
+  .amui-m-navbar-logo {
+    height: 100%;
+  }
+
+  &__logo {
+
+    &::before {
+      content: '';
+      display: inline-block;
+      height: 100%;
+      vertical-align: middle;
+    }
+
+    &:hover {
+      cursor: pointer;
+    }
+  }
+
+  &__logo__img {
+    // background: url('../index/img/amu-white.svg') no-repeat;
+    background-position: 0;
+    background-size: contain;
+    display: inline-block;
+    height: 40px;
+    margin: 0;
+    margin-top: .25rem;
+    text-indent: -9999px;
+    vertical-align: middle;
+    width: 64px;
+  }
+
+  // Reset list type
+  ul,
+  ol {
+    list-style-type: none;
+    margin-left: $amui-space-none;
+  }
+
+  .navbar-header .navbar-toggle {
+    margin-top: $amui-space-ms;
+  }
+
+  .navbar-brand {
+    clear: initial;
+  }
+
+  // Light Theme
+  &.is--light {
+    background-color: $amui-top-bar-light;
+
+    .amui-m-navbar-logo {
+      background-color: $amui-top-bar-light;
+
+      &__heading-title {
+        border-left: $amui-size-border-thick solid $amui-color-gray-500;
+      }
+    }
+
+    .amui-m-nav-icon {
+      color: $amui-color-gray-700;
+
+      i {
+        color: $amui-color-gray-700;
+      }
+
+      &:hover {
+        color: $amui-color-border-brand-primary;
+      }
+
+      &:hover i {
+        color: $amui-color-border-brand-primary;
+      }
+    }
+
+    .amui-o-top-bar__nav-list-item,
+    .amui-o-top-bar__nav-list-item .amui-m-nav-icon {
+      background-color: $amui-top-bar-light;
+    }
+
+    .amui-o-top-bar__nav-list-item .amui-m-nav-icon {
+      border-left: $amui-size-border-thin solid $amui-color-gray-300;
+    }
+
+    .amui-m-navbar-logo__heading-title {
+      color: $amui-color-gray-700;
+    }
+  } // End light Theme
+
+  // Removing Top bar global padding
+  .navbar-collapse {
+    padding: 0;
+  }
+
+  .amui-m-nav-icon {
+    color: $amui-color-gray-300;
+
+    i {
+      color: $amui-color-gray-300;
+    }
+
+    &:hover {
+      color: $amui-color-white;
+
+      i {
+        color: $amui-color-white;
+      }
+    }
+  }
+
+  &__nav .amui-m-nav-icon {
+    background-color: $amui-brand-primary;
+  }
+
+  .amui-m-nav-icon i + span {
+    font-size: $amui-font-size-ms;
+    vertical-align: middle;
+  }
+
+  // Mobile Menu
+  .navbar-toggle {
+    border: $amui-size-border-thin solid $amui-color-white;
+    margin-top: $amui-space-sm;
+
+    &:hover {
+      border: $amui-size-border-thin solid $amui-color-white;
+    }
+
+    &:active {
+      border: $amui-size-border-thin solid $amui-color-white;
+    }
+
+    &:focus {
+      border: $amui-size-border-thin solid $amui-color-white;
+    }
+
+    span {
+      background-color: $amui-color-white;
+    }
+  }
+}
+
+.amui-o-top-bar {
+  // Right navigation
+  &__nav {
+
+    margin: $amui-space-none;
+    padding-left: $amui-space-none;
+
+    &-list-item {
+      background-color: $amui-brand-primary;
+      margin-left: $amui-space-none;
+
+      > .amui-m-nav-icon {
+        background-color: $amui-brand-primary;
+      }
+
+      // Top bar navigation
+      .amui-m-nav-icon {
+        border-left: $amui-size-border-thin solid $amui-color-active;
+        height: 71px; // -1px : take border box in consideration
+        width: 70px;
+
+        &.is--inner-text-inline-block {
+          width: auto;
+        }
+
+        &.is--active {
+          background-color: darken($amui-brand-primary, 3%);
+          color: $amui-color-gray-200;
+
+          i {
+            color: $amui-color-gray-200;
+          }
+        }
+      }
+
+      li.dropdown > a {
+
+        i {
+          margin-right: $amui-space-xxxs;
+        }
+
+        span:not(.caret) {
+          vertical-align: top;
+        }
+      }
+
+      // Dropdown menu
+      .nav-dropdown-toggle {
+
+        i:last-of-type {
+          float: right;
+          margin-top: $amui-space-xxxs;
+        }
+      }
+
+      .nav-dropdown.open {
+
+        .nav-dropdown-items {
+          background-color: darken($amui-sidebar-bg, 3%);
+          max-height: 1000px !important;
+        }
+
+        .nav-dropdown-toggle {
+
+          i:last-of-type {
+            transform: rotate(270deg);
+          }
+        }
+      }
+
+      .nav-dropdown-items {
+        margin: $amui-space-none;
+        max-height: $amui-space-none !important;
+        overflow: hidden;
+        padding: $amui-space-none;
+      }
+
+      .dropdown-menu {
+        min-width: rem(192);
+        padding: $amui-space-none;
+        position: absolute;
+
+        &.dropdown-menu-right {
+          left: auto;
+          right: $amui-space-none;
+        }
+
+        .dropdown-header {
+          border-bottom: $amui-size-border-thin solid $amui-color-body;
+          padding: $amui-dropdown-item-padding-y $amui-dropdown-item-padding-x;
+          text-align: center;
+        }
+
+        .dropdown-item {
+          border-bottom: $amui-size-border-thin solid $amui-color-body;
+          padding: $amui-dropdown-item-padding-y $amui-dropdown-item-padding-x;
+
+          i {
+            font-size: .8rem;
+            margin-right: rem(10);
+            width: $amui-space-ms;
+          }
+        }
+      }
+
+      .dropdown .dropdown-menu {
+        li a:hover {
+          background-color: $amui-color-gray-300;
+        }
+      }
+    }
+  }
+}
+
+// Responsive Main navigation
+@media only screen and (max-width:824px) {
+
+  .navbar-collapse.collapse {
+    display: none !important;
+  }
+
+  .navbar-collapse.collapse.in {
+    display: block !important;
+    margin: 0 auto;
+    width: 100%;
+  }
+
+  .navbar-header .collapse,
+  .navbar-toggle {
+    display: block !important;
+  }
+
+  .amui-m-navbar-logo {
+    padding: 1.25rem .5rem;
+  }
+
+  .navbar-header {
+    display: block;
+    float: left;
+    width: 100%;
+
+    .navbar-toggle {
+      margin-right: $amui-space-none;
+    }
+  }
+
+  .amui-o-top-bar__nav-list-item .amui-m-nav-icon {
+    width: 100%;
+
+    &.is--inner-text-inline-block {
+      width: 100%;
+    }
+  }
+
+  .amui-o-top-bar__nav {
+    width: 100%;
+
+    &-list-item {
+      border-bottom: $amui-size-border-thin solid $amui-color-active;
+      width: 100%;
+
+      .amui-m-nav-icon {
+        border-left: 0;
+      }
+    }
+  }
+}
+// End Organism top bar styles

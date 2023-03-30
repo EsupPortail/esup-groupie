@@ -1,0 +1,5 @@
+// SVG Background images with PNG and Retina fallback
+// -----------------------------------------------------------------------------
+$image-path: '../../../assets/img/' !default;
+$fallback-extension: 'png' !default;
+$retina-suffix: '@2x';

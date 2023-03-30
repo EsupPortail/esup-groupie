@@ -1,0 +1,59 @@
+// -----------------------------------------------------------------------------
+// This file contains Organism Panel tabs styles
+// -----------------------------------------------------------------------------
+.amui-o-panel-tabs {
+  font-family: $amui-font-family-primary;
+
+  .amui-m-panel {
+
+    &__heading {
+
+      .amui-m-nav-tabs > .amui-m-nav-tabs__item {
+
+        margin-right: $amui-space-sm;
+
+        > a {
+          border: 0;
+          display: inline-block;
+          padding-bottom: $amui-space-sm;
+          padding-left: $amui-space-xxs;
+          padding-right: $amui-space-xxs;
+          padding-top: $amui-space-none;
+
+          &:hover {
+            border-color: inherit;
+          }
+        }
+
+        i {
+          color: $amui-color-gray-800;
+          display: inline-block;
+          font-size: $amui-font-size-xxxxl;
+          margin-top: -$amui-space-xxs;
+          vertical-align: middle;
+        }
+
+        .amui-m-panel__heading-title {
+          font-size: $amui-font-size-lg;
+          font-weight: $amui-font-weight-semibold;
+          line-height: $amui-line-height-global;
+        }
+
+        &.active {
+          border-bottom: initial;
+
+          i {
+            color: $amui-brand-primary;
+            margin-top: -$amui-space-xxs;
+            vertical-align: middle;
+          }
+
+          .amui-m-panel__heading-title {
+            color: $amui-brand-primary;
+          }
+        }
+      }
+    }
+  }
+}
+// End Organism Panel tabs styles

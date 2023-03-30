@@ -1,0 +1,30 @@
+// -----------------------------------------------------------------------------
+// This file contains Atom Scroll top trigger styles
+// -----------------------------------------------------------------------------
+$amui-a-scroll-background-color: $amui-color-gray-500;
+
+.amui-a-scroll-top-trigger {
+  -ms-filter: 'alpha(opacity=100)';
+  background: url('../../assets/img/arrow-top.svg') no-repeat 50%;
+  background-color: $amui-a-scroll-background-color;
+  background-size: $amui-space-md;
+  border-radius: $amui-border-radius-md;
+  cursor: pointer;
+  display: inline-block;
+  filter: 'alpha(opacity=100)';
+  height: $amui-space-xxxl;
+  opacity: .5;
+  right: $amui-space-sm;
+  text-indent: -9999px;
+  transition: all .5s;
+  width: $amui-space-xxxl;
+  z-index: 999;
+
+  &:hover {
+    -ms-filter: 'alpha(opacity=100)';
+    background-color: darken($amui-a-scroll-background-color, 5%);
+    filter: 'alpha(opacity=100)';
+    opacity: 1;
+  }
+}
+// End Atom Scroll top trigger styles

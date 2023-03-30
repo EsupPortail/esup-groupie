@@ -1,0 +1,16 @@
+// -----------------------------------------------------------------------------
+// This file contains Atom Form date styles.
+// -----------------------------------------------------------------------------
+.amui-m-form-group {
+  .is--wrapper {
+    position: relative;
+
+    i {
+      color: $amui-color-gray-400;
+      position: absolute;
+      right: $amui-space-xxs;
+      top: rem(34);
+    }
+  }
+}
+// End Atom Form date styles

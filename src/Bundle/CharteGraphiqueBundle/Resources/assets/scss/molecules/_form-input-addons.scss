@@ -1,0 +1,10 @@
+// -----------------------------------------------------------------------------
+// This file contains Molecule Form input addons styles
+// -----------------------------------------------------------------------------
+.amui-m-input-addon {
+  &__icon {
+    background-color: $amui-color-body;
+    color: $amui-color-text-dark;
+  }
+}
+// End Molecule form input addons styles

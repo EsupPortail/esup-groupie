@@ -1,0 +1,18 @@
+// -----------------------------------------------------------------------------
+// This file contains Mixin for slider styles
+// -----------------------------------------------------------------------------
+
+// Slider state
+// ------------------------
+@mixin amui-slider(
+  $bgc,
+  $height,
+  $width,
+  $cursor
+  ) {
+  background-color: $bgc;
+  cursor: $cursor;
+  height: $height;
+  width: $width;
+}
+// End Mixin slider styles

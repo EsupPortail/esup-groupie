@@ -1,0 +1,39 @@
+// -----------------------------------------------------------------------------
+// This file contains Molecule Breadcrumbs styles
+// -----------------------------------------------------------------------------
+.amui-m-breadcrumb {
+  font-family: $amui-font-family-primary;
+  font-size: $amui-font-size-ms;
+  font-weight: $amui-font-weight-regular;
+
+  &__item {
+    display: inline-block;
+
+    &.is--active {
+      color: $amui-color-gray-800;
+      font-weight: $amui-font-weight-semibold;
+    }
+  }
+
+  &__item + &__item::before {
+    color: $amui-color-gray-400;
+    content: '/\00a0';
+    padding: $amui-space-none $amui-space-xxxs;
+  }
+
+  // Extra small
+  &.is--xs {
+    font-size: $amui-font-size-xs;
+  }
+
+  // Small
+  &.is--sm {
+    font-size: $amui-font-size-ms;
+  }
+
+  // Large
+  &.is--lg {
+    font-size: $amui-font-size-ml;
+  }
+}
+// End Molecule Breadcrumbs styles

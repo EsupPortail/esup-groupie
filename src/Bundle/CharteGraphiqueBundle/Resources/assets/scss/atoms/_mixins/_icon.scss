@@ -1,0 +1,7 @@
+// -----------------------------------------------------------------------------
+// This file contains Mixin for icon styles
+// -----------------------------------------------------------------------------
+@mixin amui-icon-size($size: 24px) {
+  font-size: $size;
+}
+// End Mixin icon styles

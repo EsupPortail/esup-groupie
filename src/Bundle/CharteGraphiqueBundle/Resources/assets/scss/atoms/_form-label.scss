@@ -1,0 +1,61 @@
+// -----------------------------------------------------------------------------
+// This file contains Atom Form label styles
+// -----------------------------------------------------------------------------
+
+// Form label Sizes
+// ------------------------
+.amui-a-form-label {
+  color: $amui-color-gray-800;
+  display: block;
+  font-family: $amui-font-family-primary;
+  font-size: $amui-font-size-ms;
+  //font-weight: $amui-font-weight-semibold;
+
+  &:hover {
+    cursor: pointer;
+  }
+
+  &.is--sm {
+    font-size: $amui-font-size-xs;
+  }
+
+  &.is--lg {
+    font-size: $amui-font-size-md;
+  }
+
+  // Form label inline
+  &.is--inline {
+    display: inline-block;
+    vertical-align: middle;
+    width: auto;
+  }
+
+  // Form label States
+  &.is--success {
+    color: $amui-color-success-text;
+  }
+
+  &.is--warning {
+    color: $amui-color-warning-text;
+  }
+
+  &.is--danger {
+    color: $amui-color-danger-text;
+  }
+
+  // Form label Uppercase
+  &.is--uppercase {
+    text-transform: uppercase;
+  }
+}
+
+// Help Text
+// ------------------------
+.help-block {
+  color: $amui-color-gray-800;
+  font-family: $amui-font-family-primary;
+  font-size: rem(13);
+  font-style: italic;
+  font-weight: $amui-font-weight-regular;
+}
+// End Atom Form label styles

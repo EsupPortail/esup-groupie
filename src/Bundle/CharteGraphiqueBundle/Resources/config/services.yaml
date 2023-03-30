@@ -1,0 +1,21 @@
+services:
+#    amu.bundle.chartegraphique.example:
+#        class:     Amu\Bundle\CharteGraphiqueBundle\Example
+#        arguments: ["@service_id", "plain_value", "%parameter%"]
+#        calls:
+#            - [setService, ["@service_id"]]
+#        tags:
+#            - { name: twig.extension }
+#            - { name: kernel.event_listener, event: kernel.exception, method: onKernelException }
+
+# Construction de la barre de menu grâce au KnpMenuBundle
+    app.menu_builder:
+        class: App\Menu\MenuBuilder
+        arguments: ["@knp_menu.factory", "@security.authorization_checker", "@security.token_storage", "@doctrine.orm.entity_manager"]
+
+    app.sidebar_menu:
+      class: Knp\Menu\MenuItem
+      factory: ["@app.menu_builder", createSideBarMenu]
+      arguments: ["@request_stack"]
+      tags:
+      - { name: knp_menu.menu, alias: sidebar }

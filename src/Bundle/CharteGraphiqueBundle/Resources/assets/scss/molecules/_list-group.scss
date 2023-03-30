@@ -1,0 +1,97 @@
+// -----------------------------------------------------------------------------
+// This file contains List group styles
+// -----------------------------------------------------------------------------
+.amui-m-list-group {
+  color: $amui-color-gray-800;
+  font-family: $amui-font-family-primary;
+  font-weight: $amui-font-weight-regular;
+
+  &__text {
+    color: $amui-color-gray-800;
+    font-family: $amui-font-family-primary;
+    font-size: $amui-font-size-sm;
+    font-weight: $amui-font-weight-semibold;
+    line-height: $amui-line-height-sm;
+  }
+
+  &__status {
+    color: $amui-color-text-dark;
+    float: right;
+    font-family: $amui-font-family-primary;
+    font-size: $amui-space-xs;
+    font-weight: $amui-font-weight-semibold;
+    line-height: $amui-space-ms;
+
+    &.is--primary {
+      color: $amui-brand-primary;
+    }
+
+    &.is--success {
+      color: $amui-color-success-text;
+    }
+
+    &.is--warning {
+      color: $amui-color-warning-text;
+    }
+
+    &.is--danger {
+      color: $amui-color-danger-text;
+    }
+
+    &.is--draft {
+      color: $amui-color-draft;
+    }
+  }
+
+  &.is--panel {
+    .amui-m-list-group__item {
+      background-color: $amui-color-white;
+      border-radius: $amui-border-radius-md;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, .1), 0 1px 2px rgba(0, 0, 0, .2);
+      font-weight: $amui-font-weight-semibold;
+      margin-bottom: $amui-space-sm;
+      padding: $amui-space-ms $amui-space-sm;
+      transition: all .3s cubic-bezier(.25, .8, .25 , 1);
+      width: 100%;
+
+      &:hover {
+        box-shadow: 0 8px 24px rgba(51, 51, 51, .2), 0 8px 8px rgba(51, 51, 51, .2);
+        cursor: pointer;
+      }
+    }
+
+    .amui-m-list-group__item:not(:last-child) {
+      margin-bottom: $amui-space-ms;
+    }
+  }
+
+  &__item {
+    &.is--success {
+      // color: $amui-color-success-text;
+      background-color: $amui-color-success;
+    }
+
+    &.is--warning {
+      // color: $amui-color-warning-text;
+      background-color: $amui-color-warning;
+    }
+
+    &.is--danger {
+      // color: $amui-color-danger-text;
+      background-color: $amui-color-danger;
+    }
+
+    &.active,
+    &.focus,
+    &.active:hover {
+      background-color: $amui-brand-primary;
+      color: $amui-color-white;
+    }
+
+    &:hover {
+      color: $amui-brand-primary;
+      cursor: pointer;
+    }
+  }
+}
+// End Molecule List group styles

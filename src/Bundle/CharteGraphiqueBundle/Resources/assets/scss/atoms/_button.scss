@@ -1,0 +1,404 @@
+// -----------------------------------------------------------------------------
+// This file contains Atom Button styles
+// -----------------------------------------------------------------------------
+
+// Placeholder
+// --------------------------
+%amui-btn-base {
+  background-image: none;
+  border: $amui-size-border-thin solid transparent;
+  border-radius: $amui-border-radius-md;
+  cursor: pointer;
+  font-size: $amui-font-size-ms;
+  font-weight: $amui-font-weight-semibold;
+  min-width: 1rem;
+  outline: none;
+  text-align: center;
+  text-decoration: none;
+  text-transform: uppercase;
+  transition: .2s;
+  vertical-align: middle;
+  white-space: normal;
+
+  &:focus,
+  &:active,
+  &:active:focus {
+    background-image: none;
+    outline: 0;
+  }
+}
+
+%vertical-middle {
+  vertical-align: middle;
+}
+
+// Button base
+// --------------------------
+.amui-a-btn {
+
+  @extend %amui-btn-base;
+
+  // Default color Button
+  &.is--default {
+    @include amui-btn-color(
+      $background: $amui-color-white,
+      $color: $amui-brand-primary,
+      $border-color: $amui-color-border-brand-primary
+    );
+
+    &:hover {
+      background: $amui-brand-primary;
+      color: $amui-color-white;
+    }
+  }
+
+  // Default color Hollow
+  &.is--hollow {
+    @include amui-btn-color(
+      $background: $amui-color-white,
+      $color: $amui-color-gray-800,
+      $border-color: $amui-color-gray-400
+    );
+
+    &:hover {
+      color: $amui-color-gray-800;
+    }
+  }
+
+  // Primary color button
+  &.is--primary {
+    @include amui-btn-color(
+      $background: $amui-brand-primary,
+      $color: $amui-color-white,
+      $border-color: $amui-color-border-brand-primary
+    );
+  }
+
+  // Secondary color button
+  &.is--secondary {
+    @include amui-btn-color(
+      $background: $amui-brand-secondary,
+      $color: $amui-color-white,
+      $border-color: $amui-color-border-brand-secondary
+    );
+  }
+
+  // Disabled color Button
+  &.is--disabled {
+    @include amui-btn-color(
+      $background: $amui-color-gray-400,
+      $color: $amui-color-gray-800,
+      $border-color: $amui-color-gray-400
+    );
+  }
+
+  // Success color button
+  &.is--success {
+    @include amui-btn-color(
+      $background: $amui-brand-tertiary,
+      $color: $amui-color-white,
+      $border-color: $amui-color-border-brand-tertiary
+    );
+  }
+
+  // Warning color button
+  &.is--warning {
+    @include amui-btn-color(
+      $background: $amui-color-warning-text,
+      $color: $amui-color-white,
+      $border-color: $amui-color-border-warning
+    );
+  }
+
+  // Danger color button
+  &.is--danger {
+    @include amui-btn-color(
+      $background: $amui-color-danger-text,
+      $color: $amui-color-white,
+      $border-color: $amui-color-border-danger
+    );
+  }
+
+  // Link color button
+  &.is--link {
+    @include amui-btn-color(
+      $background: transparent,
+      $color: $amui-brand-primary,
+      $border-color: transparent
+    );
+  }
+
+  // Extra small size
+  &.is--xs {
+    @include amui-btn-size(
+      $padding-vertical-top: rem(9),
+      $padding-horizontal-right: $amui-space-xs,
+      $padding-vertical-bottom: rem(7),
+      $padding-horizontal-left: $amui-space-xs,
+
+      $font-size: $amui-font-size-sm,
+      $line-height: $amui-line-height-btn-xs
+    );
+
+    &.is--icon-left {
+      @include amui-btn-size(
+        $padding-vertical-top: rem(8),
+        $padding-horizontal-right: $amui-space-xs,
+        $padding-vertical-bottom: rem(6),
+        $padding-horizontal-left: $amui-space-xxs,
+
+        $font-size: $amui-font-size-sm,
+        $line-height: $amui-line-height-btn-xs
+      );
+    }
+
+    &.is--icon-right {
+      @include amui-btn-size(
+        $padding-vertical-top: rem(8),
+        $padding-horizontal-right: $amui-space-xxs,
+        $padding-vertical-bottom: rem(6),
+        $padding-horizontal-left: $amui-space-xs,
+
+        $font-size: $amui-font-size-sm,
+        $line-height: $amui-line-height-btn-xs
+      );
+    }
+
+    // Icon only
+    &.is--icon-only {
+      @include amui-btn-size(
+        $padding-vertical-top: rem(6),
+        $padding-horizontal-right: $amui-space-xxs,
+        $padding-vertical-bottom: rem(6),
+        $padding-horizontal-left: $amui-space-xxs,
+
+        $font-size: $amui-font-size-sm,
+        $line-height: $amui-line-height-btn-xs
+      );
+    }
+  }
+
+  // Small size
+  &.is--sm {
+    @include amui-btn-size(
+      $padding-vertical-top: rem(13),
+      $padding-horizontal-right: $amui-space-sm,
+      $padding-vertical-bottom: rem(11),
+      $padding-horizontal-left: $amui-space-sm,
+
+      $font-size: $amui-font-size-sm,
+      $line-height: $amui-line-height-btn-sm
+    );
+
+    &.is--icon-left {
+      @include amui-btn-size(
+        $padding-vertical-top: rem(11),
+        $padding-horizontal-right: $amui-space-ms,
+        $padding-vertical-bottom: rem(9),
+        $padding-horizontal-left: $amui-space-xs,
+
+        $font-size: $amui-font-size-sm,
+        $line-height: $amui-line-height-btn-xs
+      );
+    }
+
+    &.is--icon-right {
+      @include amui-btn-size(
+        $padding-vertical-top: rem(11),
+        $padding-horizontal-right: $amui-space-xs,
+        $padding-vertical-bottom: rem(9),
+        $padding-horizontal-left: $amui-space-ms,
+
+        $font-size: $amui-font-size-sm,
+        $line-height: $amui-line-height-btn-xs
+      );
+    }
+
+    &.is--icon-only {
+      @include amui-btn-size(
+        $padding-vertical-top: rem(6),
+        $padding-horizontal-right: $amui-space-xs,
+        $padding-vertical-bottom: rem(6),
+        $padding-horizontal-left: $amui-space-xs,
+
+        $font-size: $amui-font-size-sm,
+        $line-height: $amui-line-height-btn-xs
+      );
+    }
+  }
+
+  // Default size
+  &.btn {
+    @include amui-btn-size(
+      $padding-vertical-top: rem(16),
+      $padding-horizontal-right: $amui-space-ms,
+      $padding-vertical-bottom: rem(14),
+      $padding-horizontal-left: $amui-space-ms,
+
+      $font-size: $amui-font-size-ms,
+      $line-height: $amui-line-height-btn-default
+    );
+
+    &.is--icon-left {
+      @include amui-btn-size(
+        $padding-vertical-top: rem(12),
+        $padding-horizontal-right: $amui-space-ms,
+        $padding-vertical-bottom: rem(10),
+        $padding-horizontal-left: $amui-space-sm,
+
+        $font-size: $amui-font-size-ms,
+        $line-height: $amui-line-height-btn-default
+      );
+    }
+
+    &.is--icon-right {
+      @include amui-btn-size(
+        $padding-vertical-top: rem(12),
+        $padding-horizontal-right: $amui-space-sm,
+        $padding-vertical-bottom: rem(10),
+        $padding-horizontal-left: $amui-space-ms,
+
+        $font-size: $amui-font-size-ms,
+        $line-height: $amui-line-height-btn-default
+      );
+    }
+  }
+
+  // Large size
+  &.is--lg {
+    @include amui-btn-size(
+      $padding-vertical-top: $amui-space-ms,
+      $padding-horizontal-right: $amui-space-ml,
+      $padding-vertical-bottom: rem(18),
+      $padding-horizontal-left: $amui-space-ml,
+
+      $font-size: $amui-font-size-ms,
+      $line-height: $amui-line-height-btn-lg
+    );
+
+    &.is--icon-left {
+      @include amui-btn-size(
+        $padding-vertical-top: rem(16),
+        $padding-horizontal-right: $amui-space-ml,
+        $padding-vertical-bottom: rem(14),
+        $padding-horizontal-left: $amui-space-sm,
+
+        $font-size: $amui-font-size-ms,
+        $line-height: $amui-line-height-btn-lg
+      );
+    }
+
+    &.is--icon-right {
+      @include amui-btn-size(
+        $padding-vertical-top: rem(16),
+        $padding-horizontal-right: $amui-space-sm,
+        $padding-vertical-bottom: rem(14),
+        $padding-horizontal-left: $amui-space-ml,
+
+        $font-size: $amui-font-size-ms,
+        $line-height: $amui-line-height-btn-lg
+      );
+    }
+
+    &.is--icon-only {
+      @include amui-btn-size(
+        $padding-vertical-top: rem(14),
+        $padding-horizontal-right: $amui-space-sm,
+        $padding-vertical-bottom: rem(13),
+        $padding-horizontal-left: $amui-space-sm,
+
+        $font-size: $amui-font-size-ms,
+        $line-height: $amui-line-height-btn-lg
+      );
+    }
+  }
+
+  // Extra Large size
+  &.is--xl {
+    @include amui-btn-size(
+      $padding-vertical-top: rem(21),
+      $padding-horizontal-right: $amui-space-xxl,
+      $padding-vertical-bottom: rem(19),
+      $padding-horizontal-left: $amui-space-xxl,
+
+      $font-size: $amui-font-size-md,
+      $line-height: $amui-line-height-btn-xl
+    );
+
+    &.is--icon-left {
+      @include amui-btn-size(
+        $padding-vertical-top: rem(14),
+        $padding-horizontal-right: $amui-space-xxl,
+        $padding-vertical-bottom: rem(12),
+        $padding-horizontal-left: $amui-space-md,
+
+        $font-size: $amui-font-size-md,
+        $line-height: $amui-line-height-btn-lg
+      );
+    }
+
+    &.is--icon-right {
+      @include amui-btn-size(
+        $padding-vertical-top: rem(14),
+        $padding-horizontal-right: $amui-space-md,
+        $padding-vertical-bottom: rem(12),
+        $padding-horizontal-left: $amui-space-xxl,
+
+        $font-size: $amui-font-size-md,
+        $line-height: $amui-line-height-btn-lg
+      );
+    }
+
+    &.is--icon-only {
+      @include amui-btn-size(
+        $padding-vertical-top: rem(12),
+        $padding-horizontal-right: $amui-space-ms,
+        $padding-vertical-bottom: rem(11),
+        $padding-horizontal-left: $amui-space-ms,
+
+        $font-size: $amui-font-size-md,
+        $line-height: $amui-line-height-btn-lg
+      );
+    }
+  }
+
+  // Icon Left & Right
+  &.is--icon-left {
+    span {
+      margin-left: $amui-space-xxxs;
+    }
+  }
+
+  &.is--icon-right {
+    span {
+      margin-right: $amui-space-xxxs;
+    }
+  }
+
+  // Icon Rounded
+  &.is--rounded {
+    border-radius: $amui-border-radius-rounded;
+  }
+
+  // Icon on left & on right
+  &.is--icon-left,
+  &.is--icon-right {
+    i,
+    span {
+      @extend %vertical-middle;
+    }
+  }
+
+  &.is--icon-only {
+    @include amui-btn-size(
+      $padding-vertical-top: rem(10),
+      $padding-horizontal-right: $amui-space-sm,
+      $padding-vertical-bottom: rem(9),
+      $padding-horizontal-left: $amui-space-sm,
+
+      $font-size: $amui-font-size-ms,
+      $line-height: $amui-line-height-btn-lg
+    );
+  }
+}
+// End Atom button styles

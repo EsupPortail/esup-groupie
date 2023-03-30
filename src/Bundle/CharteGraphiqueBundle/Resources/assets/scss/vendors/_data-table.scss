@@ -1,0 +1,202 @@
+// -----------------------------------------------------------------------------
+// This file contains Organism Data table override styles
+// -----------------------------------------------------------------------------
+
+// Table
+table.dataTable thead th,
+table.dataTable thead td {
+  border-bottom: $amui-size-border-thick solid $amui-color-gray-300;
+}
+
+table.dataTable.no-footer {
+  border-bottom: 0;
+}
+
+// Data table wrapper
+.dataTables_wrapper {
+  .dataTables_length,
+  .dataTables_filter {
+    margin-bottom: $amui-space-md;
+    margin-top: $amui-space-md;
+  }
+
+  .dataTables_length {
+    margin-left: $amui-space-md;
+
+    select {
+      background-color: $amui-color-white;
+    }
+  }
+
+  .dataTables_filter {
+    margin-right: $amui-space-md;
+  }
+}
+
+.dataTables_info,
+.dataTables_paginate {
+  margin-bottom: $amui-space-md;
+  margin-top: $amui-space-md;
+}
+
+.dataTables_info {
+  margin-left: $amui-space-md;
+}
+
+.dataTables_paginate {
+  margin-right: $amui-space-md;
+}
+
+// Filtering toolbar
+// .dataTables_filter label {
+//   text-indent: -9999px;
+
+//   &:hover {
+//     cursor: pointer;
+//   }
+// }
+
+.dataTables_filter input {
+  border: $amui-size-border-thin solid $amui-color-gray-400;
+  border-radius: $amui-border-radius-md;
+  color: $amui-color-gray-800;
+  font-size: $amui-font-size-sm;
+  padding: $amui-space-xxs;
+
+  &:hover {
+    cursor: pointer;
+  }
+
+  &:focus {
+    border-color: $amui-color-focus;
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 8px rgba(102,175,233, .6);
+    outline: 0;
+  }
+}
+
+// Data table global toolbar styles
+.dataTables_info,
+.dataTables_length,
+.dataTables_filter {
+  color: $amui-color-gray-800;
+  font-family: $amui-font-family-primary;
+  font-weight: $amui-font-weight-regular;
+
+  // display: inline-block;
+}
+
+// Datata table select toolbar
+.dataTables_length select {
+  border: $amui-size-border-thin solid $amui-color-gray-400;
+  border-radius: $amui-border-radius-md;
+  color: $amui-color-gray-800;
+  font-size: $amui-font-size-ms;
+  font-weight: $amui-font-weight-regular;
+  height: $amui-space-xxl;
+  margin: $amui-space-none $amui-space-xxxs;
+  padding: $amui-space-xxs;
+  transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+
+  &:hover {
+    cursor: pointer;
+  }
+}
+
+
+// Data table pagination
+.dataTables_wrapper .dataTables_paginate {
+  a {
+    font-family: $amui-font-family-primary;
+    font-weight: $amui-font-weight-semibold;
+  }
+
+  .paginate_button {
+    border-radius: $amui-border-radius-md;
+    padding: $amui-space-xxxs $amui-space-xs;
+  }
+
+  .paginate_button:hover,
+  .paginate_button:active {
+    background: $amui-color-body;
+    border: $amui-size-border-thin solid $amui-color-body;
+    box-shadow: none;
+    color: $amui-brand-primary !important;
+  }
+
+  // Disabled state
+  .paginate_button.next.disabled,
+  .paginate_button.previous.disabled {
+    color: $amui-color-gray-800;
+  }
+
+  // Current state
+  .paginate_button.current {
+    background: $amui-brand-primary;
+    border: 0;
+    color: $amui-color-white !important;
+
+    &:visited,
+    &:hover,
+    &:active,
+    &:focus {
+      background: darken($amui-brand-primary, 5%);
+      border: 0;
+      color: $amui-color-white !important;
+    }
+  }
+}
+
+// Data table sorting icon overide
+.DataTables_sort_wrapper:hover {
+  cursor: pointer;
+}
+
+.DataTables_sort_icon {
+  display: none;
+}
+
+table.dataTable thead .sorting {
+  background-image: none;
+}
+
+table.dataTable thead .sorting_asc,
+table.dataTable thead .sorting_desc {
+  background-image: none;
+}
+
+table.dataTable thead .sorting_asc,
+table.dataTable thead .sorting_desc,
+table.dataTable thead .sorting {
+  i {
+    vertical-align: middle;
+  }
+}
+
+// Ascendant sorting icon
+th.sorting_asc,
+th.sorting {
+
+  i::before {
+    content: 'arrow_drop_up';
+    display: inline-block;
+  }
+}
+
+// Descendant sorting icon
+th.sorting_desc {
+
+  i::before {
+    content: 'arrow_drop_down';
+    display: inline-block;
+  }
+}
+
+// De sorting icon
+th.sorting {
+
+  i::before {
+    content: 'swap_vert';
+    display: inline-block;
+  }
+}
+// End Data table override styles

@@ -1,0 +1,212 @@
+// -----------------------------------------------------------------------------
+// This file contains Collapse Accordion styles
+// -----------------------------------------------------------------------------
+
+.amui-m-accordion {
+  font-family: $amui-font-family-primary;
+
+  // Dark accordion
+  &.is--dark {
+    .amui-m-panel__heading-title {
+      background-color: $amui-color-gray-300;
+    }
+  }
+
+  // Divider styles outside accordion
+  // Must be on top of accordion content
+  .amui-m-divider {
+    color: $amui-color-gray-800;
+
+    .amui-a-separator {
+      margin-left: $amui-space-none;
+      margin-right: $amui-space-none;
+    }
+
+    &__title {
+      background-color: $amui-color-body;
+    }
+  }
+
+  // Divider styles inside accordion content
+  &__content {
+    padding: $amui-space-none;
+
+    .amui-m-divider__title {
+      background-color: $amui-color-smoke;
+    }
+
+    .amui-m-divider .amui-a-separator {
+      margin-left: $amui-space-md;
+      margin-right: $amui-space-md;
+    }
+
+    .amui-m-divider {
+      color: $amui-color-gray-600;
+    }
+  }
+
+  .amui-m-panel {
+    background-color: $amui-color-smoke;
+    border-radius: 0;
+    box-shadow: none;
+    padding: $amui-space-none;
+
+    &__heading {
+      border: $amui-size-border-thin solid $amui-color-gray-300;
+      border-radius: $amui-border-radius-md;
+      margin: $amui-space-none;
+
+      &-title {
+        display: block;
+        line-height: initial;
+        padding-bottom: $amui-space-sm;
+        padding-left: $amui-space-sm;
+        padding-right: $amui-space-md;
+        padding-top: $amui-space-sm;
+
+        h3 {
+          margin: $amui-space-none;
+        }
+
+        &:not(.collapsed) i,
+        &:not(.collapsed) h3 {
+          color: $amui-brand-primary;
+        }
+
+        .panel-title {
+          color: $amui-color-gray-800;
+          display: inline-block;
+          font-size: $amui-font-size-lg;
+          line-height: $amui-line-height-global;
+        }
+
+        // Expanded state
+        i::before {
+          content: 'remove';
+        }
+
+        .panel-title {
+          color: $amui-brand-primary;
+        }
+
+        // Collapsed state
+        &.collapsed {
+          .panel-title {
+            color: $amui-color-gray-800;
+          }
+
+          i::before {
+            content: 'add';
+          }
+        }
+      }
+
+      i {
+        color: $amui-color-gray-700;
+        font-size: $amui-font-size-lg;
+        vertical-align: middle;
+      }
+
+      &-action {
+        padding: $amui-space-sm $amui-space-ms;
+
+        .amui-a-btn {
+          margin-left: $amui-space-xs;
+
+          i {
+            color: $amui-brand-primary;
+          }
+        }
+      }
+    }
+
+    // Title panel heading accordion
+    &__body {
+      .amui-m-panel {
+        &__heading-title {
+          background-color: transparent;
+          display: inline-block;
+        }
+      }
+
+      // Border for panel inside accordion
+      &.is--bordered {
+        background-color: $amui-color-gray-200;
+        border: 1px solid $amui-color-gray-300 !important;
+      }
+    }
+
+    .amui-m-panel__footer {
+      padding: $amui-space-sm;
+    }
+
+    .amui-m-panel__body {
+      border: $amui-size-border-thin solid $amui-color-gray-200;
+      margin: -1px $amui-space-none;
+
+      .amui-m-panel__body {
+        margin-bottom: $amui-space-md;
+
+        &:last-child {
+          margin-bottom: $amui-space-none;
+        }
+      }
+
+      .amui-m-panel {
+        background-color: $amui-color-smoke;
+        box-shadow: none;
+        margin: $amui-space-none;
+        padding: $amui-space-md;
+
+        &.is--fluid {
+          padding: $amui-space-none;
+        }
+
+        .amui-m-panel__heading {
+
+          border: 0;
+          margin: $amui-space-none;
+
+          &-title {
+            color: $amui-color-gray-800;
+            font-size: $amui-font-size-ms;
+            font-weight: $amui-font-weight-semibold;
+            line-height: $amui-line-height-global;
+            margin: $amui-space-none;
+            padding: $amui-space-none $amui-space-none $amui-space-xxs $amui-space-none;
+          }
+        }
+
+        .amui-m-panel__body {
+          border: initial;
+          font-size: $amui-font-size-sm;
+          line-height: $amui-line-height-global;
+
+          .amui-m-panel {
+            margin-bottom: $amui-space-md;
+
+            .amui-a-label {
+              color: $amui-color-gray-800;
+              font-size: $amui-font-size-xs;
+              font-weight: $amui-font-weight-regular;
+              line-height: $amui-line-height-sm;
+            }
+
+            &:last-child {
+              margin-bottom: $amui-space-none;
+            }
+
+            &.is--info {
+              background-color: $amui-color-body;
+              border: initial;
+              border-radius: $amui-border-radius-md;
+              margin-top: $amui-space-none;
+              padding: $amui-space-sm;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+// End Molecule Collapse Accordion styles

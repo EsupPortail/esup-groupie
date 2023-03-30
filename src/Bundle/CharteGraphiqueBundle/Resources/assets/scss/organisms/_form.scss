@@ -1,0 +1,36 @@
+// -----------------------------------------------------------------------------
+// This file contains Organism Form styles
+// -----------------------------------------------------------------------------
+
+// Horizontal Form overide Bootstrap basic styles
+.form-horizontal .form-group {
+  margin: $amui-space-none;
+}
+
+.amui-o-form-group {
+
+  // Horizontal Form
+  &.form-horizontal {
+    .form-group {
+      margin-bottom: $amui-space-sm;
+    }
+  }
+
+  // Vertical Form
+  &.form-inline {
+
+    .amui-a-form-label {
+      display: inline;
+    }
+
+    .form-group {
+      margin-right: $amui-space-sm;
+    }
+  }
+
+  // Basic Form (Form custom widths)
+  .form-group {
+    margin-bottom: $amui-space-sm;
+  }
+}
+// End Organism Form styles

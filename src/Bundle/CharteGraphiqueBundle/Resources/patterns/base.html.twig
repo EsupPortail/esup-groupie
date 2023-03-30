@@ -1,0 +1,157 @@
+{% set env = app.environment %}
+<!DOCTYPE html>
+<html lang="fr">
+{% block head %}
+
+    <head>
+        {% block meta %}
+            <meta charset="UTF-8">
+            <meta name="Author" content="{{ auteur }}" />
+            <meta name="description" content="{{ slogan }}" />
+            <meta name="application-name" content="{{ nom_appli }}" />
+        {% endblock %} <!-- endblock meta -->
+
+        <link rel="icon" type="image/x-icon" href="{{ asset('build/images/favicon.ico') }}"/>
+        <title>{% block title %}{{ titre_onglet }}{% endblock %}</title> <!-- endblock title -->
+
+        {% block stylesheets %}
+            <link rel="stylesheet" href="https://cdn.datatables.net/1.10.18/css/jquery.dataTables.min.css">
+            <link rel="stylesheet" href="{{ asset('build/css/app.css') }}">
+        {% endblock %} <!-- endblock stylesheets -->
+    </head>
+
+{% endblock %} <!-- endblock head -->
+
+{% if env == "dev" %}
+<body class="body-environnement-dev">
+{% else %}
+<body>
+{% endif %}
+
+<div class="amui-l-app-layout">
+
+{% block body %}
+
+    {% block header %}
+
+        <header>
+            {% if env != "ent" %}
+                {% block topbar_menu %}
+                <nav class="amui-o-top-bar navbar">
+                    <nav class="amui-o-top-bar navbar">
+                      <div class="container-fluid">
+                        <!-- Brand and toggle get grouped for better mobile display -->
+                        <div class="navbar-header">
+                          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#top-bar-collapse" aria-expanded="false">
+                            <span class="sr-only">Toggle navigation</span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                          </button>
+                          <a class="amui-o-top-bar__logo amui-m-navbar-logo navbar-brand" href="/">
+                            <h1 class="amui-a-brand-logo is--light">Bienvenue Aix-Marseille université</h1>
+                            <span class="amui-m-navbar-logo__heading-title">{{ nom_appli }}</span>
+                          </a>
+                        </div>
+                        <!-- Collect the nav links, forms, and other content for toggling -->
+                        <div class="collapse navbar-collapse" id="top-bar-collapse">
+                          <ul class="amui-o-top-bar__nav navbar-nav navbar-right">
+                            {% if app.user and is_granted('IS_AUTHENTICATED_FULLY') %}
+                                <li class="amui-o-top-bar__nav-list-item">
+                                  <a class="amui-m-nav-icon is--inner-text-inline-block" href="#">
+                                    <i class="material-icons md-24">account_circle</i>
+                                    <span class="amui-m-nav-icon__inner-text">{{app.token.attributes.displayName}}</span>
+                                  </a>
+                                </li>
+                            {% endif %}
+                            <li class="amui-o-top-bar__nav-list-item">
+                              <a class="amui-m-nav-icon" href="https://ent.univ-amu.fr/" target="_blank">
+                                <span class="amui-m-nav-icon__inner-text">ENT</span>
+                              </a>
+                            </li>
+                            <li class="amui-o-top-bar__nav-list-item">
+                              <a class="amui-m-nav-icon" href="#" title="Référent fonctionnel : {{ contact }}">
+                                <i class="material-icons md-24">help</i>
+                              </a>
+                            </li>
+                            <li class="amui-o-top-bar__nav-list-item amui-m-btn-dropdown dropdown dropdown--parent">
+                              <a class="amui-m-nav-icon is--inner-text-inline-block dropdown-toggle" href="#" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                                <i class="material-icons md-24">settings</i>
+                                <span class="amui-m-nav-icon__inner-text">Admin</span>
+                                <span class="caret"></span>
+                              </a>
+                              <ul class="dropdown-menu">
+                                <li>
+                                    <a href="#">Menu 1</a>
+                                    <a href="#">Menu 2</a>
+                                    <a href="#">Menu 3</a>
+                                </li>
+                              </ul>
+                            </li>
+                              {% if app.user and is_granted('IS_AUTHENTICATED_FULLY') %}
+                                  <li class="amui-o-top-bar__nav-list-item">
+                                    <a class="amui-m-nav-icon" href="{{ path('security_logout') }}">
+                                      <i class="material-icons md-24">exit_to_app</i>
+                                    </a>
+                                  </li>
+                              {% else %}
+                                  <li class="amui-o-top-bar__nav-list-item">
+                                      <a class="amui-m-nav-icon" href="#"> <!-- url de connexion -->
+                                          <i class="material-icons md-24">vpn_key</i>
+                                      </a>
+                                  </li>
+                              {% endif %}
+                          </ul>
+                        </div>
+                      </div>  <!-- Container fluid -->
+                    </nav>  <!-- Organism top bar -->
+                 </nav>  <!-- Organism : Top bar -->
+                {%  endblock%} <!-- endblock topbar_menu -->
+            {% endif %}
+        </header>
+
+    {% endblock %} <!-- endblock header -->
+
+<div id="navbar-collapse" class="amui-l-app-layout__wrapper">
+    {% block sidebar_menu %}
+
+            {% block app_menu %}{{ knp_menu_render('sidebar', {'template': 'knp_menu_sidebar.html.twig', 'currentClass': 'active'}) }}{% endblock %}
+
+
+    {% endblock %}<!-- endblock sidebar_menu -->
+
+    {% if env == "dev" %}
+        <main role="main" class="amui-l-app-layout__main is--env-test">
+    {% else %}
+        <main role="main" class="amui-l-app-layout__main">
+    {% endif %}
+
+        {% block main %}
+
+            <div class="container-fluid">
+                <div class="amui-l-page-header amui-g-grid row">
+                    {% block app_body %}{% endblock %} <!-- endblock app_body -->
+                </div>
+            </div>
+
+        {% endblock %} <!-- endblock main -->
+
+    {% if env == "dev" %}</main>{% else %}</main>{% endif %}
+</div>
+
+    <footer role="contentinfo" class="amui-m-footer amui-l-app-layout__footer panel-default">
+        {% block footer %}
+            <small>Amu - Dosi Pôle développement</small>
+            {% block app_footer %}{% endblock %} <!-- endblock app_footer -->
+        {% endblock %} <!-- endblock footer -->
+    </footer>
+
+{% endblock %} <!-- endblock body -->
+
+{% block javascripts %}
+    <script type="text/javascript" src="{{ asset('build/js/app.js') }}"></script>
+{% endblock %}
+
+</div>
+    {% if env == "dev" %}</body>{% else %}</body>{% endif %}
+</html>

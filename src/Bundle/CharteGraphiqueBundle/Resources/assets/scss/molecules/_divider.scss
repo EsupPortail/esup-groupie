@@ -1,0 +1,23 @@
+// -----------------------------------------------------------------------------
+// This file contains Separator + txt pages styles
+// -----------------------------------------------------------------------------
+.amui-m-divider {
+  text-align: center;
+
+  &__title {
+    background-color: $amui-color-smoke;
+    display: inline-block;
+    margin-bottom: -$amui-space-xxxs;
+    padding: $amui-space-xxs $amui-space-sm;
+    text-align: center;
+  }
+
+  .amui-a-separator {
+    border-top: $amui-size-border-thin solid $amui-color-gray-400;
+    margin-bottom: 1.75rem;
+    margin-left: 2rem;
+    margin-right: 2rem;
+    margin-top: -1rem;
+  }
+}
+// End Molecule Separator + txt pages styles

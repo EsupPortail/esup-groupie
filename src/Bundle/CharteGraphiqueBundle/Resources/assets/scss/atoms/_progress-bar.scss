@@ -1,0 +1,36 @@
+// -----------------------------------------------------------------------------
+// This file contains Atom Progress bar styles.
+// -----------------------------------------------------------------------------
+
+// Base progress bar
+.amui-a-progress {
+  background-color: $amui-color-gray-400;
+  border-radius: $amui-border-radius-rounded;
+  height: $amui-space-xxxs;
+  margin-bottom: $amui-space-none;
+  width: 100%;
+
+  &__bar {
+    &.is--success {
+      background-color: $amui-brand-tertiary;
+    }
+
+    &.is--warning {
+      background-color: $amui-color-warning-text;
+    }
+
+    &.is--danger {
+      background-color: $amui-color-danger-text;
+    }
+  }
+
+  // Level
+  &--level {
+    font-size: $amui-font-size-xs;
+    font-weight: $amui-font-weight-bold;
+    line-height: $amui-line-height-global;
+    position: absolute;
+    right: $amui-space-none;
+  }
+}
+// End Atom Progress bar styles

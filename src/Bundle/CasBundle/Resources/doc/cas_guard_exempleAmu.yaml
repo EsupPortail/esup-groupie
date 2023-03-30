@@ -1,0 +1,15 @@
+cas_guard:
+    certificate: false
+    debug: '%kernel.logs_dir%/%kernel.environment%.guard.log'
+    hostname: ident.univ-amu.fr
+    language: CAS_Languages_French
+    port: 443
+    url: /cas/
+    route:
+        homepage: index
+        login: security_login
+    verbose: true
+    version: '3.0'
+    logout:
+        supported: true
+        handled: true

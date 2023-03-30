@@ -1,0 +1,13 @@
+// -----------------------------------------------------------------------------
+// This file contains Text copy styles
+// -----------------------------------------------------------------------------
+.amui-m-text-copy {
+  position: relative;
+
+  &__btn {
+    bottom: $amui-space-none;
+    position: absolute;
+    right: $amui-space-none;
+  }
+}
+// End Molecules Text copy styles

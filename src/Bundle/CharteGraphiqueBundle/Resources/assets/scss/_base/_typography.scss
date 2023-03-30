@@ -1,0 +1,155 @@
+// -----------------------------------------------------------------------------
+// This file contains Typography styles
+// -----------------------------------------------------------------------------
+
+body {
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  color: $amui-color-text-dark;
+  line-height: $amui-line-height-global;
+  text-rendering: auto;
+  // La propriété font-smooth permet de contrôler l'application
+  // d'algorithmes anti-crénelage (anti-aliasing) sur le rendu des fontes de caractères.
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p {
+  font-family: $amui-font-family-primary;
+}
+
+h1 {
+  color: $amui-color-gray-800;
+  font-size: $amui-font-size-xxxl;
+  font-weight: $amui-font-weight-bold;
+  line-height: $amui-line-height-lg;
+}
+
+h2 {
+  color: $amui-color-gray-800;
+  font-size: $amui-font-size-lg;
+  font-weight: $amui-font-weight-bold;
+  line-height: $amui-line-height-global;
+  margin-bottom: $amui-space-sm;
+}
+
+h3 {
+  color: $amui-color-gray-800;
+  font-size: $amui-font-size-ml;
+  font-weight: $amui-font-weight-semibold;
+  line-height: $amui-line-height-global;
+  margin-bottom: $amui-space-xxs;
+
+  a {
+    font-size: $amui-font-size-sm;
+    font-weight: $amui-font-weight-semibold;
+    line-height: $amui-line-height-global;
+  }
+}
+
+h4 {
+  color: $amui-color-gray-800;
+  font-size: $amui-font-size-ml;
+  font-weight: $amui-font-weight-regular;
+  line-height: $amui-line-height-global;
+}
+
+h5 {
+  color: $amui-color-gray-800;
+  font-size: $amui-font-size-md;
+  font-weight: $amui-font-weight-regular;
+  line-height: $amui-line-height-sm;
+}
+
+h6 {
+  color: $amui-color-gray-800;
+  font-size: $amui-font-size-ms;
+  font-weight: $amui-font-weight-regular;
+  line-height: $amui-line-height-sm;
+}
+
+p {
+  font-family: $amui-font-family-primary;
+  font-size: $amui-font-size-ms;
+  line-height: $amui-line-height-global;
+  margin-bottom: $amui-space-md;
+  margin-top: $amui-space-none;
+
+  + h3 {
+    margin-top: $amui-space-xxl;
+  }
+
+  &.lead {
+    font-size: $amui-font-size-md;
+    font-weight: $amui-font-weight-light;
+    line-height: $amui-line-height-global;
+  }
+}
+
+a {
+  color: $amui-color-link;
+  cursor: pointer;
+  outline: none;
+
+  &:hover,
+  &:focus {
+    text-decoration: none;
+  }
+}
+
+button,
+input,
+optgroup,
+select,
+textarea {
+  font-family: $amui-font-family-primary;
+}
+
+.amui-m-panel__body {
+  // Default blockquote
+  blockquote {
+    font-family: $amui-font-family-primary;
+
+    p {
+      color: $amui-color-gray-800;
+      font-size: $amui-font-size-lg;
+      font-weight: $amui-font-weight-light;
+      line-height: $amui-line-height-global;
+      margin-bottom: $amui-space-none;
+      margin-top: $amui-space-md;
+    }
+
+    footer {
+      color: $amui-color-text-dark;
+      margin-bottom: $amui-space-md;
+
+      cite {
+        font-size: $amui-space-sm;
+        font-weight: $amui-font-weight-semibold;
+        line-height: $amui-line-height-global;
+      }
+    }
+  }
+
+  ul,
+  ol {
+
+    margin-bottom: $amui-font-size-lg;
+
+    &.list-unstyled {
+      list-style-type: none;
+    }
+
+    li {
+      font-size: $amui-font-size-ms;
+      font-weight: $amui-font-weight-regular;
+      line-height: $amui-line-height-global;
+      margin-left: $amui-space-md;
+    }
+  }
+}
+// End Typography styles

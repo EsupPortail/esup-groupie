@@ -1,0 +1,103 @@
+// -----------------------------------------------------------------------------
+// This file contains all components
+// -----------------------------------------------------------------------------
+
+// -------------------------
+//    Fonts
+// -------------------------
+@import '_@fonts/material-icons';
+@import '_@fonts/roboto';
+
+
+// -------------------------
+//    Base
+// -------------------------
+@import '_base/normalize';
+@import '_base/base';
+@import '_base/forms';
+@import '_base/typography';
+
+
+// -------------------------
+//    Atoms
+// -------------------------
+@import 'atoms/badges';
+@import 'atoms/button';
+@import 'atoms/form-check';
+@import 'atoms/form-input';
+@import 'atoms/form-label';
+@import 'atoms/form-supported-controls';
+@import 'atoms/icon';
+@import 'atoms/labels';
+@import 'atoms/logo';
+@import 'atoms/progress-bar';
+@import 'atoms/scroll-top';
+@import 'atoms/slider';
+@import 'atoms/separator';
+
+
+// -------------------------
+//    Molecules
+// -------------------------
+@import 'molecules/alerts';
+@import 'molecules/button-dropdown';
+@import 'molecules/button-group';
+@import 'molecules/breadcrumbs';
+@import 'molecules/callout';
+@import 'molecules/collapse';
+@import 'molecules/collapse-accordion';
+@import 'molecules/divider';
+@import 'molecules/error-pages';
+@import 'molecules/footer';
+@import 'molecules/form-controls';
+@import 'molecules/form-date';
+@import 'molecules/form-input-group';
+@import 'molecules/form-input-addons';
+@import 'molecules/info-date';
+@import 'molecules/list-group';
+@import 'molecules/nav-bar-logo';
+@import 'molecules/nav-icon';
+@import 'molecules/navs';
+@import 'molecules/pagination';
+@import 'molecules/panel';
+@import 'molecules/progress-bar';
+@import 'molecules/text-copy';
+@import 'molecules/text-editor-tool-box';
+
+
+// -------------------------
+//    Organisms
+// -------------------------
+@import 'organisms/card';
+@import 'organisms/drop-zone';
+@import 'organisms/form';
+@import 'organisms/modal';
+@import 'organisms/navigation-date';
+@import 'organisms/panel-tabs';
+@import 'organisms/sidebar-nav';
+@import 'organisms/table';
+@import 'organisms/top-bar';
+@import 'organisms/validation-bar';
+
+
+// -------------------------
+//    Layouts
+// -------------------------
+@import 'layouts/app-dashboard';
+@import 'layouts/page-splitted';
+@import 'layouts/side-bar-scroll';	// Walla Report page sidebar menu
+
+
+// -------------------------
+//    Grid
+// -------------------------
+@import 'grid/grid';
+
+
+// -------------------------
+//    Vendors
+// -------------------------
+@import 'vendors/date-picker';	// jQuery UI Date picker : https://jqueryui.com/datepicker/
+@import 'vendors/data-table';	// Datatable : https://datatables.net/
+@import 'vendors/selectable';	// jQuery UI selectable : https://jqueryui.com/selectable/
+

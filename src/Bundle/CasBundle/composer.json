@@ -1,0 +1,32 @@
+{
+  "name": "amu/cas-bundle",
+  "type": "symfony-bundle",
+  "description": "Implements CAS Authentication on Symfony 3.4 app",
+  "keywords": ["amu", "cas", "authentication", "jasig"],
+  "homepage": "http://dosi.univ-amu.fr/",
+  "license": "GPL",
+  "authors": [
+    {
+      "name": "AMU-DOSI-Pôle Développement",
+      "email": "dosi-pole-dev-php@univ-amu.fr"
+    }
+  ],
+  "support": {
+    "email": "dosi-pole-dvpt-php@univ-amu.fr",
+    "issues": "https://projets-dev.univ-amu.fr/projects/cas/issues",
+    "source": "https://projets-dev.univ-amu.fr/projects/cas/repository"
+  },
+  "require": {
+    "php": "^5.5.9|>=7.0.8",
+    "symfony/framework-bundle": "~3.4 | ^4.0",
+    "jasig/phpcas": "1.3.9",
+    "alexandret/phpcas-guard-bundle": "^0.2.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "Amu\\Bundle\\AmuCasBundle\\": ""
+    }
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true
+}

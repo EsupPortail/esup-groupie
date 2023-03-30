@@ -1,0 +1,53 @@
+// -----------------------------------------------------------------------------
+// This file contains Atom Form Input styles.
+// -----------------------------------------------------------------------------
+
+.is--select-wrapper,
+.is--datepicker {
+  display: block;
+  font-size: $amui-font-size-lg;
+  position: relative;
+}
+
+
+.is--datepicker::after,
+.is--select-wrapper::after {
+  background-color: $amui-color-white;
+  display: block;
+  font-family: $amui-font-icon;
+  font-size: $amui-font-size-lg;
+  font-weight: $amui-font-weight-semibold;
+  height: $amui-space-md;
+  pointer-events: none;
+  position: absolute;
+  width: $amui-space-md;
+}
+
+.is--datepicker::after {
+  color: $amui-color-gray-600;
+  content: '\e878';
+  right: $amui-space-xxs;
+  top: $amui-space-xxxs;
+}
+
+.is--select-wrapper::after {
+  color: $amui-color-gray-700;
+  content: '\E313';
+  right: 2px;
+  top: 5px;
+}
+
+.amui-a-form-control[type="search"] {
+  background-image: url('//image.ibb.co/i7NbrQ/search_icon_15.png');
+  background-position: rem(10) $amui-space-xs;
+  background-repeat: no-repeat;
+  padding: $amui-space-xs $amui-space-ms $amui-space-xs $amui-space-lg;
+}
+
+.amui-a-form-control {
+  font-size: $amui-font-size-sm;
+  max-width: 100%;
+  min-width: 100%;
+  width: 100%;
+}
+// End Atom Form input styles

@@ -1,0 +1,100 @@
+// -----------------------------------------------------------------------------
+// This file contains Molecule Alerts styles
+// -----------------------------------------------------------------------------
+
+// Base styles
+.amui-m-alert {
+  font-family: $amui-font-family-primary;
+  font-size: $amui-font-size-ms;
+  font-weight: $amui-font-weight-regular;
+  padding: $amui-space-sm $amui-space-md;
+
+  // Global styles
+  &.alert-dismissible {
+    padding: $amui-space-sm $amui-space-md;
+
+    button {
+      font-size: $amui-space-md;
+    }
+  }
+
+  // Success status
+  &.is--success {
+    background-color: $amui-brand-tertiary;
+    color: $amui-color-white;
+
+    .alert-link {
+      color: $amui-color-white;
+
+      &:hover {
+        border-bottom: $amui-size-border-thick solid $amui-color-white;
+      }
+    }
+  }
+
+  // Info status
+  &.is--info {
+    background-color: $amui-color-info;
+    color: $amui-color-text-dark;
+
+    .alert-link {
+      color: $amui-color-text-dark;
+
+      &:hover {
+        border-bottom: $amui-size-border-thick solid $amui-color-text-dark;
+      }
+    }
+  }
+
+  // Warning status
+  &.is--warning {
+    background-color: $amui-color-warning;
+    color: $amui-color-warning-text;
+
+    .alert-link {
+      color: $amui-color-warning-text;
+
+      &:hover {
+        border-bottom: $amui-size-border-thick solid $amui-color-warning-text;
+      }
+    }
+  }
+
+  // Danger status
+  &.is--danger {
+    background-color: $amui-color-danger;
+    color: $amui-color-danger-text;
+
+    .alert-link {
+      color: $amui-color-danger-text;
+
+      &:hover {
+        border-bottom: $amui-size-border-thick solid $amui-color-danger-text;
+      }
+    }
+  }
+
+  // Neutral status
+  &.is--white {
+    background-color: $amui-color-white;
+    border: $amui-size-border-thin solid $amui-color-gray-300;
+    color: $amui-color-gray-900;
+
+    .alert-link {
+      color: $amui-color-gray-900;
+
+      &:hover {
+        border-bottom: $amui-size-border-thick solid $amui-color-gray-900;
+      }
+    }
+}
+  }
+
+// Bootstrap override
+.alert-dismissible .close {
+  color: inherit;
+  position: relative;
+  right: initial;
+  top: initial;
+}
+// End Molecule Alerts styles

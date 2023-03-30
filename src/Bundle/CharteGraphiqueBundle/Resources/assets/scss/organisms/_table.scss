@@ -1,0 +1,167 @@
+// -----------------------------------------------------------------------------
+// This file contains Organism table styles
+// -----------------------------------------------------------------------------
+
+// Table global style
+.amui-o-table {
+  background-color: $amui-color-white;
+  border-bottom: $amui-size-border-thin solid $amui-color-body;
+  border-top: $amui-size-border-thin solid $amui-color-gray-300;
+  margin: $amui-space-none;
+
+  // Bordered table
+  &.is--bordered {
+    border: $amui-size-border-thin solid $amui-color-gray-300;
+
+    .amui-o-table__body tr td {
+      border-top: $amui-size-border-thin solid $amui-color-gray-300;
+    }
+  }
+
+  // Striped table
+  &.is--striped {
+    .amui-o-table__body > tr:nth-of-type(odd) {
+      background-color: $amui-color-body;
+    }
+
+    .amui-o-table__body {
+      tr td,
+      tr th {
+        border: 0;
+      }
+    }
+  }
+
+  // Hover table
+  &.is--hover {
+    .amui-o-table__body > tr:hover {
+      background-color: $amui-color-body;
+    }
+  }
+
+  // Condensed table
+  &.is--condensed {
+    .amui-o-table__body {
+
+      &__row {
+        height: rem(40);
+        max-height: rem(40);
+      }
+    }
+  }
+
+  .amui-a-form-check {
+    margin: $amui-space-none;
+  }
+
+  // Table Header
+  &__header {
+    background-color: $amui-color-gray-200;
+    border: 0;
+    color: $amui-color-gray-800;
+    font-family: $amui-font-family-primary;
+    font-size: $amui-font-size-sm;
+    font-weight: $amui-font-weight-bold;
+
+    &-row {
+      height: rem(40);
+    }
+
+    &-col {
+      border-bottom: $amui-size-border-thick solid $amui-color-gray-300;
+    }
+  }
+
+  // Table Caption
+  &__caption {
+    color: $amui-color-gray-800;
+    font-size: $amui-font-size-ms;
+    font-weight: $amui-font-weight-bold;
+    line-height: $amui-line-height-sm;
+    padding: $amui-space-ms;
+    text-align: left;
+
+    &__header {
+      font-size: $amui-font-size-sm;
+      font-weight: $amui-font-weight-bold;
+    }
+  }
+
+  // Table Body
+  &__body {
+    color: $amui-color-gray-800;
+    font-family: $amui-font-family-primary;
+    font-size: $amui-font-size-sm;
+    font-weight: $amui-font-weight-regular;
+    line-height: $amui-line-height-sm;
+    text-align: left;
+
+
+    &-row {
+      height: rem(56);
+      max-height: rem(56);
+
+      &.is--align-middle .amui-o-table__body-col {
+        vertical-align: middle;
+      }
+
+      &.is--align-top .amui-o-table__body-col {
+        vertical-align: top;
+      }
+
+      &.is--align-bottom .amui-o-table__body-col {
+        vertical-align: bottom;
+      }
+    }
+  }
+
+  // Contextual classes on row
+  tr {
+
+    &.is--success {
+      // color: $amui-color-success-text;
+      background-color: $amui-color-success;
+    }
+
+    &.is--warning {
+      // color: $amui-color-warning-text;
+      background-color: $amui-color-warning;
+    }
+
+    &.is--danger {
+      // color: $amui-color-danger-text;
+      background-color: $amui-color-danger;
+    }
+
+    &.is--highlight {
+      background-color: $amui-color-highlight;
+    }
+  }
+
+  // Contextual classes on cells
+  td {
+
+    &.is--success {
+      // color: $amui-color-success-text;
+      background-color: $amui-color-success;
+    }
+
+    &.is--warning {
+      // color: $amui-color-warning-text;
+      background-color: $amui-color-warning;
+    }
+
+    &.is--danger {
+      // color: $amui-color-danger-text;
+      background-color: $amui-color-danger;
+    }
+  }
+}
+
+// Boostrap override
+.amui-o-table.table > tbody > tr > th,
+.amui-o-table.table > tbody > tr > td,
+.amui-o-table.table > thead > tr > th {
+  padding: $amui-space-xxs $amui-space-md;
+}
+// End Organism Data table styles

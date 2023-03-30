@@ -1,0 +1,73 @@
+// -----------------------------------------------------------------------------
+// This file contains Text Helpers styles
+// -----------------------------------------------------------------------------
+
+// Text Alignment
+// ------------------------------
+.amui-h-text-left {
+  text-align: left;
+}
+
+.amui-h-text-center {
+  text-align: center;
+}
+
+.amui-h-text-right {
+  text-align: right;
+}
+
+// Text Colors
+// ------------------------------
+.amui-h-text-success {
+  color: $amui-color-success;
+}
+
+.amui-h-text-warning {
+  text-align: $amui-color-warning;
+}
+
+.amui-h-text-danger {
+  text-align: $amui-color-danger;
+}
+
+.amui-h-text-brand-primary {
+  text-align: $amui-brand-primary;
+}
+
+.amui-h-text-draft {
+  text-align: $amui-color-draft;
+}
+
+// Text transform
+// ------------------------------
+
+// Lowecase
+.amui-h-text-lowercase {
+  text-transform: lowercase;
+}
+
+// Uppercase
+.amui-h-text-uppercase {
+  text-transform: uppercase;
+}
+
+// Capitalize
+.amui-h-text-capitalize {
+  text-transform: capitalize;
+}
+
+
+// Text overflow
+// ------------------------------
+// Clip
+.amui-h-text-clip {
+  text-overflow: clip;
+}
+
+// Ellipsis
+.amui-h-text-el {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+// End Text Helpers styles

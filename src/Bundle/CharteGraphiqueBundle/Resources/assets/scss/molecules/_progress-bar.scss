@@ -1,0 +1,25 @@
+// -----------------------------------------------------------------------------
+// This file contains Progress bar Molecules styles
+// -----------------------------------------------------------------------------
+
+// Base Progress bar
+.amui-m-progress {
+
+  // Title
+  &__title {
+    color: $amui-color-gray-900;
+    font-size: $amui-font-size-sm;
+    font-weight: $amui-font-weight-bold;
+    line-height: $amui-line-height-sm;
+    margin-bottom: $amui-space-xxs;
+    margin-left: $amui-space-none;
+    margin-right: $amui-space-none;
+    margin-top: $amui-space-none;
+    position: relative;
+  }
+
+  &--level {
+    float: right;
+  }
+}
+// End Molecules Progress bar styles

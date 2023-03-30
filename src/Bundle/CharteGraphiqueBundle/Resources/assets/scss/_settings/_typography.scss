@@ -1,0 +1,51 @@
+// Typography
+// -----------------------------------------------------------------------------
+//$amui-font-path: '../src/assets/fonts' !default;
+ $amui-font-path: '../../assets/fonts' !default; // Arborescence Symfony
+
+// Font family
+// ------------------------
+$amui-font-family-primary: 'Roboto', 'Helvetica Neue', Helvetica, Arial, sans-serif !default;
+$amui-font-family-secondary: 'Open Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif !default;
+$amui-font-family-code: 'Consolas', Menlo, Monaco, Courier, monospace !default;
+$amui-font-icon: 'Material Icons' !default;
+
+// Font size
+// ------------------------
+$amui-font-size-xxxs:  rem(8) !default; // Extra extra extra small
+$amui-font-size-xxs:  rem(10) !default; // Extra extra small
+$amui-font-size-xs:   rem(12) !default; // Extra small
+$amui-font-size-sm:   rem(14) !default; // Small
+$amui-font-size-ms:   rem(16) !default; // Medium small
+$amui-font-size-md:   rem(18) !default; // Medium
+$amui-font-size-ml:   rem(20) !default; // Medium large
+$amui-font-size-lg:   rem(24) !default; // Large
+$amui-font-size-xl:   rem(28) !default; // Extra large
+$amui-font-size-xxl:  rem(32) !default; // Extra extra large
+$amui-font-size-xxxl:  rem(40) !default; // Extra extra large
+$amui-font-size-xxxxl:  rem(48) !default; // Extra extra extra large
+
+// $amui-font-size-primary-title: rem(25) !default;
+
+// Font weight
+// ------------------------
+$amui-font-weight-light: 300;
+$amui-font-weight-regular: 400;
+$amui-font-weight-semibold: 500;
+$amui-font-weight-bold: 700;
+
+// Line height
+// ------------------------
+$amui-line-height-global: 1.5;
+$amui-line-height-sm: 1;
+$amui-line-height-md: 2;
+$amui-line-height-lg: 2.5;
+
+$amui-line-height-heading: 1;
+$amui-line-height-reset: 1;
+$amui-line-height-text: 1.5;
+$amui-line-height-btn-xs: 1;
+$amui-line-height-btn-sm: 1;
+$amui-line-height-btn-lg: 1;
+$amui-line-height-btn-xl: 1.25;
+$amui-line-height-btn-default: 1;

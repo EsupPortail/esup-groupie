@@ -1,0 +1,6 @@
+
+services:
+    amu_role:
+        class: App\Bundle\RoleBundle\Service\Role
+        arguments:
+            - '%amu_role_rules%'

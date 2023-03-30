@@ -1,0 +1,181 @@
+// -----------------------------------------------------------------------------
+// This file contains Molecule Button groups styles
+// -----------------------------------------------------------------------------
+
+// Button groups base
+// --------------------------
+.amui-m-btn-group.btn-group {
+  vertical-align: top;
+
+  .btn-default {
+
+    @include amui-btn-color(
+      $background: $amui-color-white,
+      $color: $amui-brand-primary,
+      $border-color: $amui-color-border-brand-primary
+    );
+    margin-bottom: $amui-space-none;
+
+    &:hover,
+    &:active,
+    &:hover,
+    &:focus {
+      background-color: $amui-brand-primary;
+      color: $amui-color-white;
+    }
+
+    &:focus {
+      outline: $amui-size-border-thin dashed $amui-brand-primary;
+    }
+  }
+} // End molecule button groups base
+
+// Button groups sizes
+// --------------------------
+.amui-m-btn-group.btn-group {
+
+  .amui-a-btn.is--active {
+    background-color: $amui-brand-primary;
+    color: $amui-color-white;
+  }
+
+  // Icon button group
+  &.is--icon {
+
+    .amui-a-btn.is--active {
+      background-color: $amui-brand-primary;
+      color: $amui-color-white;
+    }
+
+    &.btn-group-default {
+      .btn {
+        @include amui-btn-size(
+          $padding-vertical-top: rem(10),
+          $padding-horizontal-right: $amui-space-sm,
+          $padding-vertical-bottom: rem(9),
+          $padding-horizontal-left: $amui-space-sm,
+
+          $font-size: $amui-font-size-ms,
+          $line-height: $amui-line-height-btn-default
+        );
+      }
+    }
+
+    &.btn-group-xs {
+      .btn {
+        @include amui-btn-size(
+          $padding-vertical-top: rem(6),
+          $padding-horizontal-right: $amui-space-xxs,
+          $padding-vertical-bottom: rem(6),
+          $padding-horizontal-left: $amui-space-xxs,
+
+          $font-size: $amui-font-size-sm,
+          $line-height: $amui-line-height-btn-xs
+        );
+      }
+    }
+
+    &.btn-group-sm {
+      .btn {
+        @include amui-btn-size(
+          $padding-vertical-top: rem(6),
+          $padding-horizontal-right: $amui-space-xs,
+          $padding-vertical-bottom: rem(6),
+          $padding-horizontal-left: $amui-space-xs,
+
+          $font-size: $amui-font-size-sm,
+          $line-height: $amui-line-height-btn-sm
+        );
+      }
+    }
+
+    // Large
+    &.btn-group-lg {
+      .btn {
+        @include amui-btn-size(
+          $padding-vertical-top: rem(14),
+          $padding-horizontal-right: $amui-space-sm,
+          $padding-vertical-bottom: rem(13),
+          $padding-horizontal-left: $amui-space-sm,
+
+          $font-size: $amui-font-size-ms,
+          $line-height: $amui-line-height-btn-lg
+        );
+      }
+    }
+  }
+
+  // Extra small
+  &.btn-group-xs {
+    .btn {
+      @include amui-btn-size(
+        $padding-vertical-top: rem(9),
+        $padding-horizontal-right: $amui-space-xs,
+        $padding-vertical-bottom: rem(7),
+        $padding-horizontal-left: $amui-space-xs,
+
+        $font-size: $amui-font-size-sm,
+        $line-height: $amui-line-height-btn-xs
+      );
+    }
+  }
+
+  // Small
+  &.btn-group-sm {
+    .btn {
+      @include amui-btn-size(
+        $padding-vertical-top: rem(13),
+        $padding-horizontal-right: $amui-space-sm,
+        $padding-vertical-bottom: rem(11),
+        $padding-horizontal-left: $amui-space-sm,
+
+        $font-size: $amui-font-size-sm,
+        $line-height: $amui-line-height-btn-sm
+      );
+    }
+  }
+
+  // Default
+  .btn {
+    @include amui-btn-size(
+      $padding-vertical-top: rem(16),
+      $padding-horizontal-right: $amui-space-ms,
+      $padding-vertical-bottom: rem(14),
+      $padding-horizontal-left: $amui-space-ms,
+
+      $font-size: $amui-font-size-ms,
+      $line-height: $amui-line-height-btn-default
+    );
+  }
+
+  // Large
+  &.btn-group-lg {
+    .btn {
+      @include amui-btn-size(
+        $padding-vertical-top: $amui-space-ms,
+        $padding-horizontal-right: $amui-space-ml,
+        $padding-vertical-bottom: rem(18),
+        $padding-horizontal-left: $amui-space-ml,
+
+        $font-size: $amui-font-size-ms,
+        $line-height: $amui-line-height-btn-lg
+      );
+    }
+  }
+
+  // Extra Large
+  &.btn-group-xl {
+    .btn {
+      @include amui-btn-size(
+        $padding-vertical-top: $amui-space-md,
+        $padding-horizontal-right: $amui-space-xxxl,
+        $padding-vertical-bottom: rem(22),
+        $padding-horizontal-left: $amui-space-xxxl,
+
+        $font-size: $amui-font-size-md,
+        $line-height: $amui-line-height-btn-xl
+      );
+    }
+  }
+}
+// End Molecule button groups sizes

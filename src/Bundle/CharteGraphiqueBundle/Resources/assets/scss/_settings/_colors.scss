@@ -1,0 +1,51 @@
+// Brand colors
+// -----------------------------------------------------------------------------
+$amui-brand-primary: #1093d3 !default;
+$amui-brand-secondary: #334659 !default;
+$amui-brand-tertiary: #3ec155 !default;
+$amui-color-body: #eee !default;
+
+// States colors
+// -----------------------------------------------------------------------------
+$amui-color-success: #e1faea !default;
+$amui-color-success-text: #59c176 !default;
+$amui-color-warning: #ffe6ca !default;
+$amui-color-warning-text: #fd9727 !default;
+$amui-color-danger: #f7e4e1 !default;
+$amui-color-danger-text: #e54d42 !default;
+$amui-color-highlight: #fff3d9 !default;
+$amui-color-active: #0f81ba !default;
+$amui-color-info: #fffad9 !default;
+$amui-color-badge: #cc4b37 !default;
+$amui-color-focus: #66afe9 !default;
+$amui-color-draft: #555 !default;
+
+// Gray colors
+// -----------------------------------------------------------------------------
+$amui-color-white: #fff !default;
+$amui-color-smoke: #fafafa !default;
+$amui-color-gray-100: #f5f5f5 !default;
+$amui-color-gray-200: #e6e6e6 !default;
+$amui-color-gray-300: #ddd !default;
+$amui-color-gray-400: #cacaca !default;
+$amui-color-gray-500: #a4a4a4 !default;
+$amui-color-gray-600: #8a8a8a !default;
+$amui-color-gray-700: #777 !default;
+$amui-color-gray-800: #555 !default;
+$amui-color-gray-900: #4a4a4a !default;
+$amui-color-black: #000 !default;
+
+// Border colors
+// -----------------------------------------------------------------------------
+$amui-color-border-brand-primary: $amui-brand-primary !default;
+$amui-color-border-brand-secondary: $amui-brand-secondary !default;
+$amui-color-border-brand-tertiary: $amui-brand-tertiary !default;
+$amui-color-border-warning: $amui-color-warning-text !default;
+$amui-color-border-danger: $amui-color-danger-text !default;
+$amui-color-border-success: $amui-color-success-text !default;
+
+// Body colors
+// -----------------------------------------------------------------------------
+$amui-color-text-dark: #0a0a0a !default;
+// $amui-color-text-light: #fff !default;
+$amui-color-link: $amui-brand-primary !default;

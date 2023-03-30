@@ -1,0 +1,94 @@
+// -----------------------------------------------------------------------------
+// This file contains Date picker customization styles
+// -----------------------------------------------------------------------------
+
+#ui-datepicker-div {
+  z-index: 10000 !important;
+}
+
+// Date picker box
+.ui-widget-content {
+  background-color: $amui-color-white;
+  border: $amui-size-border-thin solid $amui-color-gray-400;
+  border-radius: $amui-border-radius-md;
+  box-shadow: $amui-box-shadow-dp-3;
+  padding: $amui-space-xxs;
+}
+
+// Default txt styles
+.ui-state-default {
+  color: $amui-color-gray-600;
+  font-family: $amui-font-family-primary;
+  font-weight: $amui-font-weight-regular;
+  padding: $amui-space-xxs;
+}
+
+// Active txt styles
+.ui-state-active {
+  background-color: $amui-brand-primary;
+  border-radius: $amui-border-radius-md;
+  color: $amui-color-white;
+  padding: $amui-space-xxs;
+
+  &.ui-state-default {
+    color: $amui-color-white;
+  }
+
+  &.ui-state-hover {
+    background-color: $amui-brand-primary;
+    color: $amui-color-white;
+  }
+}
+
+// Date picker header styles
+.ui-datepicker-header {
+  .ui-datepicker-prev,
+  .ui-datepicker-next {
+    font-family: $amui-font-family-primary;
+    font-weight: $amui-font-weight-semibold;
+    padding: $amui-space-xxs;
+    position: absolute;
+  }
+
+  .ui-datepicker-prev {
+    left: $amui-space-none;
+    top: $amui-space-xxxs;
+  }
+
+  .ui-datepicker-next {
+    right: $amui-space-none;
+    top: $amui-space-xxxs;
+  }
+}
+
+// Date picker title styles
+.ui-datepicker-title {
+  color: $amui-color-gray-700;
+  font-family: $amui-font-family-primary;
+  font-weight: $amui-font-weight-semibold;
+  margin-bottom: $amui-space-xs;
+  margin-top: $amui-space-xxxs;
+  padding-bottom: $amui-space-xs;
+  text-align: center;
+}
+
+// Date picker calendar content styles
+.ui-datepicker-calendar {
+  font-family: $amui-font-family-primary;
+  font-weight: $amui-font-weight-regular;
+
+  a:hover {
+    background-color: $amui-brand-primary;
+    border-radius: $amui-border-radius-md;
+    color: $amui-color-white;
+  }
+
+  thead {
+    font-weight: $amui-font-weight-semibold;
+  }
+
+  td {
+    padding: $amui-space-xxs;
+  }
+}
+// End Date picker override styles

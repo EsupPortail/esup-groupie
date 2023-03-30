@@ -1,0 +1,32 @@
+// -----------------------------------------------------------------------------
+// This file contains Atom logo styles
+// -----------------------------------------------------------------------------
+
+.amui-a-brand-logo {
+  background-position: 0;
+  background-size: contain;
+  display: inline-block;
+  height: 32px;
+  margin: $amui-space-none;
+  text-indent: -9999px;
+  vertical-align: middle;
+  width: 62px;
+
+  &.is--light {
+    @include background-image('amu-white');
+  }
+
+  &.is--dark {
+    @include background-image('amu-blue');
+  }
+}
+
+// Bootstrap Override style
+.navbar-brand {
+  clear: both;
+  font-size: $amui-font-size-md;
+  height: initial;
+  line-height: initial;
+  padding: $amui-space-ms;
+}
+// End Atom logo styles

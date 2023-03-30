@@ -1,0 +1,47 @@
+// -----------------------------------------------------------------------------
+// This file contains Mixin for button styles
+// -----------------------------------------------------------------------------
+
+// Button size
+// ------------------------
+@mixin amui-btn-size(
+  $padding-vertical-top,
+  $padding-horizontal-right,
+  $padding-vertical-bottom,
+  $padding-horizontal-left,
+  $font-size,
+  $line-height
+  ) {
+  font-size: $font-size;
+  line-height: $line-height;
+  padding: $padding-vertical-top $padding-horizontal-right $padding-vertical-bottom $padding-horizontal-left;
+}
+
+// Button Color
+// ------------------------
+@mixin amui-btn-color(
+  $background: $amui-color-base,
+  $color: contrast($background),
+  $border-color: $background
+  ) {
+  background-color: $background;
+  border: $amui-size-border-thin solid $border-color;
+  color: $color;
+
+  &:visited,
+  &:hover,
+  &:active,
+  &:focus {
+    background-color: darken($background, 5%);
+    border: $amui-size-border-thin solid darken($border-color, 5%);
+    color: $color;
+  }
+}
+
+// Button Animation effect
+// ------------------------
+@mixin animation-bounce {
+  &:active:not(:disabled) + .amui-a-form-check__indicator::before {transform: scale3d(.88, .88, 1);}
+  &:disabled + .amui-a-form-check__indicator::before {color: rgba(0, 0, 0, .157) !important;}
+}
+// End Mixin Button styles

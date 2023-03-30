@@ -1,0 +1,97 @@
+// -----------------------------------------------------------------------------
+// This file contains Atom checkbox & radio button styles
+// -----------------------------------------------------------------------------
+.amui-a-form-check {
+  align-items: flex-start;
+  color: $amui-color-gray-800;
+  cursor: pointer;
+  display: flex;
+  flex-wrap: nowrap;
+  font-family: $amui-font-family-primary;
+  font-weight: $amui-font-weight-semibold;
+  margin-bottom: $amui-space-xs;
+  position: relative;
+
+  &.is--inline {
+    display: inline-flex;
+    margin-right: $amui-space-sm;
+  }
+
+  // Hide original checkbox
+  input {
+    opacity: 0;
+    position: absolute;
+    z-index: -1;
+  }
+
+  // New Checkbox styles
+  input[type="checkbox"] {
+
+    // Bounce effect
+    @include animation-bounce;
+
+    + .amui-a-form-check__indicator::before {
+      color: $amui-color-gray-700;
+      content: '\e835';
+    }
+
+    &:checked + .amui-a-form-check__indicator::before {
+      color: $amui-brand-primary;
+      content: '\e834';
+    }
+
+    &:disabled + .amui-a-form-check__indicator::before {
+      color: $amui-color-gray-400;
+      content: '\e835';
+    }
+
+    &:disabled .amui-a-form-check__label {
+      color: $amui-color-gray-400;
+    }
+  }
+
+  // New Radio button styles
+  input[type="radio"] {
+
+    @include animation-bounce;
+
+    + .amui-a-form-check__indicator::before {
+      color: $amui-color-gray-700;
+      content: '\e836';
+    }
+
+    &:checked + .amui-a-form-check__indicator::before {
+      color: $amui-brand-primary;
+      content: '\e837';
+    }
+
+    &:disabled + .amui-a-form-check__indicator::before {
+      color: $amui-color-gray-400;
+      content: '\e836';
+    }
+
+    &:disabled .amui-a-form-check__label {
+      color: $amui-color-gray-400;
+    }
+  }
+
+  .amui-a-form-check__indicator {
+    line-height: 1rem;
+    padding-top: .1rem;
+    position: relative;
+
+    &::before {
+      font-family: $amui-font-icon;
+      font-size: $amui-font-size-lg;
+      font-style: normal;
+      font-weight: $amui-font-weight-regular;
+      line-height: .75;
+      position: absolute;
+    }
+  }
+
+  .amui-a-form-check__label {
+    padding-left: $amui-space-ml;
+  }
+}
+// End Atom form checkbox styles

@@ -1,0 +1,20 @@
+// -----------------------------------------------------------------------------
+// This file contains Molecule Nav bar logo styles
+// -----------------------------------------------------------------------------
+.amui-m-navbar-logo {
+  background-color: $amui-brand-primary;
+  margin-right: $amui-space-none;
+
+  &__heading-title {
+    border-left: $amui-size-border-thick solid $amui-color-white;
+    color: $amui-color-white;
+    display: inline-block;
+    font-family: $amui-font-family-primary;
+    font-weight: $amui-font-weight-regular;
+    margin-left: $amui-space-xxs;
+    max-height: 40px;
+    padding-left: $amui-space-xxs;
+    vertical-align: middle;
+  }
+}
+// End Molecule Nav bar logo styles

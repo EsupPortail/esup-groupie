@@ -1,0 +1,64 @@
+// -----------------------------------------------------------------------------
+// This file contains Grid styles
+// -----------------------------------------------------------------------------
+
+.amui-g-grid {
+  // Alignment Horizontal
+  &.is--start {
+    display: flex;
+    justify-content: flex-start;
+  }
+
+  &.is--center {
+    display: flex;
+    justify-content: center;
+  }
+
+  &.is--end {
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  &__item {
+    // Pull
+    &.is--pull {
+      display: flex;
+      justify-content: flex-start;
+    }
+
+    // Push
+    &.is--push {
+      display: flex;
+      justify-content: flex-end;
+    }
+  }
+
+  // Alignment Vertical
+  &.is--top {
+    align-items: flex-start;
+    display: flex;
+  }
+
+  &.is--middle {
+    align-items: center;
+    display: flex;
+  }
+
+  &.is--bottom {
+    align-items: flex-end;
+    display: flex;
+  }
+
+  // Distribution Between
+  &.is--between {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  // Distribution Around
+  &.is--around {
+    display: flex;
+    justify-content: space-around;
+  }
+}
+// End Grid styles

@@ -1,0 +1,92 @@
+// -----------------------------------------------------------------------------
+// This file contains Molecule Top bar navigation icon styles.
+// -----------------------------------------------------------------------------
+$amui-nav-icon-width: rem(80);
+$amui-nav-icon-height: rem(80);
+
+.amui-m-nav-icon {
+  align-items: center;
+  background-color: $amui-brand-secondary;
+  color: $amui-color-white;
+  display: flex;
+  flex-direction: column;
+  font-family: $amui-font-family-primary;
+  font-size: $amui-font-size-ms;
+  font-weight: $amui-font-weight-regular;
+  height: $amui-nav-icon-height;
+  justify-content: center;
+  padding: $amui-space-sm;
+  text-align: center;
+  width: $amui-nav-icon-width;
+
+  &.is--active {
+    background-color: $amui-color-active;
+  }
+
+  // Navigation icon state
+  i {
+    color: $amui-color-white;
+    font-weight: $amui-font-weight-semibold;
+  }
+
+  &:focus,
+  &:hover {
+    background-color: $amui-color-active;
+    color: $amui-color-white;
+    text-decoration: none;
+  }
+
+  &:hover i {
+    color: $amui-color-white;
+  }
+
+  // Only Icon + Text
+  &.is--inner-text {
+    overflow: hidden;
+    padding: $amui-space-ms $amui-space-xxxs;
+    text-overflow: ellipsis;
+    word-break: break-word;
+  }
+
+  i + span {
+    font-size: rem(11);
+    margin-left: $amui-space-xxxs;
+    margin-top: $amui-space-xxxs;
+  }
+
+  // Dropdown toggle
+  &.dropdown-toggle {
+    span {
+      font-size: $amui-font-size-ms;
+    }
+
+    .caret {
+      margin-left: $amui-space-xxxs;
+    }
+  }
+
+  .dropdown-menu > li > a {
+    &:focus,
+    &:hover {
+      background-color: $amui-color-gray-300;
+    }
+  }
+
+  // Inline alignement
+  &.is--inner-text-inline-block {
+    display: inline-flex;
+    flex-direction: row;
+    font-family: $amui-font-family-primary;
+    font-size: $amui-font-size-md;
+    font-weight: $amui-font-weight-regular;
+    max-width: auto;
+    padding: $amui-space-sm;
+    width: auto;
+    word-break: break-word;
+
+    i {
+      vertical-align: middle;
+    }
+  }
+}
+// End Molecule Top bar Navigation icon styles

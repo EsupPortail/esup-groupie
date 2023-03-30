@@ -1,0 +1,47 @@
+// -----------------------------------------------------------------------------
+// This file contains Atom Labels styles
+// -----------------------------------------------------------------------------
+
+.amui-a-label {
+  font-family: $amui-font-family-primary;
+  font-size: $amui-font-size-sm;
+  font-weight: $amui-font-weight-regular;
+  padding: $amui-space-xxxs $amui-space-xs;
+
+  &.is--default {
+    background-color: $amui-color-white;
+    border: $amui-size-border-thin solid $amui-brand-primary;
+    color: $amui-brand-primary;
+  }
+
+  &.is--primary {
+    background-color: $amui-brand-primary;
+    color: $amui-color-white;
+  }
+
+  &.is--secondary {
+    background-color: $amui-brand-secondary;
+    color: $amui-color-white;
+  }
+
+  &.is--success {
+    background-color: $amui-color-success;
+    color: $amui-color-success-text;
+  }
+
+  &.is--warning {
+    background-color: $amui-color-warning;
+    color: $amui-color-warning-text;
+  }
+
+  &.is--info {
+    background-color: $amui-color-info;
+    color: $amui-color-text-dark;
+  }
+
+  &.is--danger {
+    background-color: $amui-color-danger;
+    color: $amui-color-danger-text;
+  }
+}
+// End Atom labels styles

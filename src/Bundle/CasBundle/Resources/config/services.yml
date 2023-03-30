@@ -1,0 +1,8 @@
+services:
+    amubundle.cup_service:
+        class: App\Bundle\CasBundle\Security\User\CasUserProvider
+    phpcasguard.cas_authenticator:
+        class: AlexandreT\Bundle\CasGuardBundle\Security\CasAuthenticator
+        arguments:
+            - '@router'
+            - '@phpcasguard.cas_service'

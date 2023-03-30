@@ -1,0 +1,198 @@
+// -----------------------------------------------------------------------------
+// This file contains Slider styles
+// -----------------------------------------------------------------------------
+
+// Shape styles
+// ----------------------------
+
+.amui-a-slider {
+  width: 100%;
+
+  // Square slider
+  &__range {
+    -webkit-appearance: none;
+    -webkit-transition: .2s;
+    appearance: none;
+    background: $amui-color-gray-400;
+    height: $amui-space-xs;
+    opacity: .7;
+    outline: none;
+    transition: opacity .2s;
+    width: 100%;
+
+    &:hover {
+      opacity: 1;
+    }
+  }
+
+  // Rounded slider
+  &.is--rounded {
+    .amui-a-slider__range {
+      -webkit-appearance: none;
+      -webkit-transition: .2s;
+      appearance: none;
+      background: $amui-color-gray-400;
+      border-radius: $amui-space-xxxs;
+      opacity: .7;
+      outline: $amui-space-none;
+      transition: opacity .2s;
+      width: 100%;
+    }
+
+    .amui-a-slider__range::-webkit-slider-thumb {
+      @include amui-slider(
+        $height: $amui-space-ms,
+        $width: $amui-space-ms,
+        $cursor: pointer,
+        $bgc: none
+      );
+      -webkit-appearance: none;
+      appearance: none;
+      border-radius: 50%;
+    }
+
+    .amui-a-slider__range::-moz-range-thumb {
+      border-radius: 50%;
+      cursor: pointer;
+      height: $amui-space-ms;
+      width: $amui-space-ms;
+    }
+
+    &:hover {
+      opacity: 1;
+    }
+  }
+}
+
+// Color states
+// ----------------------------
+
+// Primary state
+.amui-a-slider__range {
+
+  &.is--primary::-webkit-slider-thumb {
+    @include amui-slider(
+      $bgc: $amui-brand-primary,
+      $height: $amui-space-md,
+      $width: $amui-space-md,
+      $cursor: pointer
+    );
+    -webkit-appearance: none;
+    appearance: none;
+  }
+
+  &.is--primary::-moz-range-thumb {
+    @include amui-slider(
+      $bgc: $amui-brand-primary,
+      $height: $amui-space-md,
+      $width: $amui-space-md,
+      $cursor: pointer
+    );
+  }
+
+  // Secondary state
+  &.is--secondary::-webkit-slider-thumb {
+    @include amui-slider(
+      $bgc: $amui-brand-secondary,
+      $height: $amui-space-md,
+      $width: $amui-space-md,
+      $cursor: pointer
+    );
+    -webkit-appearance: none;
+    appearance: none;
+  }
+
+  &.is--secondary::-moz-range-thumb {
+    @include amui-slider(
+      $bgc: $amui-brand-secondary,
+      $height: $amui-space-md,
+      $width: $amui-space-md,
+      $cursor: pointer
+    );
+  }
+
+  // Tertiary state
+  &.is--tertiary::-webkit-slider-thumb {
+    @include amui-slider(
+      $bgc: $amui-brand-tertiary,
+      $height: $amui-space-md,
+      $width: $amui-space-md,
+      $cursor: pointer
+    );
+    -webkit-appearance: none;
+    appearance: none;
+  }
+
+  &.is--tertiary::-moz-range-thumb {
+    @include amui-slider(
+      $bgc: $amui-brand-tertiary,
+      $height: $amui-space-md,
+      $width: $amui-space-md,
+      $cursor: pointer
+    );
+  }
+
+  // Success state
+  &.is--success::-webkit-slider-thumb {
+    @include amui-slider(
+      $bgc: $amui-color-success-text,
+      $height: $amui-space-md,
+      $width: $amui-space-md,
+      $cursor: pointer
+    );
+    -webkit-appearance: none;
+    appearance: none;
+  }
+
+  &.is--success::-moz-range-thumb {
+    @include amui-slider(
+      $bgc: $amui-color-success-text,
+      $height: $amui-space-md,
+      $width: $amui-space-md,
+      $cursor: pointer
+    );
+  }
+
+  // Warning state
+  &.is--warning::-webkit-slider-thumb {
+    @include amui-slider(
+      $bgc: $amui-color-warning-text,
+      $height: $amui-space-md,
+      $width: $amui-space-md,
+      $cursor: pointer
+    );
+    -webkit-appearance: none;
+    appearance: none;
+  }
+
+  &.is--warning::-moz-range-thumb {
+    @include amui-slider(
+      $bgc: $amui-color-warning-text,
+      $height: $amui-space-md,
+      $width: $amui-space-md,
+      $cursor: pointer
+    );
+  }
+
+  // Danger state
+  &.is--danger::-webkit-slider-thumb {
+    @include amui-slider(
+      $bgc: $amui-color-danger-text,
+      $height: $amui-space-md,
+      $width: $amui-space-md,
+      $cursor: pointer
+    );
+    -webkit-appearance: none;
+    appearance: none;
+  }
+
+  &.is--danger::-moz-range-thumb {
+    @include amui-slider(
+      $bgc: $amui-color-danger-text,
+      $height: $amui-space-md,
+      $width: $amui-space-md,
+      $cursor: pointer
+    );
+  }
+}
+// End Atom Slider styles

@@ -1,0 +1,14 @@
+// -----------------------------------------------------------------------------
+// This file contains Organism Sidebar navigation styles
+// -----------------------------------------------------------------------------
+.amui-o-sidebar-nav {
+  margin: $amui-space-none;
+  min-width: rem(80);
+  padding: $amui-space-none;
+
+  > li {
+    list-style-type: none;
+    margin-left: $amui-space-none;
+  }
+}
+// End Organism Sidebar navigation styles

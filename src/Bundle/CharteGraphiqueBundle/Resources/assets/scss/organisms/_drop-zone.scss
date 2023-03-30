@@ -1,0 +1,27 @@
+// -----------------------------------------------------------------------------
+// This file contains Organism Drop zone styles
+// -----------------------------------------------------------------------------
+.amui-o-drop-zone {
+
+  &__wrapper {
+    border: 4px dashed $amui-color-gray-400;
+    height: calc(100vh - 256px);
+    margin-top: $amui-space-md;
+    padding: $amui-space-md;
+    position: relative;
+  }
+
+  &__content {
+    color: $amui-color-gray-800;
+    left: 50%;
+    position: absolute;
+    text-align: center;
+    top: 50%;
+    transform: translate(-50%, -50%);
+
+    i {
+      color: $amui-color-gray-400;
+    }
+  }
+}
+// End Organism Drop zone styles

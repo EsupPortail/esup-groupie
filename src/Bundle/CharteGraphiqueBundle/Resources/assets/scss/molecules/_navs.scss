@@ -1,0 +1,143 @@
+// -----------------------------------------------------------------------------
+// This file contains Molecule Navs styles
+// -----------------------------------------------------------------------------
+.amui-m-nav-tabs.nav-tabs > li {
+  > a,
+  > a:hover,
+  > a:focus {
+    border-color: none;
+  }
+}
+
+// Stacked tabs
+.amui-m-nav-tabs.nav-stacked {
+  .amui-m-nav-tabs__item.active {
+    border-bottom: 0;
+    border-right: 3px solid $amui-brand-primary;
+    color: $amui-brand-primary;
+  }
+
+  .amui-m-nav-tabs__item a {
+    padding: $amui-space-sm;
+  }
+}
+
+.amui-m-nav-tabs.nav-tabs.nav-stacked {
+  border-bottom: 0;
+  border-right: $amui-size-border-thin solid $amui-color-gray-300;
+  padding-right: $amui-space-none;
+}
+
+// Tabs
+.amui-m-nav-tabs {
+  font-family: $amui-font-family-primary;
+  font-size: $amui-font-size-ms;
+  font-weight: $amui-font-weight-semibold;
+  margin: $amui-space-none;
+
+  &.nav-tabs {
+    > li > a:hover,
+    > li.active > a,
+    > li.active > a:hover,
+    > li.active > a:focus {
+
+      background-color: transparent;
+      border: 0;
+      color: $amui-brand-primary;
+      cursor: pointer;
+    }
+
+    > li > a {
+      border: 0;
+    }
+  }
+
+  &__item {
+    &.active {
+      border-bottom: 3px solid $amui-brand-primary;
+      color: $amui-brand-primary;
+
+      a {
+        color: $amui-brand-primary;
+      }
+    }
+
+    a {
+      color: $amui-color-gray-800;
+      font-size: $amui-font-size-ms;
+      line-height: $amui-line-height-sm;
+      padding: $amui-space-none;
+    }
+  }
+}
+
+// Panel tabs navigation
+.amui-o-panel-tabs.amui-m-panel .amui-m-panel__heading .amui-m-nav-tabs > .amui-m-nav-tabs__item {
+  margin: $amui-space-none;
+  > a {
+    padding: $amui-space-none;
+  }
+}
+
+// Navs tabs & Pills Sizing
+.amui-m-nav-tabs.nav,
+.amui-m-nav-pills.nav {
+
+  > li > a {
+    padding: $amui-space-sm $amui-space-ml;
+  }
+
+  &.is--xs {
+    > li > a {
+      padding: $amui-space-xxs $amui-space-sm;
+    }
+  }
+
+  &.is--sm {
+    > li > a {
+      padding: $amui-space-xs $amui-space-md;
+    }
+  }
+
+  &.is--lg {
+    > li > a {
+      padding: $amui-space-ms $amui-space-lg;
+    }
+  }
+}
+
+// Navs Pills
+.amui-m-nav-pills.nav-pills {
+
+  font-family: $amui-font-family-primary;
+  font-weight: $amui-font-weight-regular;
+
+  > li.active > a,
+  >li.active>a:focus,
+  .nav-pills>li.active>a:hover {
+    background-color: $amui-brand-primary;
+  }
+
+  &__item.active {
+    border-radius: $amui-border-radius-md;
+
+    a {
+      background-color: $amui-brand-primary;
+      color: $amui-color-white;
+      font-family: $amui-font-family-primary;
+      font-weight: $amui-font-weight-regular;
+    }
+  }
+
+  &__item a {
+    font-size: $amui-font-size-md;
+    padding: rem(11) $amui-space-md;
+  }
+}
+
+// Bootstrap navigation override
+.nav > li > a:focus,
+.nav > li > a:hover {
+  background-color: initial;
+}
+// End Molecule Navs styles

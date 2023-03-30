@@ -1,0 +1,25 @@
+// -----------------------------------------------------------------------------
+// This file contains Molecules Callout styles
+// -----------------------------------------------------------------------------
+.amui-m-callout {
+  background-color: $amui-color-body;
+  border-radius: $amui-border-radius-md;
+  color: $amui-color-gray-400;
+  font-size: $amui-font-size-xs;
+  line-height: $amui-line-height-global;
+  padding: $amui-space-xs;
+
+  &__title {
+    color: $amui-color-gray-900;
+    font-size: $amui-font-size-xs;
+    font-weight: $amui-font-weight-bold;
+    margin-bottom: $amui-space-none;
+  }
+
+  &__description {
+    color: $amui-color-gray-800;
+    font-size: $amui-font-size-xs;
+    font-weight: $amui-font-weight-regular;
+  }
+}
+// End Molecules Callout styles

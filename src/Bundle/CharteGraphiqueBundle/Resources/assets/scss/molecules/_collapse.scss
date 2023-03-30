@@ -1,0 +1,63 @@
+// -----------------------------------------------------------------------------
+// This file contains Collapse styles
+// -----------------------------------------------------------------------------
+.amui-m-collapse {
+  &__body {
+    border: $amui-size-border-thin solid $amui-color-gray-200;
+    border-radius: $amui-border-radius-md;
+    padding: $amui-space-sm;
+  }
+
+  .amui-a-btn {
+    display: block;
+    padding-left: $amui-space-none;
+  }
+
+  &_wrapper {
+    clear: both;
+  }
+
+  &__title {
+    color: $amui-color-gray-800;
+    float: left;
+    font-family: $amui-font-family-primary;
+    font-size: $amui-font-size-ms;
+    font-weight: $amui-font-weight-semibold;
+  }
+
+  a:not(.collapsed) .amui-m-collapse__title {
+    color: $amui-brand-primary;
+  }
+
+  > a {
+    display: block;
+
+    i::before {
+      color: $amui-brand-primary;
+      content: 'remove';
+    }
+  }
+
+  > a.collapsed {
+    i::before {
+      color: $amui-color-gray-800;
+      content: 'add';
+    }
+  }
+}
+
+.amui-m-collapse__items {
+  &-item {
+    margin-bottom: $amui-space-sm;
+  }
+
+  &-item a {
+    color: $amui-color-gray-800;
+    font-family: $amui-font-family-primary;
+  }
+
+  &-item.is--active a {
+    color: $amui-brand-primary;
+  }
+}
+// End collapse styles

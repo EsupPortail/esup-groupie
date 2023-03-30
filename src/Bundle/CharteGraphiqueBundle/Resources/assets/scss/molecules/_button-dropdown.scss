@@ -1,0 +1,59 @@
+// -----------------------------------------------------------------------------
+// This file contains Molecule Button dropdown styles
+// -----------------------------------------------------------------------------
+.amui-m-btn-dropdown {
+
+  .dropdown-menu {
+    list-style: none;
+    padding: $amui-space-none;
+
+    > li {
+      margin-left: $amui-space-none;
+    }
+  }
+
+  .dropdown-menu > li > a {
+    padding: $amui-space-xxs;
+
+    &:hover,
+    &:focus {
+      background-color: $amui-color-gray-200;
+    }
+  }
+
+  .dropdown-header {
+    padding: $amui-space-xxs;
+  }
+}
+
+.amui-a-btn.dropdown-toggle {
+
+  &.is--primary {
+    background-color: darken($amui-brand-primary, $amui-percent-rate-5);
+  }
+
+  &.is--secondary {
+    background-color: darken($amui-brand-secondary, $amui-percent-rate-5);
+  }
+
+  &.is--disabled {
+    background-color: darken($amui-color-gray-400, $amui-percent-rate-5);
+  }
+
+  &.is--hollow {
+    background-color: darken($amui-color-white, $amui-percent-rate-5);
+  }
+
+  &.is--success {
+    background-color: darken($amui-brand-tertiary, $amui-percent-rate-5);
+  }
+
+  &.is--warning {
+    background-color: darken($amui-color-warning-text, $amui-percent-rate-5);
+  }
+
+  &.is--danger {
+    background-color: darken($amui-color-danger-text, $amui-percent-rate-5);
+  }
+}
+// End Molecule button dropdown styles

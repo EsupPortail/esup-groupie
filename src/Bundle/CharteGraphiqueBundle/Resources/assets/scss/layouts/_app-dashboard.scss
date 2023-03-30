@@ -1,0 +1,148 @@
+// -----------------------------------------------------------------------------
+// This file contains App dashboard Layout styles
+// -----------------------------------------------------------------------------
+
+// General layout layout
+.amui-l-app-layout {
+  background-color: $amui-color-body;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+
+  // Wrapper layout
+  &__wrapper {
+    display: flex;
+    flex-direction: row;
+    flex-grow: 1;
+
+    .amui-o-sidebar-nav {
+      background-color: $amui-brand-secondary;
+      margin-bottom: -72px;
+    }
+  }
+
+  // Main Container layout
+  &__main {
+    flex: 1;
+    min-width: $amui-space-none;
+    padding: $amui-space-ms;
+    transition: .3s;
+
+    &.is--env-test {
+      background: url('../../assets/img/test.png') repeat;
+    }
+
+    .amui-l-page-header__title {
+      display: inline-block;
+    }
+  }
+
+  // Footer layout
+  .amui-m-footer {
+    margin-left: 80px;
+  }
+}
+
+// Pages layout
+.amui-l {
+  // Header layout
+  &-page-header {
+    &__title {
+      margin: $amui-space-none;
+      vertical-align: top;
+    }
+
+    &__sub-title {
+      color: $amui-color-gray-800;
+      font-size: $amui-font-size-ml;
+      font-weight: $amui-font-weight-semibold;
+      line-height: $amui-line-height-global;
+      margin: $amui-space-none;
+      margin-bottom: $amui-space-none;
+    }
+
+    p {
+      color: $amui-color-gray-800;
+    }
+  }
+
+  &-page-header__secondary {
+    ul > li {
+      display: inline-block;
+
+      &:nth-child(n+2) {
+        border-left: $amui-size-border-thin solid $amui-color-gray-400;
+        margin-left: $amui-space-xs;
+        padding-left: $amui-space-sm;
+      }
+    }
+  }
+
+  // Title layout
+  &-page-header__title {
+    color: $amui-color-gray-800;
+    font-family: $amui-font-family-primary;
+    font-size: $amui-font-size-xxl;
+    font-weight: $amui-font-weight-bold;
+    line-height: 1.25;
+  }
+
+  &-page-header__title + .amui-m-btn-group,
+  &-page-header__title + .amui-a-btn,
+  &-page-header__title + div,
+  &-page-header__title + ul {
+    margin-left: $amui-space-sm;
+  }
+
+  // Main section layout
+  &-page {
+    &__primary-nav {
+      margin-bottom: $amui-space-xxxs;
+      margin-left: $amui-space-none;
+      margin-right: $amui-space-none;
+      margin-top: $amui-space-md;
+    }
+
+    &__main-header {
+      padding: $amui-space-md $amui-space-sm;
+
+      .amui-m-panel__heading {
+        border: 0;
+        margin: $amui-space-none;
+      }
+
+      .amui-m-panel__heading__title {
+        line-height: $amui-line-height-global;
+        margin: $amui-space-none;
+        padding-bottom: $amui-space-none;
+      }
+    }
+  }
+
+  // Bottom section layout
+  &-bottom {
+    margin-bottom: $amui-space-lg;
+    margin-top: $amui-space-xs;
+
+    .amui-a-btn + .amui-a-btn {
+      margin-left: $amui-space-md;
+    }
+  }
+
+}
+
+// Evènements page
+.amui-l-page .amui-m-panel__body {
+  ul li,
+  ol li {
+    margin-left: $amui-space-none;
+  }
+}
+
+.amui-l-page .amui-m-panel__body {
+  ul,
+  ol {
+      margin-bottom: -1px;
+  }
+}
+// End App dashboard Layout styles

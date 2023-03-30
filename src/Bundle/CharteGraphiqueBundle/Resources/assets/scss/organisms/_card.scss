@@ -1,0 +1,63 @@
+// -----------------------------------------------------------------------------
+// This file contains Organism Card styles
+// -----------------------------------------------------------------------------
+.amui-o-card {
+
+  @include card;
+
+  &--primary {
+    border-top: 4px solid $amui-brand-primary;
+  }
+
+  &-secondary {
+    border-top: 4px solid $amui-brand-secondary;
+  }
+
+  &--success {
+    border-top: 4px solid $amui-brand-tertiary;
+  }
+
+  &--warning {
+    border-top: 4px solid $amui-color-warning-text;
+  }
+
+  &--danger {
+    border-top: 4px solid $amui-color-danger-text;
+  }
+
+  // Card content
+  &__heading {
+
+    margin-bottom: $amui-space-sm;
+
+    &-title {
+      color: $amui-color-gray-900;
+      display: inline-block;
+      font-family: $amui-font-family-primary;
+      font-size: $amui-font-size-ms;
+      font-weight: $amui-font-weight-semibold;
+      line-height: $amui-line-height-sm;
+      margin: $amui-space-none;
+      padding-top: .1rem;
+      vertical-align: top;
+    }
+
+    &-icon {
+      color: $amui-color-gray-400;
+      margin: $amui-space-none $amui-space-xxxs $amui-space-none $amui-space-none;
+    }
+  }
+
+  &__progress {
+    margin-bottom: $amui-space-sm;
+  }
+
+  &__details {
+    margin-bottom: $amui-space-md;
+
+    .amui-m-callout {
+      margin-bottom: $amui-space-xxs;
+    }
+  }
+}
+// End Card styles

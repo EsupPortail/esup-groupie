@@ -1,0 +1,12 @@
+// -----------------------------------------------------------------------------
+// This file contains Organism jQuery UI Selectable styles
+// -----------------------------------------------------------------------------
+
+// Selected items
+.ui-selectable {
+  .ui-selected {
+    background-color: $amui-brand-primary;
+    color: $amui-color-white;
+  }
+}
+// End Organism jQuery UI Selectable override styles

@@ -1,0 +1,51 @@
+// -----------------------------------------------------------------------------
+// This file contains Page splitted styles
+// -----------------------------------------------------------------------------
+.amui-l {
+
+  // Aside layout
+  &-page-splitted {
+    &__aside {
+      background-color: $amui-color-gray-200;
+      border-right: $amui-size-border-thin solid $amui-color-gray-400;
+      height: calc(100vh - 72px);
+      margin-bottom: -$amui-space-ms;
+      margin-left: -$amui-space-ms;
+      margin-top: -$amui-space-ms;
+      padding-left: $amui-space-ms;
+      padding-top: $amui-space-ms;
+    }
+
+    &__content {
+      margin-bottom: -$amui-space-ms;
+      padding-left: $amui-space-sm;
+
+      .amui-l-bottom {
+        margin-bottom: $amui-space-none;
+        margin-right: -$amui-space-ms;
+        margin-top: $amui-space-none;
+      }
+    }
+
+    .amui-m-nav-tabs {
+      background-color: $amui-color-gray-200;
+    }
+
+    .amui-o-date-navigation {
+      margin-bottom: 1px;
+      margin-right: -$amui-space-ms;
+    }
+  }
+
+  // Main mayout
+  &-page-splitted__content {
+    padding-right: $amui-space-none;
+    width: calc(75% + 1.25rem);
+
+    .amui-l-page {
+      height: calc(100vh - 218px);
+      overflow: scroll;
+    }
+  }
+}
+// End Page splitted styles

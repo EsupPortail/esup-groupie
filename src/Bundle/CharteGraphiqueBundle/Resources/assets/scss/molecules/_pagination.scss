@@ -1,0 +1,60 @@
+// -----------------------------------------------------------------------------
+// This file contains Molecule Pagination styles
+// -----------------------------------------------------------------------------
+.amui-m-pagination {
+  &__list {
+    &.pagination > li > a,
+    &.pagination > li > span {
+      background-color: transparent;
+      border: $amui-space-none;
+    }
+
+    &.pagination > .is--disabled > span,
+    &.pagination > .is--disabled > span:hover,
+    &.pagination > .is--disabled > span:focus,
+    &.pagination > .is--disabled > a,
+    &.pagination > .is--disabled > a:hover,
+    &.pagination > .is--disabled > a:focus {
+      background-color: transparent;
+    }
+
+    &.pagination > .active a {
+      border-radius: $amui-border-radius-md;
+    }
+
+    &.pagination > li > a {
+      border-radius: $amui-border-radius-md;
+      margin: $amui-space-none $amui-space-xxxs;
+    }
+
+    &.pagination > .is--active > a,
+    &.pagination > .is--active > a:focus,
+    &.pagination > .is--active > a:hover,
+    &.pagination > .is--active > span,
+    &.pagination > .is--active > span:focus,
+    &.pagination > .is--active > span:hover {
+      background-color: $amui-brand-primary;
+      color: $amui-color-white;
+    }
+
+    &.pagination > li > a,
+    &.pagination > li > span {
+      color: $amui-color-gray-800;
+    }
+
+    // State
+    &.pagination > li > a:focus,
+    &.pagination > li > a:hover,
+    &.pagination > li > span:focus,
+    &.pagination > li > span:hover {
+      background-color: $amui-color-body;
+      color: $amui-brand-primary;
+    }
+
+    &.pagination a {
+      font-family: $amui-font-family-primary;
+      font-weight: $amui-font-weight-semibold;
+    }
+  }
+}
+// End Molecule Pagination styles

@@ -1,0 +1,29 @@
+// -----------------------------------------------------------------------------
+// This file contains Molecule Form control styles
+// -----------------------------------------------------------------------------
+.amui-m-form-group {
+  // Succes states
+  &.is--success {
+    .amui-a-form-label,
+    .help-block {
+      color: darken($amui-color-success-text, $amui-percent-rate-25);
+    }
+  }
+
+  // Warning states
+  &.is--warning {
+    .amui-a-form-label,
+    .help-block {
+      color: darken($amui-color-warning-text, $amui-percent-rate-25);
+    }
+  }
+
+  // Error states
+  &.is--error {
+    .amui-a-form-label,
+    .help-block {
+      color: darken($amui-color-danger-text, $amui-percent-rate-25);
+    }
+  }
+}
+// End Molecule form controls styles

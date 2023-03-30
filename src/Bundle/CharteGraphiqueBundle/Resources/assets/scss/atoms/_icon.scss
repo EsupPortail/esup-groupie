@@ -1,0 +1,41 @@
+// -----------------------------------------------------------------------------
+// This file contains Atom icons styles
+// -----------------------------------------------------------------------------
+
+.material-icons {
+
+  // Rules for sizing the icon.
+  @include amui-icon-size(24px);
+  direction: ltr;
+  display: inline-block;
+  font-family: $amui-font-icon;
+  // Support for IE.
+  font-feature-settings: 'liga';
+  font-size: $amui-font-size-lg;  // Preferred icon size
+  // Support for Firefox.
+  -moz-osx-font-smoothing: grayscale;
+  // Support for all WebKit browsers.
+  -webkit-font-smoothing: antialiased;
+  font-style: normal;
+  font-weight: normal;
+  letter-spacing: normal;
+  line-height: $amui-line-height-sm;
+  // Support for Safari and Chrome.
+  text-rendering: optimizeLegibility;
+  text-transform: none;
+  white-space: nowrap;
+  word-wrap: normal;
+
+  &.is--sm {
+    @include amui-icon-size(18px);
+  }
+
+  &.is--lg {
+    @include amui-icon-size(36px);
+  }
+
+  &.is--xl {
+    @include amui-icon-size(48px);
+  }
+}
+// End Atom icons styles

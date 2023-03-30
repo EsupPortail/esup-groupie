@@ -1,0 +1,3 @@
+[submodule "lib/cas"]
+	path = lib/cas
+	url = https://github.com/Jasig/phpCAS.git

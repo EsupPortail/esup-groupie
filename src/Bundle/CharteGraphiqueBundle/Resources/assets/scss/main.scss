@@ -1,0 +1,19 @@
+@charset 'UTF-8';
+
+// 1. Contains functions
+@import 'functions';
+
+// 2. Contains General styles
+@import 'settings';
+
+// 3. Contains all helpers
+@import 'helpers';
+
+// 4. Contains all mixins
+@import 'mixins';
+
+// 5. Contains all components
+@import 'components';
+
+@import "~bootstrap/dist/css/bootstrap.css";
+//@import "~datatables.net-bs/css/dataTables.bootstrap.css"

@@ -1,0 +1,48 @@
+// -----------------------------------------------------------------------------
+// This file contains Organism Validation bar styles
+// -----------------------------------------------------------------------------
+.amui-o-validation-bar {
+  background-color: $amui-color-white;
+  border-top: $amui-size-border-thin solid $amui-color-gray-300;
+  padding: $amui-space-xs;
+
+  &__title {
+    display: inline-block;
+    font-weight: $amui-font-weight-semibold;
+
+    + span {
+      margin-left: $amui-space-xs;
+    }
+  }
+
+  // States
+  &__status {
+    font-family: $amui-font-family-primary;
+    font-size: $amui-font-size-ms;
+
+    &.is--primary {
+      color: $amui-brand-primary;
+    }
+
+    &.is--success {
+      color: $amui-color-success-text;
+    }
+
+    &.is--warning {
+      color: $amui-color-warning-text;
+    }
+
+    &.is--danger {
+      color: $amui-color-danger-text;
+    }
+
+    &.is--draft {
+      color: $amui-color-draft;
+    }
+  } // End status
+
+  .amui-a-btn {
+    margin-left: $amui-space-md;
+  }
+}
+// End Organism Validation bar styles

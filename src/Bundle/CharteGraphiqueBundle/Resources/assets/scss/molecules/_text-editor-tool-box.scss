@@ -1,0 +1,24 @@
+// -----------------------------------------------------------------------------
+// This file contains Text editor tool box styles
+// -----------------------------------------------------------------------------
+.amui-m-text-editor-tool-box {
+  background-color: $amui-color-white;
+  border: $amui-size-border-thin solid $amui-color-gray-400;
+  padding: $amui-space-sm;
+
+  &__item {
+    display: inline-block;
+    margin-right: $amui-space-xs;
+
+    i {
+      color: $amui-color-gray-600;
+      vertical-align: middle;
+
+      &:hover {
+        color: $amui-brand-primary;
+        cursor: pointer;
+      }
+    }
+  }
+}
+// End Molecules Text editor tool box styles

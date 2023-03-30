@@ -1,0 +1,33 @@
+// -----------------------------------------------------------------------------
+// This file contains Atom Badges styles
+// -----------------------------------------------------------------------------
+.amui-a-badge {
+  background-color: $amui-color-badge;
+  border-radius: $amui-border-radius-rounded;
+  color: $amui-color-white;
+  font-family: $amui-font-family-primary;
+  font-size: $amui-font-size-xs;
+  font-weight: $amui-font-weight-semibold;
+  padding: rem(6);
+
+  &.is--success {
+    background-color: $amui-color-success-text;
+    color: $amui-color-white;
+  }
+
+  &.is--warning {
+    background-color: $amui-color-warning-text;
+    color: $amui-color-white;
+  }
+
+  &.is--info {
+    background-color: $amui-color-info;
+    color: $amui-color-text-dark;
+  }
+
+  &.is--danger {
+    background-color: $amui-color-danger-text;
+    color: $amui-color-white;
+  }
+}
+// End Atom badges styles

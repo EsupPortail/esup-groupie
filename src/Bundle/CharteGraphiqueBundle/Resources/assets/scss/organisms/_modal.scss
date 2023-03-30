@@ -1,0 +1,108 @@
+// -----------------------------------------------------------------------------
+// This file contains Organism Modal styles
+// -----------------------------------------------------------------------------
+.amui-o-modal {
+
+  // Header section
+  &__header {
+    background-color: $amui-brand-primary;
+    border-radius: $amui-border-radius-md $amui-border-radius-md 0 0;
+    color: $amui-color-white;
+    min-height: $amui-space-xxxl;
+    padding: $amui-space-xs $amui-space-sm;
+
+    &.is--transparent {
+      background-color: transparent;
+
+      .amui-o-modal__close {
+        color: $amui-color-gray-700;
+      }
+    }
+
+    &-title {
+      color: $amui-color-white;
+      font-size: $amui-font-size-ml;
+      font-weight: $amui-font-weight-semibold;
+      line-height: 1.2;
+      margin: $amui-space-none;
+    }
+  }
+
+  // Content section
+  &__content {
+    background-color: $amui-color-white;
+  }
+
+  // Modal with header transparent
+  h1.amui-o-modal__body__title {
+    font-size: $amui-font-size-xl;
+    font-weight: $amui-font-weight-regular;
+    line-height: rem(40);
+  }
+
+  // Body section
+  &__body {
+    margin: $amui-font-size-lg $amui-font-size-ms;
+
+    &-title {
+      font-size: $amui-font-size-lg;
+      font-weight: $amui-font-weight-bold;
+      line-height: $amui-line-height-sm;
+      margin-bottom: $amui-space-xxs;
+    }
+
+    &-icon {
+      color: $amui-color-gray-600;
+      display: block;
+      margin: $amui-space-none auto;
+      margin-bottom: $amui-space-md;
+    }
+
+    &-callout {
+      background-color: $amui-color-body;
+      border-radius: $amui-border-radius-md;
+      color: $amui-color-gray-800;
+      font-family: $amui-font-family-primary;
+      font-size: rem(13);
+      line-height: $amui-line-height-global;
+      margin-bottom: $amui-space-md;
+      padding: $amui-space-xs $amui-space-sm;
+
+      p {
+        font-size: rem(13);
+      }
+
+      p:last-child {
+        margin: 0;
+      }
+    }
+  }
+
+  // Close button
+  &__close {
+    color: $amui-color-white;
+    font-size: $amui-font-size-lg;
+    opacity: 1;
+
+    &:hover {
+      color: $amui-color-white;
+    }
+  }
+
+  // Footer section
+  &__footer {
+    background-color: $amui-color-body;
+    border-top: $amui-size-border-thin solid $amui-color-gray-300;
+    display: flex;
+    justify-content: flex-end;
+    margin-top: $amui-space-xxl;
+    padding: $amui-space-xxs $amui-space-xs;
+
+    .amui-a-btn {
+      margin-left: $amui-space-md;
+      min-width: 120px;
+    }
+
+  }
+}
+// End Organism Modal styles

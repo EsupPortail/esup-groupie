@@ -1,0 +1,17 @@
+// Reset the box-sizing
+* {
+  box-sizing: border-box;
+  text-decoration-skip: ink;
+  word-wrap: break-word;
+
+  &::before,
+  &::after {
+    box-sizing: inherit;
+    text-decoration-skip: inherit;
+  }
+}
+
+html {
+  font-size: 100%; // Important to restore the font-size by adding 100%
+  height: 100%;
+}

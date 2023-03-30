@@ -1,0 +1,144 @@
+// -----------------------------------------------------------------------------
+// This file contains Molecule Panel styles
+// -----------------------------------------------------------------------------
+
+%is--fluid {
+  padding: $amui-space-none;
+}
+
+.amui-m-panel {
+
+  @include panel;
+  background-color: $amui-color-smoke;
+  margin-bottom: $amui-space-sm;
+
+  // Light background panel
+  &.is--light {
+    background-color: $amui-color-white;
+  }
+
+  // Title
+  &.is--highlight,
+  &.is--info,
+  &.is--danger,
+  &.is--warning,
+  &.is--success {
+
+    .amui-m-panel__heading-title {
+      font-size: $amui-font-size-ms;
+    }
+
+    .amui-a-form-check__label {
+      font-size: $amui-font-size-sm;
+    }
+  }
+
+  // Panel highlight
+  &.is--highlight,
+  &__body.is--highlight {
+    background-color: $amui-color-highlight;
+    padding: $amui-space-sm;
+
+    .amui-m-panel__title {
+      font-size: $amui-font-size-ms;
+    }
+  }
+
+  // Panel info
+  &.is--info,
+  &__body.is--info {
+    background-color: $amui-color-body;
+    padding: $amui-space-sm;
+
+    .amui-m-panel__title {
+      font-size: $amui-font-size-ms;
+    }
+  }
+
+  // Panel danger
+  &.is--danger,
+  &__body.is--danger {
+    background-color: $amui-color-danger;
+    padding: $amui-space-sm;
+
+    .amui-m-panel__title {
+      font-size: $amui-font-size-ms;
+    }
+  }
+
+  // Panel warning
+  &.is--warning,
+  &__body.is--warning {
+    background-color: $amui-color-warning;
+    padding: $amui-space-sm;
+
+    .amui-m-panel__title {
+      font-size: $amui-font-size-ms;
+    }
+  }
+
+  // Panel success
+  &.is--success,
+  &__body.is--success {
+    background-color: $amui-color-success;
+    padding: $amui-space-sm;
+
+    .amui-m-panel__title {
+      font-size: $amui-font-size-ms;
+    }
+  }
+
+  &__heading {
+    border-bottom: $amui-size-border-thin solid $amui-color-gray-300;
+    // padding-bottom: $amui-space-sm;
+    margin-bottom: $amui-space-md;
+
+    &-title {
+      color: $amui-color-gray-800;
+      font-family: $amui-font-family-primary;
+      font-size: $amui-font-size-lg;
+      font-weight: $amui-font-weight-semibold;
+      line-height: rem(32);
+      padding-bottom: $amui-space-xxs;
+    }
+
+    .amui-m-nav-tabs {
+      border-bottom: 0;
+    }
+  }
+
+  &__body {
+    line-height: $amui-line-height-global;
+
+    &.is--fluid {
+      @extend %is--fluid;
+    }
+  }
+
+  &__footer {
+    // padding: $amui-space-sm $amui-space-xxs;
+
+    .amui-a-btn + .amui-a-btn {
+      margin-left: $amui-space-md;
+    }
+
+    .amui-g-grid {
+      display: flex;
+      justify-content: flex-start;
+    }
+  }
+
+  &__body__footer {
+    padding: $amui-space-sm;
+  }
+
+  // Tabs content
+  &.is--fluid {
+    @extend %is--fluid;
+
+    .tab-content {
+      @extend %is--fluid;
+    }
+  }
+}
+// End Molecule panel styles

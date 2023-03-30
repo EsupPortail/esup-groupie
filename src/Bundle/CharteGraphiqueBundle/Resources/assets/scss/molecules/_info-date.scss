@@ -1,0 +1,51 @@
+// -----------------------------------------------------------------------------
+// This file contains Info Date Molecules styles
+// -----------------------------------------------------------------------------
+.amui-m-info-date {
+  float: left;
+  margin-left: rem(14);
+  position: relative;
+  width: calc(50% - 14px);
+
+  &__title {
+    color: $amui-color-gray-900;
+    font-size: $amui-font-size-sm;
+    font-weight: $amui-font-weight-bold;
+    line-height: $amui-line-height-sm;
+    margin-bottom: $amui-space-xxs;
+    margin-left: $amui-space-none;
+    margin-right: $amui-space-none;
+    margin-top: $amui-space-none;
+  }
+
+  &__day {
+    color: $amui-color-gray-800;
+    margin-bottom: $amui-space-xxxs;
+  }
+
+  &__time {
+    color: $amui-color-gray-500;
+  }
+
+  &__day,
+  &__time {
+    display: block;
+    font-size: $amui-font-size-xs;
+    line-height: $amui-line-height-sm;
+  }
+
+  + .amui-m-info-date {
+    // Border left
+    &:last-child::before {
+      background-color: $amui-color-gray-300;
+      bottom: $amui-space-none;
+      content: '';
+      height: 75%;
+      left: -$amui-space-sm;
+      position: absolute;
+      width: $amui-size-border-thin;
+      z-index: 100;
+    }
+  }
+}
+// End Molecules Info Date styles
