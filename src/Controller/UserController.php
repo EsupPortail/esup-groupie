@@ -690,7 +690,7 @@ class UserController extends AbstractController {
      * Voir les appartenances et droits d'un utilisateur.
      *
      * @Route("/see/{uid}", name="see_user")
-     * @Template()
+     * @Template("User/see.html.twig")
      */
     public function seeAction(LdapFonctions $ldapfonctions, Request $request, $uid)
     {
@@ -758,7 +758,7 @@ class UserController extends AbstractController {
      * Voir les appartenances et droits d'un utilisateur.
      *
      * @Route("/seeprivate/{uid}", name="see_user_private")
-     * @Template()
+     * @Template("User/seeprivate.html.twig")
      */
     public function seeprivateAction(LdapFonctions $ldapfonctions, Request $request, $uid)
     {
@@ -828,7 +828,7 @@ class UserController extends AbstractController {
     * Recherche de personnes
     *
     * @Route("/search/{opt}/{cn}/{liste}",name="user_search")
-    * @Template()
+    * @Template("User/search.html.twig")
     */
     public function searchAction(LdapFonctions $ldapfonctions, Request $request, $opt='search', $cn='', $liste='') {
         $this->init_config();
@@ -997,7 +997,7 @@ class UserController extends AbstractController {
     * Formulaire pour l'ajout d'utilisateurs en masse
     *
     * @Route("/multiple/{opt}/{cn}/{liste}",name="user_multiple")
-    * @Template("AmuGroupieBundle:User:multiple.html.twig")
+    * @Template("User/multiple.html.twig")
     */
     public function multipleAction(LdapFonctions $ldapfonctions, Request $request, $opt='search', $cn='', $liste='') {
         $this->init_config();

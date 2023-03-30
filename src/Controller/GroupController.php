@@ -73,7 +73,7 @@ class GroupController extends AbstractController {
      * Affiche tous les groupes
      *
      * @Route("/all",name="all_groups")
-     * @Template()
+     * @Template("Group/allgroups.html.twig")
     */
     public function allgroupsAction(LdapFonctions $ldapfonctions) {
 
@@ -157,7 +157,7 @@ class GroupController extends AbstractController {
      * Affiche tous les groupes privés
      *
      * @Route("/all_private",name="all_private_groups")
-     * @Template()
+     * @Template("Group/allprivate.html.twig")
      */
     public function allprivateAction(LdapFonctions $ldapfonctions) {
         $this->init_config();
@@ -203,7 +203,7 @@ class GroupController extends AbstractController {
      * Affiche tous les groupes dont l'utilisateur est administrateur
      *
      * @Route("/my_groups",name="my_groups")
-     * @Template()
+     * @Template("Group/mygroups.html.twig")
      */
     public function mygroupsAction(LdapFonctions $ldapfonctions) {
         $this->init_config();
@@ -287,7 +287,7 @@ class GroupController extends AbstractController {
      * Affiche tous les groupes dont l'utilisateur est membre
      *
      * @Route("/memberships",name="memberships")
-     * @Template()
+     * @Template("Group/memberships.html.twig")
      */
     public function membershipsAction(Request $request, LdapFonctions $ldapfonctions) {
         $this->init_config();
@@ -362,7 +362,7 @@ class GroupController extends AbstractController {
      * Affiche tous les groupes privés dont l'utilisateur est membre
      *
      * @Route("/private_memberships",name="private_memberships")
-     * @Template()
+     * @Template("Group/privatememberships.html.twig")
      */
     public function privatemembershipsAction(Request $request, LdapFonctions $ldapfonctions) {
         $this->init_config();
@@ -403,7 +403,7 @@ class GroupController extends AbstractController {
      * Recherche de groupes
      *
      * @Route("/search/{opt}/{uid}",name="group_search")
-     * @Template()
+     * @Template("Group/search.html.twig")
      */
     public function searchAction(Request $request, LdapFonctions $ldapfonctions,  $opt='search', $uid='') {
         $this->init_config();
@@ -542,7 +542,7 @@ class GroupController extends AbstractController {
      * Recherche de groupes pour la suppression
      *
      * @Route("/searchdel",name="group_search_del")
-     * @Template()
+     * @Template("Group/search.html.twig")
      */
     public function searchdelAction(Request $request) {
         return $this->redirect($this->generateUrl('group_search', array('opt' => 'del', 'uid'=>'')));
@@ -552,7 +552,7 @@ class GroupController extends AbstractController {
      * Recherche de groupes pour la modification
      *
      * @Route("/searchmod",name="group_search_modify")
-     * @Template()
+     * @Template("Group/search.html.twig")
      */
     public function searchmodAction(Request $request) {
         return $this->redirect($this->generateUrl('group_search', array('opt' => 'mod', 'uid'=>'')));
@@ -805,7 +805,7 @@ class GroupController extends AbstractController {
      * Voir les membres et administrateurs d'un groupe.
      *
      * @Route("/see/{cn}/{mail}/{liste}", name="see_group")
-     * @Template()
+     * @Template("Group/see.html.twig")
      */
     public function seeAction(Request $request, LdapFonctions $ldapfonctions, $cn, $mail, $liste)
     {
@@ -936,7 +936,7 @@ class GroupController extends AbstractController {
      * Voir les membres et administrateurs d'un groupe privé.
      *
      * @Route("/see_private/{cn}/{opt}", name="see_private_group")
-     * @Template()
+     * @Template("Group/seeprivate.html.twig")
      */
     public function seeprivateAction(Request $request, LdapFonctions $ldapfonctions, $cn, $opt)
     {
@@ -1216,7 +1216,7 @@ class GroupController extends AbstractController {
      * Supprimer un groupe.
      *
      * @Route("/delete/{cn}", name="group_delete")
-     * @Template()
+     * @Template("Group/delete.html.twig")
      */
     public function deleteAction(Request $request, LdapFonctions $ldapfonctions, $cn)
     {
@@ -1309,7 +1309,7 @@ class GroupController extends AbstractController {
      * Supprimer un groupe privé.
      *
      * @Route("/private/del_1/{cn}", name="private_group_del_1")
-     * @Template()
+     * @Template("Group/private.html.twig")
      */
     public function del1PrivateAction(Request $request,LdapFonctions $ldapfonctions, $cn) {
         $this->init_config();
@@ -1377,7 +1377,7 @@ class GroupController extends AbstractController {
      * Modifier un groupe.
      *
      * @Route("/modify/{cn}/{desc}/{filt}", name="group_modify")
-     * @Template()
+     * @Template("Group/modify.html.twig")
      */
     public function modifyAction(Request $request, LdapFonctions $ldapfonctions, $cn, $desc, $filt)
     {
@@ -1503,7 +1503,7 @@ class GroupController extends AbstractController {
     * Gestion des groupes privés de l'utilisateur
     *
     * @Route("/private",name="private_group")
-    * @Template() 
+    * @Template("Group/private.html.twig")
     */
     public function privateAction(Request $request, LdapFonctions $ldapfonctions) {
         $this->init_config();
