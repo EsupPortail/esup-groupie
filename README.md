@@ -258,4 +258,4 @@ Le nom des attributs est paramétrable.
            SINGLE-VALUE
           SYNTAX 1.3.6.1.4.1.1466.115.121.1.7 )
 
-L'attribut amuGroupMember permet d'ajouter manuellement une personne à un groupe qui est alimenté par un filtre. Ceci n'apparaît pas dans l'interface.
+L'attribut amuGroupMember permet d'ajouter manuellement une personne à un groupe qui est alimenté par un filtre. Cet attribut ne se modifie pas dans l'interface.
