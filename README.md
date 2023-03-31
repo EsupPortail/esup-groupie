@@ -217,6 +217,7 @@ Scripts PERL LDAP pour peupler des groupes basés sur des filtres (plus efficace
 --------------------------------------------------------------------------------------------
 Chez nous les scripts et autres définitions sont sous /var/ldap dans les répertoires etc cron et lib
 Ils doivent s'exécuter sur un LDAP Maitre (lecture du slapd.conf de OpenLDAP et du password root (en clair))
+Il conviendra de remplacer par vos attributs maison si besoin et de changer les chemins si besoin.
 
 * Dans etc:
 	fichier hosts contient des définitions
@@ -228,6 +229,7 @@ Ils doivent s'exécuter sur un LDAP Maitre (lecture du slapd.conf de OpenLDAP et
 	* SQL: dbi:mysql:host=apogee.univ.fr;port=3306;database=fwa2|user|pass|SELECT * from V_USERS_APOGEE
 	* LDAP: (&(amudatevalidation=*)(amuComposante=odontologie)(eduPersonAffiliation=faculty))
 
+	SyncGroupSID.pl synchronise la branche Active Directory vers le LDAP pour ajouter le SID. Permet de renommer dans LDAP et de renommer dans l'AD
 	SyncADGroups.pl synchronise la branche ou=groups LDAP avec une branche ou=groups Active Directory
 
 Schéma LDAP

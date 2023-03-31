@@ -1,4 +1,5 @@
 #!/usr/bin/perl
+# Dominique LALOT AMU
 use strict;
 use Data::Dumper;
 use Net::LDAPS;
@@ -19,27 +20,35 @@ use DBI;
 require "utils2.pm";
 my $modif=0;
 my %HldapValide;
-our ($opt_h, $opt_v,$opt_t);
+our ($opt_h, $opt_v,$opt_t,$opt_f);
+# utilisé pour les groupes SQL limités au personnel
 my $filter='(&(amudatevalidation=*)(|(edupersonaffiliation=employee)(edupersonaffiliation=faculty)(edupersonaffiliation=researcher)(edupersonaffiliation=affiliate)))';
-my $adminattr='amugroupadmin';	# DN des admins de groupe
-my $memberattr='amugroupmember';	# DN des membres groupe forcés dans un groupe à filtre (gestion manuelle en LDAP)
-my $filterattr='amugroupfilter';	# nom de l'attribut contennant un filtre LDAP ou SQl 
-	
+my $adminattr='amugroupadmin';    # DN des admins de groupe
+my $memberattr='amugroupmember';    # DN des membres groupe forcés dans un groupe à filtre (gestion manuelle en LDAP)
+my $filterattr='amugroupfilter';    # nom de l'attribut contennant un filtre LDAP ou SQl 
+my $group2groupattr='amugroupofgroup';    # nom de l'attribut contennant un filtre LDAP ou SQl 
+my $filtergrp="$filterattr=*";
+    
 getopts('tvhf:d:');
 if (defined($opt_h)){
    print "Usage: [-t] [-v]
- -v mode verbose\n  -t teste seulement\n";
+   -f fitre de groupe
+   -v mode verbose
+   -t teste seulement\n";
    exit;
 }
 $TEST=1 if (defined($opt_t));
 $VERBOSE=1 if (defined($opt_v));
+$filtergrp=($opt_f) if (defined($opt_f));
 
-	&LitLdapConfig(); # rempli rootdn rootpass suffix
-	my $ldap = Net::LDAP->new($masterhost) or die "$@";
-	my $mesg = $ldap->bind($rootdn, password => $rootpw, version => 3 );
-	if ($mesg->code()) { print "Pb bind admin";exit -3;}
+    &LitLdapConfig(); # rempli rootdn rootpass suffix
+    my $ldap = Net::LDAP->new($masterhost) or die "$@";
+    my $mesg = $ldap->bind($rootdn, password => $rootpw, version => 3 );
+    if ($mesg->code()) { print "Pb bind admin";exit -3;}
 
-	$mesg= $ldap->search (  # perform a search
+    # Pour le personnel et les groupes SQL
+    # On regarde si les comptes personnels sont toujours valides
+    $mesg= $ldap->search (  # perform a search
           base   => "ou=people,$suffix",
           filter => $filter,
           attrs => ['uid'],
@@ -48,113 +57,133 @@ $VERBOSE=1 if (defined($opt_v));
    my @entries= $mesg->entries;
    foreach my $entr (@entries){
       my $uid=$entr->get_value('uid');
-		$HldapValide{lc $uid}=1;
+        $HldapValide{lc $uid}=1;
    }
 
-
-	$mesg = $ldap->search (  # perform a search
-			 base   => "ou=groups,$suffix",
-			 filter => "($filterattr=*)",
-			 attrs => ['cn',$filterattr,'member',$memberattr],
-			 scope => 'one');
-	print "Groupes: ".$mesg->count."\n" if $VERBOSE;
-	my @entries= $mesg->entries;
-	foreach my $entr (@entries){
-		my %HGmember=();
-		my %HGmemberManual=();
-		my $groupeDN=$entr->dn;
-		my $cn=$entr->get_value('cn');
-		#print "groupe: $cn\n" if $VERBOSE;
-		my $filter=$entr->get_value($filterattr);
-		my @res=$entr->get_value('member');
-		my @manual=$entr->get_value($memberattr);
-		$HGmember{lc $_}=1 foreach @res;
-		$HGmemberManual{lc $_}=1 foreach @manual;
-		&Group($groupeDN,$filter,\%HGmember,\%HGmemberManual);
-	}
+    # On cherche les groupes
+    my @attrs=('cn',$filterattr,'member',$memberattr,$group2groupattr);
+    $mesg = $ldap->search (  # perform a search
+             base   => "ou=groups,$suffix",
+             filter => "($filtergrp)",
+             #             filter => "(&(cn=amu:ufr:smpm:ldap:etudiants)($filterattr=*))",
+             attrs => \@attrs,
+             scope => 'one');
+    print "Groupes: ".$mesg->count."\n" if $VERBOSE;
+    my @entries= $mesg->entries;
+    foreach my $entr (@entries){
+        my %HGmember=();
+        my %HGmemberManual=();
+        my $groupeDN=$entr->dn;
+        my $cn=$entr->get_value('cn');
+        my $filter=$entr->get_value($filterattr);
+        my @res=$entr->get_value('member');
+        my @manual=$entr->get_value($memberattr);
+        my $group2group=$entr->get_value($group2groupattr);
+        #print "groupe: $cn @attrs : $group2group\n" if $VERBOSE;
+        $HGmember{lc $_}=1 foreach @res;
+        $HGmemberManual{lc $_}=1 foreach @manual;
+        &Group($groupeDN,$filter,\%HGmember,\%HGmemberManual,$group2group);
+    }
 
 sub Group {
-	my ($groupeDN,$filter,$HGmember,$HGmemberManual)=@_;
-	my %HldapDN;
-	my @Tadd=();
-	my @Tdelete=();
-	my @Tchanges=();
-	my $ADD=0;
-	my $DELETE=0;
-	my $base;
-	my $GROUP=0;
-	my @attrs;
-	# patch de M.. pour peupler grouper-ent
-	unless ($filter=~/^dbi:/){ #si LDAP
-		if ($filter=~/$adminattr/i) {
-			$base="ou=groups,$suffix";
-			@attrs=($adminattr);
-			$GROUP=1;
-			#print "$GROUP\n";
-		}
-		else {
-			$base="ou=people,$suffix";
-			@attrs=('');
-		}
-		$mesg = $ldap->search (  # perform a search
-				 base   => $base,
-				 filter => $filter,
-				 attrs => \@attrs,
-				 scope => 'one');
-		my @entries= $mesg->entries;
-		#print "filter=$filter ".$mesg->count()."\n";
-		foreach my $entr (@entries){
-			if ($GROUP){
-				my @admins=$entr->get_value($adminattr);
-				#print "admins:@admins ".$entr->dn."\n";
-				$HldapDN{lc $_}=1 foreach (@admins);
-				#print "$_\n";
-			}
-			else {
-				$HldapDN{lc $entr->dn}=1;
-				#print $entr->dn."\n";
-			}
-		}
-	}
-	else { #SQL
-		my ($dbi,$user,$pass,$sql)=split(/\|/,$filter);
-		my $dbh = DBI->connect($dbi,$user,$pass) || do {warn( $DBI::errstr . "\n" );return};
-		my $sthSearch = $dbh->prepare( $sql );
-		$sthSearch->execute();
-   	my  $login;
-	   $sthSearch->bind_columns(\$login);
-   	while($sthSearch->fetch){
-         #print "\t$login\n" ;
-			$login = lc $login;
-			unless ($HldapValide{$login}){
-				#print "$groupeDN $login plus actif\n" if $VERBOSE;
-			}
-			else {
-				$HldapDN{"uid=$login,ou=people,$suffix"}=1;
-			}
-   	}
-		$sthSearch->finish();
-		$dbh->disconnect();
-	}
-	foreach (keys %{$HGmember}){
-		#print "Gmember $_\n";
-		unless (defined $HldapDN{$_}){
-			unless ($$HGmemberManual{$_}){
-				print "$groupeDN $_ delete\n" if $VERBOSE;
-	      	push @Tdelete,$_;
-		   	$DELETE=1;
-			}
-		}
-	}
-	foreach (keys %HldapDN){
-		#print "ldapDN $_\n";
+    my ($groupeDN,$filter,$HGmember,$HGmemberManual,$group2group)=@_;
+    my %HldapDN;
+    my @Tadd=();
+    my @Tdelete=();
+    my @Tchanges=();
+    my $ADD=0;
+    my $DELETE=0;
+    my $base;
+    my $GROUP=0;
+    my @attrs;
+    my $attr='';
+    #print "Sub Group filter $filter groupe2group: $group2group\n";
+    # patch de M.. pour peupler grouper-ent
+    unless ($filter=~/^dbi:/){ #si LDAP
+        if ($group2group){
+            $base="ou=groups,$suffix";
+                $GROUP=1;
+            if ($filter=~/$adminattr/i){ # le groupe qui contient tous les admins groupie
+                $attr=$adminattr;
+            }
+            else {
+                $attr='member'; # groupe de groupe normal dont filtre sous la forme cn=*:*
+            } 
+        }
+        else {
+            $base="ou=people,$suffix";
+        }
+        @attrs=($attr);
+        # Gérer les filtres avec la date du jour
+        if ($filter=~/#(\d+)DAYS#/){
+            my $days=$1;
+            my $seconds=$days*24*3600;
+            my ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = localtime(time-$seconds);
+            my $date=sprintf("%4d%02d%02d000000Z",$year+1900,$mon+1,$mday);
+            $filter=~s/#\d+DAYS#/$date/;
+        }
+        print "$base $filter\n" if $VERBOSE;
+        $mesg = $ldap->search (  # perform a search
+                 base   => $base,
+                 filter => $filter,
+                 attrs => \@attrs,
+                 scope => 'one');
+        $mesg->code && warn "$groupeDN sur search $filter: ".$mesg->error."\n";
+        my @entries= $mesg->entries;
+        print "filter=$filter $base :".$mesg->count()."\n" if $VERBOSE and $GROUP;
+        foreach my $entr (@entries){
+            next if $entr->dn eq $groupeDN;
+            if ($GROUP){
+                my @res=$entr->get_value($attr);
+                print $entr->dn."\n" if $VERBOSE;
+                #print "\t $_\n" foreach(@res);
+                $HldapDN{lc $_}=1 foreach (@res);
+            }
+            else {
+                $HldapDN{lc $entr->dn}=1;
+                #print $entr->dn."\n";
+            }
+        }
+    }
+    else { #SQL
+        my ($dbi,$user,$pass,$sql)=split(/\|/,$filter);
+        my $dbh = DBI->connect($dbi,$user,$pass) || do {warn( "$groupeDN connect ".$DBI::errstr . "\n" );return};
+        my $sthSearch = $dbh->prepare( $sql );
+        $sthSearch->execute();
+        if ($sthSearch->err) { print "$groupeDN execute ".$DBI::errstr . "\n" ;return};
+        my  $login;
+        $sthSearch->bind_columns(\$login);
+        while($sthSearch->fetch){
+            $login = lc $login;
+            unless ($HldapValide{$login}){
+                print "$groupeDN $login plus actif\n" if $VERBOSE;
+            }
+            else {
+                $HldapDN{"uid=$login,ou=people,$suffix"}=1;
+            }
+        }
+        $sthSearch->finish();
+        $dbh->disconnect();
+    }
+    foreach (keys %{$HGmember}){
+        #print "Gmember $_\n";
+        unless (defined $HldapDN{$_}){
+            unless ($$HGmemberManual{$_}){
+                print "$groupeDN $_ delete\n" if $VERBOSE;
+              push @Tdelete,$_;
+               $DELETE=1;
+            }
+        }
+    }
+    foreach (keys %HldapDN){
+        #print "ldapDN $_\n";
       unless (defined $HGmember->{$_}){
-			print "$groupeDN $_ ajout\n" if $VERBOSE;
+            print "$groupeDN $_ ajout\n" if $VERBOSE;
          push @Tadd,$_;
-		   $ADD=1;
+           $ADD=1;
       }
- 	}
-	foreach (keys %{$HGmemberManual}){
+     }
+    foreach (keys %{$HGmemberManual}){
       #print "ldapDN $_\n";
       unless (defined $HGmember->{$_}){
          print "$groupeDN $_ ajout\n" if $VERBOSE;
@@ -163,15 +192,15 @@ sub Group {
       }
    }
 
-	unless ($TEST){
-	   if ($DELETE){
-			push @Tchanges,'delete',['member',\@Tdelete];
-		}
-		if ($ADD){
-			push @Tchanges,'add',['member',\@Tadd];
-		}
-		my $result = $ldap->modify($groupeDN, changes => \@Tchanges);
-		$result->code && warn "failed to modify add $groupeDN: ", $result->error ;
-		print "Modifications $groupeDN\n" if (($ADD or $DELETE) and $VERBOSE);
-	}
+    unless ($TEST){
+       if ($DELETE){
+            push @Tchanges,'delete',['member',\@Tdelete];
+        }
+        if ($ADD){
+            push @Tchanges,'add',['member',\@Tadd];
+        }
+        my $result = $ldap->modify($groupeDN, changes => \@Tchanges);
+        $result->code && warn "failed to modify add $groupeDN: ", $result->error ;
+        print "Modifications $groupeDN\n" if (($ADD or $DELETE) and $VERBOSE);
+    }
 }
