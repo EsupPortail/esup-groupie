@@ -223,14 +223,14 @@ Il conviendra de remplacer par vos attributs maison si besoin et de changer les 
 	fichier hosts contient des définitions
 * Dans lib:
 	utils2.pm librairie pour lire /etc/openldap/slapd.conf (rootdn rootpw suffix..)
-* Dans cron (modifier les quelques variables si besoin)
-	SyncAllGroups.pl synchronise les membres des groupes qui ont un attribut contenant un filtre de type LDAP ou SQL
-	exemples de filtres dans l'attribut amuGroupfilter:
-	* SQL: dbi:mysql:host=apogee.univ.fr;port=3306;database=fwa2|user|pass|SELECT * from V_USERS_APOGEE
-	* LDAP: (&(amudatevalidation=*)(amuComposante=odontologie)(eduPersonAffiliation=faculty))
+* Dans cron (modifier les quelques variables si besoin)  
+	SyncAllGroups.pl synchronise les membres des groupes qui ont un attribut contenant un filtre de type LDAP ou SQL  
+	exemples de filtres dans l'attribut amuGroupfilter:  
+	* SQL: dbi:mysql:host=apogee.univ.fr;port=3306;database=fwa2|user|pass|SELECT * from V_USERS_APOGEE  
+	* LDAP: (&(amudatevalidation=*)(amuComposante=odontologie)(eduPersonAffiliation=faculty)) 
 
-	SyncGroupSID.pl synchronise la branche Active Directory vers le LDAP pour ajouter le SID. Permet de renommer dans LDAP et de renommer dans l'AD
-	SyncADGroups.pl synchronise la branche ou=groups LDAP avec une branche ou=groups Active Directory
+	SyncGroupSID.pl synchronise la branche Active Directory vers le LDAP pour ajouter l'attribut objectsid. Permet de renommer dans LDAP et de renommer dans l'AD.  
+	SyncADGroups.pl synchronise la branche ou=groups LDAP avec une branche ou=groups Active Directory  
 
 Schéma LDAP
 ----------------------------------------------------------------------------------
