@@ -1,16 +1,4 @@
 <?php
-/*
- * Copyright 2022, ESUP-Portail  http://www.esup-portail.org/
- *  Licensed under APACHE2
- *  @author  Peggy FERNANDEZ BLANCO <peggy.fernandez-blanco@univ-amu.fr>
- *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
- *
- */
 
 namespace App\Entity;
 
@@ -30,6 +18,7 @@ class Group {
   protected $members;
   protected $amugroupadmin;
   protected $amugroupfilter;
+  protected $amugroupcreator;
   protected $droits;
   protected $flag;
   
@@ -83,9 +72,18 @@ public function __construct()
  public function setAmugroupadmin($amugroupadmin)
  {
     $this->amugroupadmin = $amugroupadmin;
- } 
+ }
+    /**
+     * Set amugroupcreator
+     *
+     * @param string $amugroupcreator
+     */
+    public function setAmugroupcreator($amugroupcreator)
+    {
+        $this->amugroupcreator = $amugroupcreator;
+    }
 
- public function setDroits($droits)
+    public function setDroits($droits)
  {
     $this->droits = $droits;
  } 
@@ -152,6 +150,11 @@ public function setFlag($flag)
  {
     return($this->amugroupadmin);
  }
+
+    public function getAmugroupcreator()
+    {
+        return($this->amugroupcreator);
+    }
  
  public function getDroits()
  {

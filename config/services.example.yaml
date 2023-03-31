@@ -49,6 +49,8 @@ parameters:
         groupfilter: amuGroupFilter
         groupadmin: amuGroupAdmin
         separator: ':'
+        creator: amuGroupCreator
+        owner: owner
     private:
         private_branch: ou=private
         prefix: amu:perso

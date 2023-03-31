@@ -1,16 +1,4 @@
 <?php
-/*
- * Copyright 2022, ESUP-Portail  http://www.esup-portail.org/
- *  Licensed under APACHE2
- *  @author  Peggy FERNANDEZ BLANCO <peggy.fernandez-blanco@univ-amu.fr>
- *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
- *
- */
 
 namespace App\Entity;
 
@@ -33,6 +21,7 @@ class User {
   protected $site;
   protected $memberof;
   protected $adminof;
+  protected $creatorof;
   protected $memberships;
   protected $exacte;
 
@@ -156,9 +145,19 @@ class User {
  public function setAdminof($adminof)
  {
     $this->adminof = $adminof;
- } 
- 
- /**
+ }
+
+    /**
+     * Set creatorof
+     *
+     * @param string $creatorof
+     */
+    public function setCreatorof($creatorof)
+    {
+        $this->creatorof = $creatorof;
+    }
+
+    /**
   * Set exacte
   *
   * @param bool $exacte
@@ -274,9 +273,17 @@ public function getSite()
  public function getAdminof()
  {
     return ($this->adminof);
- } 
+ }
+    /**
+     * Get Creatorof
+     *
+     */
+    public function getCreatorof()
+    {
+        return ($this->creatorof);
+    }
 
- public function getMemberships()
+    public function getMemberships()
  {
      return $this->memberships;
  }
