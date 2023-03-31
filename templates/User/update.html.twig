@@ -62,6 +62,9 @@
                     <th style="width: 400px;">Nom du groupe</th>
                     <th style="width: 120px;">Membre</th>
                     <th style="width: 120px;">Administrateur</th>
+                    {% if is_granted('ROLE_ADMIN') %}
+                        <th style="width: 120px;">Créateur</th>
+                    {% endif %}
                 </tr>
             </thead>
             <tbody>
@@ -74,6 +77,9 @@
                         <td style="vertical-align: middle;"> {{ user.memberships[loop.index0].groupname }} </td>
                         <td style="vertical-align: middle;"> {{ form_widget(m.memberof) }} </td>
                         <td style="vertical-align: middle;"> {{ form_widget(m.adminof) }} </td>
+                         {% if is_granted('ROLE_ADMIN') %}
+                             <td style="vertical-align: middle;"> {{ form_widget(m.creatorof) }} </td>
+                         {% endif %}
                      </tr>
                   {% else %}
                     {# Droits visu seulement pour la DOSI, sinon, on ne voit rien #}
@@ -82,11 +88,13 @@
                             <td style="vertical-align: middle;"> {{ user.memberships[loop.index0].groupname }} </td>
                             <td style="vertical-align: middle;"> {{ form_widget(m.memberof, {'attr': {'disabled': 'true'}}) }} </td>
                             <td style="vertical-align: middle;"> {{ form_widget(m.adminof, {'attr': {'disabled': 'true'}}) }} </td>
+                            <td style="vertical-align: middle;"> {{ form_widget(m.creatorof, {'attr': {'disabled': 'true'}}) }} </td>
                         </tr>
                     {% else %}
                         <div style="display:none">
                             {{ form_widget(m.memberof) }}
                             {{ form_widget(m.adminof) }}
+                            {{ form_widget(m.creatorof) }}
                         </div>
                     {% endif %}
                   {% endif %}
