@@ -288,14 +288,14 @@ class UserController extends AbstractController {
             if (($flagCreatMembers[$i]==FALSE)  && ($flagCreatAdmins[$i] == FALSE)) {
                 // on ajoute le groupe pour l'utilisateur
                 $membership = new Membership();
-                $membership->setGroupname($arDataAdmin[$i]->getAttribute($this->config_groups['cn'])[0]);
+                $membership->setGroupname($arDataCreator[$i]->getAttribute($this->config_groups['cn'])[0]);
                 $membership->setMemberof(FALSE);
                 $membership->setAdminof(FALSE);
                 $membership->setDroits('Aucun');
 
                 // Idem pour membershipini
                 $membershipini = new Membership();
-                $membershipini->setGroupname($arDataAdmin[$i]->getAttribute($this->config_groups['cn'])[0]);
+                $membershipini->setGroupname($arDataCreator[$i]->getAttribute($this->config_groups['cn'])[0]);
                 $membershipini->setMemberof(FALSE);
                 $membershipini->setAdminof(FALSE);
                 $membershipini->setDroits('Aucun');
@@ -310,16 +310,6 @@ class UserController extends AbstractController {
                     $membershipini->setDroits('Voir');
                 }
 
-                // Gestion droits pour un gestionnaire
-                if (true === $this->get('security.authorization_checker')->isGranted('ROLE_GESTIONNAIRE')) {
-                    foreach($tab_cn_admin_login as $cn) {
-                        if ($cn==strtolower($arDataAdmin[$i]->getAttribute($this->config_groups['cn'])[0])) {
-                            $membership->setDroits('Modifier');
-                            $membershipini->setDroits('Modifier');
-                            break;
-                        }
-                    }
-                }
                 // Gestion droits pour un admin de l'appli
                 if (true === $this->get('security.authorization_checker')->isGranted('ROLE_ADMIN')) {
                     $membership->setDroits('Modifier');
