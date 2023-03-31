@@ -142,6 +142,13 @@ class UserController extends AbstractController {
         $flagMember = array();
         for($i=0;$i<sizeof($arDataAdmin);$i++)
             $flagMember[$i] = FALSE;
+        $arDataCreator = $ldapfonctions->recherche($this->config_groups['creator']."=".$dnUser,array($this->config_groups['cn'], $this->config_groups['desc'], $this->config_groups['groupfilter']), 1, $this->config_groups['cn']);
+        $flagCreatMembers = array();
+        $flagCreatAdmins = array();
+        for($i=0;$i<sizeof($arDataCreator);$i++) {
+            $flagCreatMembers[$i] = FALSE;
+            $flagCreatAdmins[$i] = FALSE;
+        }
         
         // Initialisation des tableaux d'entités
         $groups = new ArrayCollection();
@@ -171,6 +178,19 @@ class UserController extends AbstractController {
                 else {
                     $membership->setAdminof(FALSE);
                     $membershipini->setAdminof(FALSE);
+                }
+            }
+            // on teste si l'utilisateur est aussi creator du groupe
+            for ($j=0; $j<sizeof($arDataCreator);$j++) {
+                if (strtolower($arDataCreator[$j]->getAttribute($this->config_groups['cn'])[0]) == $tab_cn[$i]) {
+                    $membership->setCreatorof(TRUE);
+                    $membershipini->setCreatorof(TRUE);
+                    $flagCreatMembers[$j] = TRUE;
+                    break;
+                }
+                else {
+                    $membership->setCreatorof(FALSE);
+                    $membershipini->setCreatorof(FALSE);
                 }
             }
             
@@ -221,6 +241,20 @@ class UserController extends AbstractController {
                 $membershipini->setMemberof(FALSE);
                 $membershipini->setAdminof(TRUE);
                 $membershipini->setDroits('Aucun');
+
+                // on teste si l'utilisateur est aussi creator du groupe
+                for ($j=0; $j<sizeof($arDataCreator);$j++) {
+                    if (strtolower($arDataCreator[$j]->getAttribute($this->config_groups['cn'])[0]) == $tab_cn[$i]) {
+                        $membership->setCreatorof(TRUE);
+                        $membershipini->setCreatorof(TRUE);
+                        $flagCreatMembers[$j] = TRUE;
+                        break;
+                    }
+                    else {
+                        $membership->setCreatorof(FALSE);
+                        $membershipini->setCreatorof(FALSE);
+                    }
+                }
                 
                 // Gestion droits pour un membre de la DOSI
                 if (true === $this->get('security.authorization_checker')->isGranted('ROLE_DOSI')) {
@@ -247,7 +281,55 @@ class UserController extends AbstractController {
                 $memberships[] = $membership;
                 $membershipsini[] = $membershipini;
             }
-            
+        }
+
+        // Gestion des groupes dont l'utilisateur est seulement creator
+        for($i=0;$i<sizeof($arDataCreator);$i++) {
+            if (($flagCreatMembers[$i]==FALSE)  && ($flagCreatAdmins[$i] == FALSE)) {
+                // on ajoute le groupe pour l'utilisateur
+                $membership = new Membership();
+                $membership->setGroupname($arDataAdmin[$i]->getAttribute($this->config_groups['cn'])[0]);
+                $membership->setMemberof(FALSE);
+                $membership->setAdminof(FALSE);
+                $membership->setDroits('Aucun');
+
+                // Idem pour membershipini
+                $membershipini = new Membership();
+                $membershipini->setGroupname($arDataAdmin[$i]->getAttribute($this->config_groups['cn'])[0]);
+                $membershipini->setMemberof(FALSE);
+                $membershipini->setAdminof(FALSE);
+                $membershipini->setDroits('Aucun');
+
+                // ajout creatorof
+                $membership->setCreatorof(TRUE);
+                $membershipini->setCreatorof(TRUE);
+
+                // Gestion droits pour un membre de la DOSI
+                if (true === $this->get('security.authorization_checker')->isGranted('ROLE_DOSI')) {
+                    $membership->setDroits('Voir');
+                    $membershipini->setDroits('Voir');
+                }
+
+                // Gestion droits pour un gestionnaire
+                if (true === $this->get('security.authorization_checker')->isGranted('ROLE_GESTIONNAIRE')) {
+                    foreach($tab_cn_admin_login as $cn) {
+                        if ($cn==strtolower($arDataAdmin[$i]->getAttribute($this->config_groups['cn'])[0])) {
+                            $membership->setDroits('Modifier');
+                            $membershipini->setDroits('Modifier');
+                            break;
+                        }
+                    }
+                }
+                // Gestion droits pour un admin de l'appli
+                if (true === $this->get('security.authorization_checker')->isGranted('ROLE_ADMIN')) {
+                    $membership->setDroits('Modifier');
+                    $membershipini->setDroits('Modifier');
+                }
+
+                $memberships[] = $membership;
+                $membershipsini[] = $membershipini;
+            }
+
         }
         
         $user->setMemberships($memberships);

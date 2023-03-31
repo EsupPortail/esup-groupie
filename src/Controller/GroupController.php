@@ -1829,7 +1829,7 @@ class GroupController extends AbstractController {
             // on teste si le membre est aussi creator
             if (null !== $arCreators[0]->getAttribute($this->config_groups['creator'])) {
                 for ($j = 0; $j < sizeof($arCreators[0]->getAttribute($this->config_groups['creator'])); $j++) {
-                    $uid = preg_replace("/(".$this->config_users['login']."=)(([A-Za-z0-9:._-]{1,}))(,ou=.*)/", "$3", strtolower($arAdmins[0]->getAttribute($this->config_groups['creator'])[$j]));
+                    $uid = preg_replace("/(".$this->config_users['login']."=)(([A-Za-z0-9:._-]{1,}))(,ou=.*)/", "$3", strtolower($arCreators[0]->getAttribute($this->config_groups['creator'])[$j]));
                     if ($uid == $arUsers[$i]->getAttribute($this->config_users['login'])[0]) {
                         $members[$i]->setCreator(TRUE);
                         $membersini[$i]->setCreator(TRUE);
@@ -1872,7 +1872,7 @@ class GroupController extends AbstractController {
                     // on teste si l'admin est aussi creator
                     if (null !== $arCreators[0]->getAttribute($this->config_groups['creator'])) {
                         for ($k = 0; $k < sizeof($arCreators[0]->getAttribute($this->config_groups['creator'])); $k++) {
-                            $uid = preg_replace("/(".$this->config_users['login']."=)(([A-Za-z0-9:._-]{1,}))(,ou=.*)/", "$3", strtolower($arAdmins[0]->getAttribute($this->config_groups['creator'])[$k]));
+                            $uid = preg_replace("/(".$this->config_users['login']."=)(([A-Za-z0-9:._-]{1,}))(,ou=.*)/", "$3", strtolower($arCreators[0]->getAttribute($this->config_groups['creator'])[$k]));
                             if ($uid == $arUsers[$i]->getAttribute($this->config_users['login'])[0]) {
                                 $memb[$i]->setCreator(TRUE);
                                 $flagCreatAdmins[$k] = TRUE;
@@ -1907,9 +1907,9 @@ class GroupController extends AbstractController {
                     // on teste si le membre est aussi creator
                     if (null !== $arCreators[0]->getAttribute($this->config_groups['creator'])) {
                         for ($k = 0; $k < sizeof($arCreators[0]->getAttribute($this->config_groups['creator'])); $k++) {
-                            $uid = preg_replace("/(".$this->config_users['login']."=)(([A-Za-z0-9:._-]{1,}))(,ou=.*)/", "$3", strtolower($arAdmins[0]->getAttribute($this->config_groups['creator'])[$k]));
+                            $uid = preg_replace("/(".$this->config_users['login']."=)(([A-Za-z0-9:._-]{1,}))(,ou=.*)/", "$3", strtolower($arCreators[0]->getAttribute($this->config_groups['creator'])[$k]));
                             if ($uid == $arUsers[$i]->getAttribute($this->config_users['login'])[0]) {
-                                $memb[$i]->setCreator(TRUE);
+                                $membini[$i]->setCreator(TRUE);
                                 $flagCreatAdmins[$k] = TRUE;
                                 break;
                             }
@@ -1974,7 +1974,7 @@ class GroupController extends AbstractController {
                         $membini->setPrimAff("");
                     $membini->setMember(FALSE);
                     $membini->setAdmin(FALSE);
-                    $memb->setCreator(TRUE);
+                    $membini->setCreator(TRUE);
                     $membersini[] = $membini;
                 }
             }
