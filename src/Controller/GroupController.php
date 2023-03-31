@@ -611,10 +611,17 @@ class GroupController extends AbstractController {
         // Récupération des groupes dont l'utilisateur recherché est admin
         $result = $ldapfonctions->recherche($this->config_users['login']."=".$uid, array('dn'), 0, "no");
         $dnUser = $result[0]->getDn();
-        $arDataAdmin=$ldapfonctions->recherche($this->config_groups['groupadmin']."=".$dnUser,array($this->config_groups['cn'], $this->config_groups['desc'], $this->config_groups['groupfilter']), 1, $this->config_groups['cn']);
+        $arDataAdmin = $ldapfonctions->recherche($this->config_groups['groupadmin']."=".$dnUser,array($this->config_groups['cn'], $this->config_groups['desc'], $this->config_groups['groupfilter']), 1, $this->config_groups['cn']);
         $tab_cn_admin = array();
         for($i=0;$i<sizeof($arDataAdmin);$i++) {
             $tab_cn_admin[$i] = $arDataAdmin[$i]->getAttribute($this->config_groups['cn'])[0];
+        }
+
+        // Récupération des groupes dont l'utilisateur recherché est creator
+        $arDataCreator = $ldapfonctions->recherche($this->config_groups['creator']."=".$dnUser,array($this->config_groups['cn'], $this->config_groups['desc'], $this->config_groups['groupfilter']), 1, $this->config_groups['cn']);
+        $tab_cn_creator = array();
+        for($i=0;$i<sizeof($arDataCreator);$i++) {
+            $tab_cn_creator[$i] = $arDataCreator[$i]->getAttribute($this->config_groups['cn'])[0];
         }
 
         // Si on a sélectionné une proposition dans la liste d'autocomplétion
@@ -679,6 +686,19 @@ class GroupController extends AbstractController {
                     $membership->setAdminof(FALSE);
                     $membershipini->setAdminof(FALSE);
                  }
+            }
+
+            //Remplissage des droits creator
+            foreach($tab_cn_creator as $cn) {
+                if ($cn==$groupname) {
+                    $membership->setCreatorof(TRUE);
+                    $membershipini->setCreatorof(TRUE);
+                    break;
+                }
+                else {
+                    $membership->setCreatorof(FALSE);
+                    $membershipini->setCreatorof(FALSE);
+                }
             }
                         
             // Gestion droits pour un gestionnaire
@@ -768,6 +788,27 @@ class GroupController extends AbstractController {
                             syslog(LOG_INFO, "del_admin by $adm : group : $gr, user : $uid ");
                         else
                             syslog(LOG_ERR, "LDAP ERROR : del_admin by $adm : group : $gr, user : $uid ");
+                    }
+                }
+
+                // Traitement des creators
+                // Si il y a changement pour creator, on modifie dans le ldap, sinon, on ne fait rien
+                if ($memb->getCreatorof() != $membershipsini[$i]->getCreatorof()) {
+                    if ($memb->getCreatorof()) {
+                        // Ajout creator dans le groupe
+                        $r = $ldapfonctions->addCreatorGroup($dn_group, array($uid));
+                        if ($r)
+                            syslog(LOG_INFO, "add_creator by $adm : group : $gr, user : $uid ");
+                        else
+                            syslog(LOG_ERR, "LDAP ERROR : add_creator by $adm : group : $gr, user : $uid ");
+                    }
+                    else {
+                        // Suppression creator du groupe
+                        $r = $ldapfonctions->delCreatorGroup($dn_group, array($uid));
+                        if ($r)
+                            syslog(LOG_INFO, "del_creator by $adm : group : $gr, user : $uid ");
+                        else
+                            syslog(LOG_ERR, "LDAP ERROR : del_creator by $adm : group : $gr, user : $uid ");
                     }
                 }
             }
@@ -900,6 +941,42 @@ class GroupController extends AbstractController {
         }
         else {
             $nb_admins=0;
+        }
+
+        // Recherche des creators du groupe
+        $arCreators = $ldapfonctions->getCreatorsGroup($cn);
+
+        if (sizeof($arCreators[0]->getAttribute($this->config_groups['creator'])) > 0) {
+            $nb_creators = sizeof($arCreators[0]->getAttribute($this->config_groups['creator']));
+            // on remplit le tableau d'entités
+            for ($i=0; $i<sizeof($arCreators[0]->getAttribute($this->config_groups['creator'])); $i++) {
+                $uid = preg_replace("/(".$this->config_users['login']."=)(([A-Za-z0-9:._-]{1,}))(,ou=.*)/", "$3", strtolower($arCreators[0]->getAttribute($this->config_groups['creator'])[$i]));
+                $result = $ldapfonctions->getInfosUser($uid);
+                $creators[$i] = new User();
+                $creators[$i]->setUid($result[0]->getAttribute($this->config_users['login'])[0]);
+                $creators[$i]->setSn($result[0]->getAttribute($this->config_users['name'])[0]);
+                $creators[$i]->setDisplayname($result[0]->getattribute($this->config_users['displayname'])[0]);
+                if (isset($result[0]->getAttribute($this->config_users['mail'])[0]))
+                    $creators[$i]->setMail($result[0]->getAttribute($this->config_users['mail'])[0]);
+                else
+                    $creators[$i]->setMail("");
+                if (isset($result[0]->getAttribute($this->config_users['tel'])[0]))
+                    $creators[$i]->setTel($result[0]->getAttribute($this->config_users['tel'])[0]);
+                else
+                    $creators[$i]->setTel("");
+                if (isset($result[0]->getAttribute($this->config_users['aff'])[0]))
+                    $creators[$i]->setAff($result[0]->getattribute($this->config_users['aff'])[0]);
+                else
+                    $creators[$i]->setAff("");
+                if (isset($result[0]->getAttribute($this->config_users['primaff'])[0]))
+                    $creators[$i]->setPrimAff($result[0]->getAttribute($this->config_users['primaff'])[0]);
+                else
+                    $creators[$i]->setPrimAff("");
+
+            }
+        }
+        else {
+            $nb_creators=0;
         }
 
         if (true === $this->get('security.authorization_checker')->isGranted('ROLE_DOSI'))
