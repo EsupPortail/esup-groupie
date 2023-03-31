@@ -35,6 +35,7 @@ Au niveau LDAP
 - Plusieurs attributs ont été ajoutés au niveau des groupes :
     - amuGroupFilter : filtre LDAP si le groupe est alimenté automatiquement
     - amuGroupAdmin : dn du ou des administrateurs du groupe
+  Le nom des attributs est paramétrable.
 - Scripts d'alimentation qui tournent régulièrement sont sur la machine LDAP
     - SyncAllGroups.pl : met à jour les groupes alimentés par des filtres LDAP ou par une table d'une base Oracle.
     - SyncADGroups.pl : met à jour les groupes dans l'AD.
@@ -231,6 +232,7 @@ Ils doivent s'exécuter sur un LDAP Maitre (lecture du slapd.conf de OpenLDAP et
 
 Schéma LDAP
 ----------------------------------------------------------------------------------
+Le nom des attributs est paramétrable.
 
 		objectclass   ( 1.3.6.1.4.1.7135.1.1.2.2.7 NAME 'AMUGroup' SUP top AUXILIARY
 			 DESC 'Groupes spécifiques AMU '
@@ -255,3 +257,5 @@ Schéma LDAP
            EQUALITY booleanMatch
            SINGLE-VALUE
           SYNTAX 1.3.6.1.4.1.1466.115.121.1.7 )
+
+L'attribut amuGroupMember permet d'ajouter manuellement une personne à un groupe qui est alimenté par un filtre. Ceci n'apparaît pas dans l'interface.
