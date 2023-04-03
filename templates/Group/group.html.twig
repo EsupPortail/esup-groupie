@@ -48,11 +48,15 @@
         </div>
         <br>
         <div>
-            {{ form_label(form.amugroupfilter) }}
-            {{ form_errors(form.amugroupfilter) }}
-            {{ form_widget(form.amugroupfilter, { 'attr': { 'size' : 128 } }) }}
-
-
+            {% if filtre == true %}
+                {{ form_label(form.amugroupfilter) }}
+                {{ form_errors(form.amugroupfilter) }}
+                {{ form_widget(form.amugroupfilter, { 'attr': { 'size' : 128 } }) }}
+            {% else %}
+                {{ form_label(form.amugroupfilter) }}
+                {{ form_errors(form.amugroupfilter) }}
+                {{ form_widget(form.amugroupfilter, { 'attr': { 'disabled': 'true'} }) }}
+            {% endif %}
         </div>
         <br>
         Exemple de filtre à partir d'une requête SQL : dbi:mysql:host=server.univ.fr;port=3306;database=name|user|pwduser|SELECT * from V_USERS

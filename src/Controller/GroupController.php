@@ -1157,7 +1157,7 @@ class GroupController extends AbstractController {
         }
         
         // Affichage formulaire de création de groupe
-        return $this->render('Group/group.html.twig', array('form' => $form->createView()));
+        return $this->render('Group/group.html.twig', array('form' => $form->createView(), 'filtre' => $this->config_groups['creatorfilter']));
     }
     
     /**
