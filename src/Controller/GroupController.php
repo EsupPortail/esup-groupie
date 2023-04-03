@@ -1083,6 +1083,13 @@ class GroupController extends AbstractController {
         if (true === $this->get('security.authorization_checker')->isGranted('ROLE_CREATEUR')){
             $flag = "ok";
             $uidCreator = $this->container->get('security.token_storage')->getToken()->getAttribute("uid");
+            $tab_creat_groups = array();
+            // Recup des groupes dont l'utilisateur courant (logué) est creator
+            $result = $ldapfonctions->recherche($this->config_users['login']."=". $uidCreator, array('dn'), 0, "no");
+            $dnUser = $result[0]->getDn();
+            $arDataCreat = $ldapfonctions->recherche($this->config_groups['creator']."=".$dnUser, array($this->config_groups['cn'], $this->config_groups['desc'], $this->config_groups['groupfilter']), 1, $this->config_groups['cn']);
+            for($i=0;$i<sizeof($arDataCreat);$i++)
+                $tab_creat_groups[$i] = $arDataCreat[$i]->getAttribute($this->config_groups['cn'])[0];
         }
 
         if ($flag=="nok") {
@@ -1126,6 +1133,19 @@ class GroupController extends AbstractController {
                     return $this->render('Group/group.html.twig', array('form' => $form->createView()));
                 }
 
+            }
+
+            // Test validite du groupe créé pour les creators
+            foreach ($tab_creat_groups as $creat_group) {
+                if(substr($group->getCn(), 0) === $creat_group){
+                    // ok, le groupe commence bien par la chaine souhaitee
+                }else {
+                    // affichage erreur
+                    $this->get('session')->getFlashBag()->add('flash-error', 'Attention : vous ne pouvez pas choisir ce nom de groupe !' );
+
+                    // Retour à la page contenant le formulaire de création de groupe
+                    return $this->render('Group/group.html.twig', array('form' => $form->createView()));
+                }
             }
             
             // Log création de groupe
