@@ -111,9 +111,10 @@ class MenuBuilder extends Container
 //            $menu->addChild('Administration',['route' => 'admin'])
 //                ->setExtras(['icon'=> 'key']);
 //        }
-        if( $this->authorizationChecker->isGranted('ROLE_ADMIN')) {
+        if( $this->authorizationChecker->isGranted('ROLE_ADMIN') ||
+            $this->authorizationChecker->isGranted('ROLE_CREATEUR')) {
             $menu->addChild('Administrer Groupie', ['route' => 'gestion',])
-                ->setExtras(['icon' => 'settings_applications']);  // Ajout/modification/suppression de groupes par les admin
+                ->setExtras(['icon' => 'settings_applications']);  // Ajout/modification/suppression de groupes par les admins ou les creators
 
         }
 

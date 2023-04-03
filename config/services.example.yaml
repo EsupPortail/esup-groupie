@@ -50,6 +50,7 @@ parameters:
         groupadmin: amuGroupAdmin
         separator: ':'
         creator: amuGroupCreator
+        creatorfilter: true
         owner: owner
     private:
         private_branch: ou=private
