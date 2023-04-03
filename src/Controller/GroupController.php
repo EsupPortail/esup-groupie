@@ -1071,12 +1071,20 @@ class GroupController extends AbstractController {
         // Initialisation des entités
         $group = new Group();
         $groups = array();
+        $uidCreator = '';
 
         // Vérification des droits
         $flag = "nok";
         // Droits seulement pour les admins de l'appli
         if (true === $this->get('security.authorization_checker')->isGranted('ROLE_ADMIN'))
             $flag = "ok";
+
+        // Droits pour les amuCreators
+        if (true === $this->get('security.authorization_checker')->isGranted('ROLE_CREATEUR')){
+            $flag = "ok";
+            $uidCreator = $this->container->get('security.token_storage')->getToken()->getAttribute("uid");
+        }
+
         if ($flag=="nok") {
             // Retour à l'accueil
             $this->get('session')->getFlashBag()->add('flash-error', 'Vous n\'avez pas les droits pour effectuer cette opération');
@@ -1157,7 +1165,7 @@ class GroupController extends AbstractController {
         }
         
         // Affichage formulaire de création de groupe
-        return $this->render('Group/group.html.twig', array('form' => $form->createView(), 'filtre' => $this->config_groups['creatorfilter']));
+        return $this->render('Group/group.html.twig', array('form' => $form->createView(), 'filtre' => $this->config_groups['creatorfilter'], 'uidCreator'=> $uidCreator));
     }
     
     /**

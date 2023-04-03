@@ -114,7 +114,85 @@ class AjaxController extends AbstractController
         return $response;
         
     }
-    
+
+    /**
+     * Retourne la liste des groupes du LDAP (autocomplétion) accessible aux creators
+     *
+     * @Route("/ajax/groupcompletcreator/{uidCreator}", name="ajax_groupcompletcreator")
+     *
+     * @return string la liste des groupes au format json
+     */
+    public function GroupCompletCreatorAction(LdapFonctions $ldapfonctions, Request $request, $uidCreator)
+    {
+        $this->init_config();
+        $arrayGroups = array();
+
+        $term = $request->request->get('motcle');
+
+        if (strlen($term)<3)
+        {
+            $json[] = array('label' => 'au moins 3 caractères ('.$term.')', 'value' => '');
+            $response = new Response (json_encode($json));
+            $response->headers->set('Content-Type','application/json');
+            return $response;
+        }
+
+        // Recherche des groupes dans le LDAP
+        $arData = array();
+        $arDataPub = array();
+        $cptPub = 0;
+
+        // On déclare le LDAP
+        try {
+            $ldap = Ldap::create('ext_ldap', array('connection_string' => getenv("connection_string")));
+            $ldap->bind(getenv("relative_dn"), getenv("ldappassword"));
+        }catch (ConnectionException $e) {
+            throw new \Exception(sprintf('Erreur connexion LDAP.'), 0, $e);
+        }
+
+        // On récupère le service ldapfonctions
+        $ldapfonctions->SetLdap($ldap, getenv("base_dn"), $this->config_users, $this->config_groups, $this->config_private);
+
+        // Récupération du dn de l'utilisateur creator
+        $result = $ldapfonctions->recherche($this->config_users['login']."=".$uidCreator, array('dn'), 0, $this->config_users['login']);
+        $dnUser = $result[0]->getDn();
+
+        // Récupération des groupes du creator
+        $arData = $ldapfonctions->recherche("(&(objectClass=".$this->config_groups['object_class'][0].")(".$this->config_groups['creator']."=".$dnUser.")(".$this->config_groups['cn']."=*".$term."*))", array($this->config_groups['cn']), 1, $this->config_groups['cn']);
+
+        // on ne garde que les groupes publics
+        for ($i=0; $i<sizeof($arData); $i++) {
+            if ((!stristr($arData[$i]->getDn(), $this->config_private['private_branch'])) && (stristr($arData[$i]->getDn(), $this->config_groups['group_branch']))) {
+                $arDataPub[$cptPub] = $arData[$i];
+                $cptPub++;
+            }
+        }
+
+        $NbEnreg = $cptPub;
+        // si on a plus de 50 entrées, on affiche que le résultat partiel
+        if ($NbEnreg>50)
+            $arrayGroups[0]['label']  = "... Résultat partiel ...";
+
+        // on limite l'affichage à 50 groupes
+        ($NbEnreg>50) ? $NbEnreg=50 : $NbEnreg;
+
+        if ($NbEnreg == 0) {
+            $arrayGroups[] = array('label' => '...');
+
+        } else {
+            for($Cpt=0;$Cpt < $NbEnreg ;$Cpt++)
+            {
+                $arrayGroups[$Cpt+1]['label']  = $arDataPub[$Cpt]->getAttribute($this->config_groups['cn'])[0];
+            }
+        }
+
+        $response = new Response (json_encode($arrayGroups));
+        $response->headers->set('Content-Type','application/json');
+        return $response;
+
+    }
+
+
     /**
      * Retourne la liste des utilisateurs du LDAP (autocomplétion)
      *

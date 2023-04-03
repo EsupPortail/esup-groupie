@@ -82,6 +82,30 @@
     {{ parent() }}
     <script type="text/javascript" src="{{ asset('build/js/jquery-3.6.0.min.js') }}"></script>
     <script type="text/javascript" src="{{ asset('build/js/jquery-ui.1.12.1.min.js') }}"></script>
+    <script>
+        $( function() {
+            $( "#group_create_cn" ).autocomplete({
+                source: function (requete, reponse) {
+                    var motcle = requete.term;
+                    var DATA = 'motcle=' + motcle;
+
+                    $.ajax({
+                        type: "POST",
+                        url: "{{ path('ajax_groupcompletcreator', { 'uidCreator': uidCreator }) }}",
+                        dataType: 'json',
+                        data: DATA,
+
+                        success: function (donnee) {
+                            reponse($.map(donnee, function (object) {
+                                return object;
+                            }));
+                        }
+                    });
+                },
+            });
+
+        } );
+    </script>
 
     {# Ajout d'une fonction javascript pour effacer automatiquement les messages flash après 5s #}
     <script type="text/javascript">
