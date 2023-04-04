@@ -89,11 +89,13 @@ class AjaxController extends AbstractController
             // Recuperation de l'arborescence du creator
             $arData = array(); $cpt=0;
             foreach ($arCreatGroup as $creatGroup) {
-                $arRes = $ldapfonctions->recherche("(&(objectClass=".$this->config_groups['object_class'][0].")(".$this->config_groups['cn']."="..$creatGroup->getAttribute($this->config_groups['cn'])[0]."*))", array($this->config_groups['cn']), 1, $this->config_groups['cn']);
+                $arData[$cpt] = $creatGroup;
+                $cpt++;
+                $arRes = $ldapfonctions->recherche("(&(objectClass=".$this->config_groups['object_class'][0].")(".$this->config_groups['cn']."=".$creatGroup->getAttribute($this->config_groups['cn'])[0]."*))", array($this->config_groups['cn']), 1, $this->config_groups['cn']);
                 foreach ($arRes as $gr){
                     $arData[$cpt] = $gr;
+                    $cpt++;
                 }
-                $cpt++;
             }
         } else {
             // Récupération des groupes (on ne récupère que les groupes publics)

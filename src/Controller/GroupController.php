@@ -454,11 +454,13 @@ class GroupController extends AbstractController {
                         // Recuperation de l'arborescence du creator
                         $arData = array(); $cpt=0;
                         foreach ($arCreatGroup as $creatGroup) {
-                            $arRes = $ldapfonctions->recherche("(&(objectClass=".$this->config_groups['object_class'][0].")(".$this->config_groups['cn']."=".$creatGroup->getAttribute($this->config_groups['cn'])[0]."*))", array($this->config_groups['cn']), 1, $this->config_groups['cn']);
+                            $arData[$cpt] = $creatGroup;
+                            $cpt++;
+                            $arRes = $ldapfonctions->recherche("(&(objectClass=".$this->config_groups['object_class'][0].")(".$this->config_groups['cn']."=".$creatGroup->getAttribute($this->config_groups['cn'])[0].":*))", array($this->config_groups['cn']), 1, $this->config_groups['cn']);
                             foreach ($arRes as $gr){
                                 $arData[$cpt] = $gr;
+                                $cpt++;
                             }
-                            $cpt++;
                         }
                     }else {
                         // Recherche avec * des groupes dans le LDAP directement
@@ -1702,7 +1704,7 @@ class GroupController extends AbstractController {
         //$groups = $this->container->get('request')->getSession()->get('groups');
         $groups = $this->get('session')->get('groups');
 
-        return $this->render('Group/search.html.twig',array('groups' => $groups, 'opt' => $opt, 'uid' => $uid, 'uidCreator'=> '');
+        return $this->render('Group/search.html.twig',array('groups' => $groups, 'opt' => $opt, 'uid' => $uid, 'uidCreator'=> ''));
     }
     
     /**
