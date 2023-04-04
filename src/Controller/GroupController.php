@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Form\GroupCreatorCreateType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
@@ -1087,20 +1088,170 @@ class GroupController extends AbstractController {
         // Vérification des droits
         $flag = "nok";
         // Droits seulement pour les admins de l'appli
-        if (true === $this->get('security.authorization_checker')->isGranted('ROLE_ADMIN'))
+        if (true === $this->get('security.authorization_checker')->isGranted('ROLE_ADMIN')) {
             $flag = "ok";
 
-        // Droits pour les amuCreators
-        if (true === $this->get('security.authorization_checker')->isGranted('ROLE_CREATEUR')){
-            $flag = "ok";
-            $uidCreator = $this->container->get('security.token_storage')->getToken()->getAttribute("uid");
-            $tab_creat_groups = array();
-            // Recup des groupes dont l'utilisateur courant (logué) est creator
-            $result = $ldapfonctions->recherche($this->config_users['login']."=". $uidCreator, array('dn'), 0, "no");
-            $dnUser = $result[0]->getDn();
-            $arDataCreat = $ldapfonctions->recherche($this->config_groups['creator']."=".$dnUser, array($this->config_groups['cn'], $this->config_groups['desc'], $this->config_groups['groupfilter']), 1, $this->config_groups['cn']);
-            for($i=0;$i<sizeof($arDataCreat);$i++)
-                $tab_creat_groups[$i] = $arDataCreat[$i]->getAttribute($this->config_groups['cn'])[0];
+            // Création du formulaire de création de groupe
+            $form = $this->createForm(GroupCreateType::class,
+                new Group(),
+                array('action' => $this->generateUrl('group_create'),
+                    'method' => 'GET'));
+            $form->handleRequest($request);
+            if ($form->isSubmitted() && $form->isValid()) {
+                // Récupération des données
+                $group = $form->getData();
+
+                if ($group->getAmugroupfilter() != "") {
+                    // Test validité du filtre si c'est un filtre LDAP
+                    $filtre = $group->getAmugroupfilter();
+                    $b = $ldapfonctions->testAmugroupfilter($filtre);
+                    if ($b === true) {
+                        // Le filtre LDAP est valide, on continue
+                    } else {
+                        // affichage erreur filtre invalide
+                        $this->get('session')->getFlashBag()->add('flash-error', 'amuGroupFilter n\'est pas valide !');
+
+                        // Retour à la page contenant le formulaire de création de groupe
+                        return $this->render('Group/group.html.twig', array('form' => $form->createView()));
+                    }
+
+                }
+
+                // Log création de groupe
+                openlog($this->config_logs['tag'], LOG_PID | LOG_PERROR, constant($this->config_logs['facility']));
+                $adm = $this->container->get('security.token_storage')->getToken()->getAttribute("uid");
+
+                // Création du groupe dans le LDAP
+                $infogroup = $group->infosGroupeLdap($this->config_groups['cn'], $this->config_groups['desc'], $this->config_groups['groupfilter'], $this->config_groups['object_class']);
+                $b =$ldapfonctions->createGroupeLdap($this->config_groups['cn']."=".$group->getCn().",".$this->config_groups['group_branch'].",".getenv("base_dn") , $infogroup);
+                if ($b==true) {
+                    // affichage groupe créé
+                    $this->get('session')->getFlashBag()->add('flash-notice', 'Le groupe a bien été créé');
+                    $groups[0] = $group;
+                    $cn = $group->getCn();
+
+                    // Log création OK
+                    syslog(LOG_INFO, "create_group by $adm : group : $cn");
+
+                    // Affichage via fichier twig
+                    return $this->render('Group/create.html.twig',array('groups' => $groups));
+                }
+                else {
+                    // affichage erreur
+                    $this->get('session')->getFlashBag()->add('flash-error', 'Erreur LDAP lors de la création du groupe');
+                    $groups[0] = $group;
+                    $cn = $group->getCn();
+
+                    // Log erreur
+                    syslog(LOG_ERR, "LDAP ERREUR : create_group by $adm : group : $cn");
+
+                    // Retour à la page contenant le formulaire de création de groupe
+                    return $this->render('Group/group.html.twig', array('form' => $form->createView()));
+                }
+
+                // Ferme le fichier de log
+                closelog();
+            }
+
+            // Affichage formulaire de création de groupe
+            return $this->render('Group/group.html.twig', array('form' => $form->createView()));
+
+        } else {
+            // Droits pour les amuCreators
+            if (true === $this->get('security.authorization_checker')->isGranted('ROLE_CREATEUR')){
+                $flag = "ok";
+                $group = new Group();
+                $uidCreator = $this->container->get('security.token_storage')->getToken()->getAttribute("uid");
+                $tab_creat_groups = array();
+                // Recup des groupes dont l'utilisateur courant (logué) est creator
+                $result = $ldapfonctions->recherche($this->config_users['login']."=". $uidCreator, array('dn'), 0, "no");
+                $dnUser = $result[0]->getDn();
+                $arDataCreat = $ldapfonctions->recherche($this->config_groups['creator']."=".$dnUser, array($this->config_groups['cn'], $this->config_groups['desc'], $this->config_groups['groupfilter']), 1, $this->config_groups['cn']);
+                for($i=0;$i<sizeof($arDataCreat);$i++)
+                    $tab_creat_groups[$i] = $arDataCreat[$i]->getAttribute($this->config_groups['cn'])[0];
+
+                // Création du formulaire de création de groupe
+                $form = $this->createForm(GroupCreatorCreateType::class,
+                    array('action' => $this->generateUrl('group_create'),
+                        'method' => 'GET',
+                        'liste_groupes' => $tab_creat_groups));
+                $form->handleRequest($request);
+                if ($form->isSubmitted() && $form->isValid()) {
+                    // Récupération des données
+                    $dataForm = $form->getData();
+                    $group->setDescription($dataForm['description']);
+                    $cn = $dataForm['prefixe'] . $dataForm['nom'];
+                    $group->setCn($cn);
+
+                    if ($dataForm['amugroupfilter'] != "") {
+                        // Test validité du filtre si c'est un filtre LDAP
+                        $filtre = $dataForm['amugroupfilter'];
+                        $b = $ldapfonctions->testAmugroupfilter($filtre);
+                        if ($b === true) {
+                            // Le filtre LDAP est valide, on continue
+                            $group->setAmugroupfilter($filtre);
+                        } else {
+                            // affichage erreur filtre invalide
+                            $this->get('session')->getFlashBag()->add('flash-error', 'amuGroupFilter n\'est pas valide !');
+
+                            // Retour à la page contenant le formulaire de création de groupe
+                            return $this->render('Group/creatorgroup.html.twig', array('form' => $form->createView(), 'filtre' => $this->config_groups['creatorfilter']));
+                        }
+
+                    }
+
+                    // Test validite du groupe créé pour les creators
+                    foreach ($tab_creat_groups as $creat_group) {
+                        if (substr($group->getCn(), 0) === $creat_group) {
+                            // ok, le groupe commence bien par la chaine souhaitee
+                        } else {
+                            // affichage erreur
+                            $this->get('session')->getFlashBag()->add('flash-error', 'Attention : vous ne pouvez pas choisir ce nom de groupe !');
+
+                            // Retour à la page contenant le formulaire de création de groupe
+                            return $this->render('Group/creatorgroup.html.twig', array('form' => $form->createView(), 'filtre' => $this->config_groups['creatorfilter']));
+                        }
+                    }
+
+                    // Log création de groupe
+                    openlog($this->config_logs['tag'], LOG_PID | LOG_PERROR, constant($this->config_logs['facility']));
+                    $adm = $this->container->get('security.token_storage')->getToken()->getAttribute("uid");
+
+                    // Création du groupe dans le LDAP
+                    $infogroup = $group->infosGroupeLdap($this->config_groups['cn'], $this->config_groups['desc'], $this->config_groups['groupfilter'], $this->config_groups['object_class']);
+                    $b = $ldapfonctions->createGroupeLdap($this->config_groups['cn'] . "=" . $group->getCn() . "," . $this->config_groups['group_branch'] . "," . getenv("base_dn"), $infogroup);
+                    if ($b == true) {
+                        // affichage groupe créé
+                        $this->get('session')->getFlashBag()->add('flash-notice', 'Le groupe a bien été créé');
+                        $groups[0] = $group;
+                        $cn = $group->getCn();
+
+                        // Log création OK
+                        syslog(LOG_INFO, "create_group by $adm : group : $cn");
+
+                        // Affichage via fichier twig
+                        return $this->render('Group/create.html.twig', array('groups' => $groups));
+                    } else {
+                        // affichage erreur
+                        $this->get('session')->getFlashBag()->add('flash-error', 'Erreur LDAP lors de la création du groupe');
+                        $groups[0] = $group;
+                        $cn = $group->getCn();
+
+                        // Log erreur
+                        syslog(LOG_ERR, "LDAP ERREUR : create_group by $adm : group : $cn");
+
+                        // Retour à la page contenant le formulaire de création de groupe
+                        return $this->render('Group/creatorgroup.html.twig', array('form' => $form->createView(), 'filtre' => $this->config_groups['creatorfilter']));
+                    }
+                    // Ferme le fichier de log
+                    closelog();
+
+                    // Affichage formulaire de création de groupe
+                    return $this->render('Group/creatorgroup.html.twig', array('form' => $form->createView(), 'filtre' => $this->config_groups['creatorfilter']));
+                }
+            }
+
+
         }
 
         if ($flag=="nok") {
@@ -1109,83 +1260,7 @@ class GroupController extends AbstractController {
             return $this->redirect($this->generateUrl('homepage'));
         }
         
-        // Création du formulaire de création de groupe
-        $form = $this->createForm(GroupCreateType::class,
-            new Group(),
-            array('action' => $this->generateUrl('group_create'),
-                'method' => 'GET'));
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            // Récupération des données
-            $group = $form->getData();
 
-            if ($group->getAmugroupfilter() != "") {
-                // Test validité du filtre si c'est un filtre LDAP
-                $filtre = $group->getAmugroupfilter();
-                $b = $ldapfonctions->testAmugroupfilter($filtre);
-                if ($b === true) {
-                    // Le filtre LDAP est valide, on continue
-                } else {
-                    // affichage erreur filtre invalide
-                    $this->get('session')->getFlashBag()->add('flash-error', 'amuGroupFilter n\'est pas valide !');
-
-                    // Retour à la page contenant le formulaire de création de groupe
-                    return $this->render('Group/group.html.twig', array('form' => $form->createView()));
-                }
-
-            }
-
-            // Test validite du groupe créé pour les creators
-            foreach ($tab_creat_groups as $creat_group) {
-                if(substr($group->getCn(), 0) === $creat_group){
-                    // ok, le groupe commence bien par la chaine souhaitee
-                }else {
-                    // affichage erreur
-                    $this->get('session')->getFlashBag()->add('flash-error', 'Attention : vous ne pouvez pas choisir ce nom de groupe !' );
-
-                    // Retour à la page contenant le formulaire de création de groupe
-                    return $this->render('Group/group.html.twig', array('form' => $form->createView()));
-                }
-            }
-            
-            // Log création de groupe
-            openlog($this->config_logs['tag'], LOG_PID | LOG_PERROR, constant($this->config_logs['facility']));
-            $adm = $this->container->get('security.token_storage')->getToken()->getAttribute("uid");
-                
-            // Création du groupe dans le LDAP
-            $infogroup = $group->infosGroupeLdap($this->config_groups['cn'], $this->config_groups['desc'], $this->config_groups['groupfilter'], $this->config_groups['object_class']);
-            $b =$ldapfonctions->createGroupeLdap($this->config_groups['cn']."=".$group->getCn().",".$this->config_groups['group_branch'].",".getenv("base_dn") , $infogroup);
-            if ($b==true) {          
-                // affichage groupe créé
-                $this->get('session')->getFlashBag()->add('flash-notice', 'Le groupe a bien été créé');
-                $groups[0] = $group;
-                $cn = $group->getCn();
-                
-                // Log création OK
-                syslog(LOG_INFO, "create_group by $adm : group : $cn");
-               
-                // Affichage via fichier twig
-                return $this->render('Group/create.html.twig',array('groups' => $groups));
-            }
-            else {
-                // affichage erreur
-                $this->get('session')->getFlashBag()->add('flash-error', 'Erreur LDAP lors de la création du groupe');
-                $groups[0] = $group;
-                $cn = $group->getCn();
-                
-                // Log erreur
-                syslog(LOG_ERR, "LDAP ERREUR : create_group by $adm : group : $cn");
-                
-                // Retour à la page contenant le formulaire de création de groupe
-                return $this->render('Group/group.html.twig', array('form' => $form->createView()));
-            }
-            
-            // Ferme le fichier de log
-            closelog();
-        }
-        
-        // Affichage formulaire de création de groupe
-        return $this->render('Group/group.html.twig', array('form' => $form->createView(), 'filtre' => $this->config_groups['creatorfilter'], 'uidCreator'=> $uidCreator));
     }
     
     /**
