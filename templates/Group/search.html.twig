@@ -98,7 +98,7 @@
 
                     $.ajax({
                         type: "POST",
-                        url: "{{ path('ajax_groupcompletlist') }}",
+                        url: "{{ path('ajax_groupcompletlist', {'uidCreator': uidCreator }) }}",
                         dataType: 'json',
                         data: DATA,
 

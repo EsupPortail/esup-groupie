@@ -399,6 +399,12 @@ class GroupController extends AbstractController {
         // Déclaration variables
         $groupsearch = new Group();
         $groups = array();
+        $uidCreator =  '';
+
+        // Droits creator
+        if (true === $this->get('security.authorization_checker')->isGranted('ROLE_CREATEUR')) {
+            $uidCreator = $this->container->get('security.token_storage')->getToken()->getAttribute("uid");
+        }
 
         // Création du formulaire de recherche de groupe
         $form = $this->createForm(GroupSearchType::class,
@@ -435,8 +441,29 @@ class GroupController extends AbstractController {
                     $arData=$ldapfonctions->recherche("(&(objectClass=".$this->config_groups['object_class'][0].")(".$this->config_groups['cn']."=" . $groupsearch->getCn() . "))", array($this->config_groups['cn'], $this->config_groups['desc'], $this->config_groups['groupfilter']), 1, $this->config_groups['cn']);
                 }
                 else {
-                    // Recherche avec * des groupes dans le LDAP directement 
-                    $arData=$ldapfonctions->recherche("(&(objectClass=".$this->config_groups['object_class'][0].")(".$this->config_groups['cn']."=*" . $groupsearch->getCn() . "*))",array($this->config_groups['cn'],$this->config_groups['desc'],$this->config_groups['groupfilter']), 1, $this->config_groups['cn']);
+                    // Cas modification ou suppression pour les creators
+                    if ((($opt=='mod')||($opt=='del')) && (true === $this->get('security.authorization_checker')->isGranted('ROLE_CREATEUR'))) {
+                        // On cherche uniquement sur les groupes où sont positionnés les droits
+                        // Récupération du dn de l'utilisateur creator
+                        $result = $ldapfonctions->recherche($this->config_users['login']."=".$uidCreator, array('dn'), 0, $this->config_users['login']);
+                        $dnUser = $result[0]->getDn();
+
+                        // Récupération des groupes du creator
+                        $arCreatGroup = $ldapfonctions->recherche("(&(objectClass=".$this->config_groups['object_class'][0].")(".$this->config_groups['creator']."=".$dnUser.")(".$this->config_groups['cn']."=*". $groupsearch->getCn() ."*))", array($this->config_groups['cn']), 1, $this->config_groups['cn']);
+
+                        // Recuperation de l'arborescence du creator
+                        $arData = array(); $cpt=0;
+                        foreach ($arCreatGroup as $creatGroup) {
+                            $arRes = $ldapfonctions->recherche("(&(objectClass=".$this->config_groups['object_class'][0].")(".$this->config_groups['cn']."=".$creatGroup->getAttribute($this->config_groups['cn'])[0]."*))", array($this->config_groups['cn']), 1, $this->config_groups['cn']);
+                            foreach ($arRes as $gr){
+                                $arData[$cpt] = $gr;
+                            }
+                            $cpt++;
+                        }
+                    }else {
+                        // Recherche avec * des groupes dans le LDAP directement
+                        $arData = $ldapfonctions->recherche("(&(objectClass=" . $this->config_groups['object_class'][0] . ")(" . $this->config_groups['cn'] . "=*" . $groupsearch->getCn() . "*))", array($this->config_groups['cn'], $this->config_groups['desc'], $this->config_groups['groupfilter']), 1, $this->config_groups['cn']);
+                    }
                 }
                 
                 // si c'est un gestionnaire, on ne renvoie que les groupes dont il est admin
@@ -523,7 +550,7 @@ class GroupController extends AbstractController {
             }
         }
         
-        return $this->render('Group/search.html.twig', array('form' => $form->createView(), 'opt' => $opt, 'uid' => $uid));
+        return $this->render('Group/search.html.twig', array('form' => $form->createView(), 'opt' => $opt, 'uid' => $uid, 'uidCreator' => $uidCreator));
         
     }
     
@@ -1675,7 +1702,7 @@ class GroupController extends AbstractController {
         //$groups = $this->container->get('request')->getSession()->get('groups');
         $groups = $this->get('session')->get('groups');
 
-        return $this->render('Group/search.html.twig',array('groups' => $groups, 'opt' => $opt, 'uid' => $uid));
+        return $this->render('Group/search.html.twig',array('groups' => $groups, 'opt' => $opt, 'uid' => $uid, 'uidCreator'=> '');
     }
     
     /**

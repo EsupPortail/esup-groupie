@@ -43,11 +43,11 @@ class AjaxController extends AbstractController
     /**
      * Retourne la liste des groupes du LDAP (autocomplétion)
      *
-     * @Route("/ajax/groupcompletlist", name="ajax_groupcompletlist")
+     * @Route("/ajax/groupcompletlist/{uidCreator}", name="ajax_groupcompletlist")
      *
      * @return string la liste des groupes au format json
      */
-    public function GroupCompletListAction(LdapFonctions $ldapfonctions, Request $request)
+    public function GroupCompletListAction(LdapFonctions $ldapfonctions, Request $request, $uidCreator)
     {
         $this->init_config();
         //$request = $this->get('request');
@@ -78,8 +78,27 @@ class AjaxController extends AbstractController
         // On récupère le service ldapfonctions
         $ldapfonctions->SetLdap($ldap, getenv("base_dn"), $this->config_users, $this->config_groups, $this->config_private);
 
-        // Récupération des groupes (on ne récupère que les groupes publics)
-        $arData = $ldapfonctions->recherche("(&(objectClass=".$this->config_groups['object_class'][0].")(".$this->config_groups['cn']."=*".$term."*))", array($this->config_groups['cn']), 1, $this->config_groups['cn']);
+        if ($uidCreator!='') {
+            // Récupération du dn de l'utilisateur creator
+            $result = $ldapfonctions->recherche($this->config_users['login']."=".$uidCreator, array('dn'), 0, $this->config_users['login']);
+            $dnUser = $result[0]->getDn();
+
+            // Récupération des groupes du creator
+            $arCreatGroup = $ldapfonctions->recherche("(&(objectClass=".$this->config_groups['object_class'][0].")(".$this->config_groups['creator']."=".$dnUser.")(".$this->config_groups['cn']."=*".$term."*))", array($this->config_groups['cn']), 1, $this->config_groups['cn']);
+
+            // Recuperation de l'arborescence du creator
+            $arData = array(); $cpt=0;
+            foreach ($arCreatGroup as $creatGroup) {
+                $arRes = $ldapfonctions->recherche("(&(objectClass=".$this->config_groups['object_class'][0].")(".$this->config_groups['cn']."="..$creatGroup->getAttribute($this->config_groups['cn'])[0]."*))", array($this->config_groups['cn']), 1, $this->config_groups['cn']);
+                foreach ($arRes as $gr){
+                    $arData[$cpt] = $gr;
+                }
+                $cpt++;
+            }
+        } else {
+            // Récupération des groupes (on ne récupère que les groupes publics)
+            $arData = $ldapfonctions->recherche("(&(objectClass=".$this->config_groups['object_class'][0].")(".$this->config_groups['cn']."=*".$term."*))", array($this->config_groups['cn']), 1, $this->config_groups['cn']);
+        }
 
         // on ne garde que les groupes publics
         for ($i=0; $i<sizeof($arData); $i++) {
