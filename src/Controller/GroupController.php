@@ -2253,27 +2253,27 @@ class GroupController extends AbstractController {
                         }
                     }
                 }
-                // Traitement des creators
-                // Idem : si changement, on répercute dans le ldap
-                if ($memb->getCreator() != $membi->getCreator()) {
-                    if ($memb->getCreator()) {
-                        $r = $ldapfonctions->addCreatorGroup($dn_group, array($u));
-                        if ($r) {
-                            // Log modif
-                            syslog(LOG_INFO, "add_creator by $adm : group : $cn, user : $u ");
-                        }
-                        else {
-                            syslog(LOG_ERR, "LDAP ERROR : add_creator by $adm : group : $cn, user : $u ");
-                        }
-                    }
-                    else {
-                        $r = $ldapfonctions->delCreatorGroup($dn_group, array($u));
-                        if ($r) {
-                            // Log modif
-                            syslog(LOG_INFO, "del_creator by $adm : group : $cn, user : $u ");
-                        }
-                        else {
-                            syslog(LOG_ERR, "LDAP ERROR : del_creator by $adm : group : $cn, user : $u ");
+                // Seulement pour les admin
+                if (true === $this->get('security.authorization_checker')->isGranted('ROLE_ADMIN')) {
+                    // Traitement des creators
+                    // Idem : si changement, on répercute dans le ldap
+                    if ($memb->getCreator() != $membi->getCreator()) {
+                        if ($memb->getCreator()) {
+                            $r = $ldapfonctions->addCreatorGroup($dn_group, array($u));
+                            if ($r) {
+                                // Log modif
+                                syslog(LOG_INFO, "add_creator by $adm : group : $cn, user : $u ");
+                            } else {
+                                syslog(LOG_ERR, "LDAP ERROR : add_creator by $adm : group : $cn, user : $u ");
+                            }
+                        } else {
+                            $r = $ldapfonctions->delCreatorGroup($dn_group, array($u));
+                            if ($r) {
+                                // Log modif
+                                syslog(LOG_INFO, "del_creator by $adm : group : $cn, user : $u ");
+                            } else {
+                                syslog(LOG_ERR, "LDAP ERROR : del_creator by $adm : group : $cn, user : $u ");
+                            }
                         }
                     }
                 }
