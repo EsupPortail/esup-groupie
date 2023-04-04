@@ -106,6 +106,8 @@
                         <td style="vertical-align: middle;"> {{ form_widget(m.admin) }} </td>
                         {% if is_granted('ROLE_ADMIN') %}
                             <td style="vertical-align: middle;"> {{ form_widget(m.creator) }} </td>
+                        {% else  %}
+                            <td style="display:none"> {{ form_widget(m.creator, {'attr': {'disabled': 'true'}}) }} </td>
                         {% endif %}
                     </tr>
                 {% endfor %}

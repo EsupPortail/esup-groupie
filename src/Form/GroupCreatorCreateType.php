@@ -28,7 +28,7 @@ class GroupCreatorCreateType extends AbstractType
         $builder
             ->add('prefixe', ChoiceType::class, array(
                                 'label' => 'Préfixe',
-                                'choices' => $options['liste_groupes'],
+                                'choices' => $options['data']['liste_groupes'],
                                 'required' => true
                                     ))
 

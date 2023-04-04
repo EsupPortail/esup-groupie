@@ -1163,24 +1163,28 @@ class GroupController extends AbstractController {
                 $group = new Group();
                 $uidCreator = $this->container->get('security.token_storage')->getToken()->getAttribute("uid");
                 $tab_creat_groups = array();
+                $tab_choice_groups = array();
                 // Recup des groupes dont l'utilisateur courant (logué) est creator
                 $result = $ldapfonctions->recherche($this->config_users['login']."=". $uidCreator, array('dn'), 0, "no");
                 $dnUser = $result[0]->getDn();
                 $arDataCreat = $ldapfonctions->recherche($this->config_groups['creator']."=".$dnUser, array($this->config_groups['cn'], $this->config_groups['desc'], $this->config_groups['groupfilter']), 1, $this->config_groups['cn']);
-                for($i=0;$i<sizeof($arDataCreat);$i++)
+                for($i=0;$i<sizeof($arDataCreat);$i++) {
                     $tab_creat_groups[$i] = $arDataCreat[$i]->getAttribute($this->config_groups['cn'])[0];
+                    $tab_choice_groups[$arDataCreat[$i]->getAttribute($this->config_groups['cn'])[0].':'] = $i;
+                }
 
                 // Création du formulaire de création de groupe
                 $form = $this->createForm(GroupCreatorCreateType::class,
                     array('action' => $this->generateUrl('group_create'),
                         'method' => 'GET',
-                        'liste_groupes' => $tab_creat_groups));
+                        'liste_groupes' => $tab_choice_groups));
                 $form->handleRequest($request);
+
                 if ($form->isSubmitted() && $form->isValid()) {
                     // Récupération des données
                     $dataForm = $form->getData();
                     $group->setDescription($dataForm['description']);
-                    $cn = $dataForm['prefixe'] . $dataForm['nom'];
+                    $cn = $tab_creat_groups[$dataForm['prefixe']] . ':' . $dataForm['nom'];
                     $group->setCn($cn);
 
                     if ($dataForm['amugroupfilter'] != "") {
@@ -1202,7 +1206,7 @@ class GroupController extends AbstractController {
 
                     // Test validite du groupe créé pour les creators
                     foreach ($tab_creat_groups as $creat_group) {
-                        if (substr($group->getCn(), 0) === $creat_group) {
+                        if (strpos($group->getCn(), $creat_group) == 0) {
                             // ok, le groupe commence bien par la chaine souhaitee
                         } else {
                             // affichage erreur
@@ -1229,6 +1233,14 @@ class GroupController extends AbstractController {
                         // Log création OK
                         syslog(LOG_INFO, "create_group by $adm : group : $cn");
 
+                        // Il faut ajouter les droits admin au creator
+                        $dn_group = $this->config_groups['cn']."=" . $cn . ", ".$this->config_groups['group_branch'].", ".$this->base;
+                        $r = $ldapfonctions->addAdminGroup($dn_group, array($adm));
+                        if ($r)
+                            syslog(LOG_INFO, "add_admin by $adm : group : $cn, user : $adm ");
+                        else
+                            syslog(LOG_ERR, "LDAP ERROR : add_admin by $adm : group : $cn, user : $adm ");
+
                         // Affichage via fichier twig
                         return $this->render('Group/create.html.twig', array('groups' => $groups));
                     } else {
@@ -1245,10 +1257,9 @@ class GroupController extends AbstractController {
                     }
                     // Ferme le fichier de log
                     closelog();
-
-                    // Affichage formulaire de création de groupe
-                    return $this->render('Group/creatorgroup.html.twig', array('form' => $form->createView(), 'filtre' => $this->config_groups['creatorfilter']));
                 }
+                // Affichage formulaire de création de groupe
+                return $this->render('Group/creatorgroup.html.twig', array('form' => $form->createView(), 'filtre' => $this->config_groups['creatorfilter']));
             }
 
 
@@ -2052,9 +2063,9 @@ class GroupController extends AbstractController {
                     // on teste si l'admin est aussi creator
                     if (null !== $arCreators[0]->getAttribute($this->config_groups['creator'])) {
                         for ($k = 0; $k < sizeof($arCreators[0]->getAttribute($this->config_groups['creator'])); $k++) {
-                            $uid = preg_replace("/(".$this->config_users['login']."=)(([A-Za-z0-9:._-]{1,}))(,ou=.*)/", "$3", strtolower($arCreators[0]->getAttribute($this->config_groups['creator'])[$k]));
-                            if ($uid == $arUsers[$i]->getAttribute($this->config_users['login'])[0]) {
-                                $memb[$i]->setCreator(TRUE);
+                            $uidCreat = preg_replace("/(".$this->config_users['login']."=)(([A-Za-z0-9:._-]{1,}))(,ou=.*)/", "$3", strtolower($arCreators[0]->getAttribute($this->config_groups['creator'])[$k]));
+                            if ($uidCreat == $uid) {
+                                $memb->setCreator(TRUE);
                                 $flagCreatAdmins[$k] = TRUE;
                                 break;
                             }
@@ -2087,9 +2098,9 @@ class GroupController extends AbstractController {
                     // on teste si le membre est aussi creator
                     if (null !== $arCreators[0]->getAttribute($this->config_groups['creator'])) {
                         for ($k = 0; $k < sizeof($arCreators[0]->getAttribute($this->config_groups['creator'])); $k++) {
-                            $uid = preg_replace("/(".$this->config_users['login']."=)(([A-Za-z0-9:._-]{1,}))(,ou=.*)/", "$3", strtolower($arCreators[0]->getAttribute($this->config_groups['creator'])[$k]));
-                            if ($uid == $arUsers[$i]->getAttribute($this->config_users['login'])[0]) {
-                                $membini[$i]->setCreator(TRUE);
+                            $uidCreat = preg_replace("/(".$this->config_users['login']."=)(([A-Za-z0-9:._-]{1,}))(,ou=.*)/", "$3", strtolower($arCreators[0]->getAttribute($this->config_groups['creator'])[$k]));
+                            if ($uidCreat == $uid) {
+                                $membini->setCreator(TRUE);
                                 $flagCreatAdmins[$k] = TRUE;
                                 break;
                             }
