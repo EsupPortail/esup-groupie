@@ -1121,7 +1121,7 @@ class GroupController extends AbstractController {
 
         // Vérification des droits
         $flag = "nok";
-        // Droits seulement pour les admins de l'appli
+        // Droits pour les admins de l'appli
         if (true === $this->get('security.authorization_checker')->isGranted('ROLE_ADMIN')) {
             $flag = "ok";
 
@@ -1455,6 +1455,37 @@ class GroupController extends AbstractController {
         // Suppression autorisée pour les admin de l'appli seulement
         if (true === $this->get('security.authorization_checker')->isGranted('ROLE_ADMIN'))
             $flag = "ok";
+        // Droits pour les amuCreators
+        if (true === $this->get('security.authorization_checker')->isGranted('ROLE_CREATEUR')) {
+            $uidCreator = $this->container->get('security.token_storage')->getToken()->getAttribute("uid");
+            $tab_creat_groups = array();
+            // Recup des groupes dont l'utilisateur courant (logué) est creator
+            $result = $ldapfonctions->recherche($this->config_users['login'] . "=" . $uidCreator, array('dn'), 0, "no");
+            $dnUser = $result[0]->getDn();
+            $arDataCreat = $ldapfonctions->recherche($this->config_groups['creator'] . "=" . $dnUser, array($this->config_groups['cn'], $this->config_groups['desc'], $this->config_groups['groupfilter']), 1, $this->config_groups['cn']);
+            // Recuperation de l'arborescence du creator
+            $arData = array(); $cpt=0;
+            foreach ($arDataCreat as $creatGroup) {
+                $arData[$cpt] = $creatGroup;
+                $cpt++;
+                $arRes = $ldapfonctions->recherche("(&(objectClass=".$this->config_groups['object_class'][0].")(".$this->config_groups['cn']."=".$creatGroup->getAttribute($this->config_groups['cn'])[0]."*))", array($this->config_groups['cn']), 1, $this->config_groups['cn']);
+                foreach ($arRes as $gr){
+                    // on vérifie que le groupe n'est pas déjà dans la liste
+                    if (in_array($gr, $arData)) {
+                        // rien
+                    }else {
+                        $arData[$cpt] = $gr;
+                        $cpt++;
+                    };
+                }
+            }
+            for ($i = 0; $i < sizeof($arData); $i++) {
+                if ($arData[$i]->getAttribute($this->config_groups['cn'])[0] == $cn) {
+                    $flag = "ok";
+                    break;
+                }
+            }
+        }
         if ($flag=="nok") {
             // Retour à l'accueil
             $this->get('session')->getFlashBag()->add('flash-error', 'Vous n\'avez pas les droits pour effectuer cette opération');
