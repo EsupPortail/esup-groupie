@@ -399,11 +399,13 @@ class GroupController extends AbstractController {
         // Déclaration variables
         $groupsearch = new Group();
         $groups = array();
-        $uidCreator =  '';
+        $uidCreator =  '0';
 
         // Droits creator
-        if (true === $this->get('security.authorization_checker')->isGranted('ROLE_CREATEUR')) {
-            $uidCreator = $this->container->get('security.token_storage')->getToken()->getAttribute("uid");
+        if ((true != $this->get('security.authorization_checker')->isGranted('ROLE_ADMIN')) && (true === $this->get('security.authorization_checker')->isGranted('ROLE_CREATEUR'))) {
+            // Recherche pour la modification ou suppression de groupe
+            if (($opt == 'mod') || ($opt == 'del'))
+                $uidCreator = $this->container->get('security.token_storage')->getToken()->getAttribute("uid");
         }
 
         // Création du formulaire de recherche de groupe

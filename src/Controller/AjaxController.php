@@ -78,7 +78,7 @@ class AjaxController extends AbstractController
         // On récupère le service ldapfonctions
         $ldapfonctions->SetLdap($ldap, getenv("base_dn"), $this->config_users, $this->config_groups, $this->config_private);
 
-        if ($uidCreator!='') {
+        if ($uidCreator!='0') {
             // Récupération du dn de l'utilisateur creator
             $result = $ldapfonctions->recherche($this->config_users['login']."=".$uidCreator, array('dn'), 0, $this->config_users['login']);
             $dnUser = $result[0]->getDn();
