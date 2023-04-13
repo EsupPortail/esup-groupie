@@ -1121,6 +1121,11 @@ class GroupController extends AbstractController {
         // On récupère le service ldapfonctions
         $ldapfonctions->SetLdap($ldap, getenv("base_dn"), $this->config_users, $this->config_groups, $this->config_private);
 
+        // recup des infos de l'utilisateur courant
+        $uidCreator = $this->container->get('security.token_storage')->getToken()->getAttribute("uid");
+        $result = $ldapfonctions->recherche($this->config_users['login']."=". $uidCreator, array('dn'), 0, "no");
+        $dnUser = $result[0]->getDn();
+
         // Vérification des droits
         $flag = "nok";
         // Droits pour les admins de l'appli
@@ -1150,15 +1155,17 @@ class GroupController extends AbstractController {
                         // Retour à la page contenant le formulaire de création de groupe
                         return $this->render('Group/group.html.twig', array('form' => $form->createView()));
                     }
-
                 }
+
+                // Ajout owner = createur du groupe
+                $group->setOwner($dnUser);
 
                 // Log création de groupe
                 openlog($this->config_logs['tag'], LOG_PID | LOG_PERROR, constant($this->config_logs['facility']));
                 $adm = $this->container->get('security.token_storage')->getToken()->getAttribute("uid");
 
                 // Création du groupe dans le LDAP
-                $infogroup = $group->infosGroupeLdap($this->config_groups['cn'], $this->config_groups['desc'], $this->config_groups['groupfilter'], $this->config_groups['object_class']);
+                $infogroup = $group->infosGroupeLdap($this->config_groups['cn'], $this->config_groups['desc'], $this->config_groups['owner'], $this->config_groups['groupfilter'], $this->config_groups['object_class']);
                 $b =$ldapfonctions->createGroupeLdap($this->config_groups['cn']."=".$group->getCn().",".$this->config_groups['group_branch'].",".getenv("base_dn") , $infogroup);
                 if ($b==true) {
                     // affichage groupe créé
@@ -1197,12 +1204,9 @@ class GroupController extends AbstractController {
             if (true === $this->get('security.authorization_checker')->isGranted('ROLE_CREATEUR')){
                 $flag = "ok";
                 $group = new Group();
-                $uidCreator = $this->container->get('security.token_storage')->getToken()->getAttribute("uid");
                 $tab_creat_groups = array();
                 $tab_choice_groups = array();
                 // Recup des groupes dont l'utilisateur courant (logué) est creator
-                $result = $ldapfonctions->recherche($this->config_users['login']."=". $uidCreator, array('dn'), 0, "no");
-                $dnUser = $result[0]->getDn();
                 $arDataCreat = $ldapfonctions->recherche($this->config_groups['creator']."=".$dnUser, array($this->config_groups['cn'], $this->config_groups['desc'], $this->config_groups['groupfilter']), 1, $this->config_groups['cn']);
                 for($i=0;$i<sizeof($arDataCreat);$i++) {
                     $tab_creat_groups[$i] = $arDataCreat[$i]->getAttribute($this->config_groups['cn'])[0];
@@ -1253,12 +1257,15 @@ class GroupController extends AbstractController {
                         }
                     }
 
+                    // Ajout owner = createur du groupe
+                    $group->setOwner($dnUser);
+
                     // Log création de groupe
                     openlog($this->config_logs['tag'], LOG_PID | LOG_PERROR, constant($this->config_logs['facility']));
                     $adm = $this->container->get('security.token_storage')->getToken()->getAttribute("uid");
 
                     // Création du groupe dans le LDAP
-                    $infogroup = $group->infosGroupeLdap($this->config_groups['cn'], $this->config_groups['desc'], $this->config_groups['groupfilter'], $this->config_groups['object_class']);
+                    $infogroup = $group->infosGroupeLdap($this->config_groups['cn'], $this->config_groups['desc'], $this->config_groups['owner'], $this->config_groups['groupfilter'], $this->config_groups['object_class']);
                     $b = $ldapfonctions->createGroupeLdap($this->config_groups['cn'] . "=" . $group->getCn() . "," . $this->config_groups['group_branch'] . "," . getenv("base_dn"), $infogroup);
                     if ($b == true) {
                         // affichage groupe créé
