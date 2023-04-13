@@ -363,6 +363,22 @@ class LdapFonctions
         return $description;
     }
 
+    /**
+     * Récupérer le createur d'un groupe
+     * @return  \Amu\AppBundle\Service\Ldap
+     */
+    public function getOwner($cn_group) {
+
+        $filtre = $this->config_groups['cn']."=" . $cn_group;
+        $result = $this->recherche($filtre, array($this->config_groups['owner']), 1, $this->config_groups['cn']);
+        if (null !== $result[0]->getAttribute($this->config_groups['owner']))
+            $owner = $result[0]->getAttribute($this->config_groups['owner'])[0];
+        else
+            $owner = "";
+
+        return $owner;
+    }
+
     public function createGroupeLdap($dn, $groupeinfo)
     {
         $entry = new Entry($dn, $groupeinfo);

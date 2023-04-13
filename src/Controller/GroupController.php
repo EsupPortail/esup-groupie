@@ -907,7 +907,7 @@ class GroupController extends AbstractController {
         $ldapfonctions->SetLdap($ldap, getenv("base_dn"), $this->config_users, $this->config_groups, $this->config_private);
 
         // Récupération du groupe recherché
-        $result = $ldapfonctions->recherche("(&(objectClass=".$this->config_groups['object_class'][0].")(".$this->config_groups['cn']."=" . $cn . "))", array($this->config_groups['cn'], $this->config_groups['desc'], $this->config_groups['groupfilter']), 1, $this->config_groups['cn']);
+        $result = $ldapfonctions->recherche("(&(objectClass=".$this->config_groups['object_class'][0].")(".$this->config_groups['cn']."=" . $cn . "))", array($this->config_groups['cn'], $this->config_groups['desc'], $this->config_groups['owner'], $this->config_groups['groupfilter']), 1, $this->config_groups['cn']);
         if (isset($result[0]->getAttribute($this->config_groups['groupfilter'])[0]))
             $amugroupfilter = $result[0]->getAttribute($this->config_groups['groupfilter'])[0];
         else
@@ -916,6 +916,11 @@ class GroupController extends AbstractController {
             $description = $result[0]->getAttribute($this->config_groups['desc'])[0];
         else
             $description = "";
+
+        if (isset($result[0]->getAttribute($this->config_groups['owner'])[0]))
+            $owner = $result[0]->getAttribute($this->config_groups['owner'])[0];
+        else
+            $owner = "";
         
         // Recherche des membres dans le LDAP
         //$arUsers = $this->getLdap()->getMembersGroup($cn);
@@ -1025,6 +1030,7 @@ class GroupController extends AbstractController {
         return array('cn' => $cn,
                     'amugroupfilter' => $amugroupfilter,
                     'description' => $description,
+                    'owner' => $owner,
                     'nb_membres' => sizeof($arUsers),
                     'users' => $users,
                     'nb_admins' => $nb_admins,
@@ -2000,6 +2006,10 @@ class GroupController extends AbstractController {
         // Récup de la description du groupe pour affichage
         $description = $ldapfonctions->getDescription($cn);
         $group->setDescription($description);
+
+        // Récup du createur du groupe pour affichage
+        $owner = $ldapfonctions->getOwner($cn);
+        $group->setOwner($owner);
                
         // Recherche des membres dans le LDAP
         $arUsers = $ldapfonctions->getMembersGroup($cn);
