@@ -46,6 +46,7 @@
         <br>
         <h3>  <b>Description</b> : {{ group.description }}  </h3>
         {% if is_granted('ROLE_DOSI') %}
+            <h3>  <b>Créateur du groupe</b> : {{ group.owner }}  </h3>
             {% if group.amugroupfilter != '' %}
                 <h3>  <b>amuGroupfilter</b> : {{ group.amugroupfilter }} </h3>
             {% endif %}

@@ -34,6 +34,7 @@
 
         <h3>  <b>Description</b> : {{ description }}  </h3>
         {% if dosi == 1 %}
+            <h3>  <b>Créateur du groupe</b> : {{ group.owner }}  </h3>
             {% if amugroupfilter != '' %}
                 <h3>  amuGroupfilter : {{ amugroupfilter }} </h3>
             {% endif %}
