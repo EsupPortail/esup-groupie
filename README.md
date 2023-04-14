@@ -54,17 +54,17 @@ Les rôles
 On identifie 6 rôles dans l'application :
 
 - ROLE_MEMBRE : C'est le rôle de base. L'utilisateur est seulement membre d'un ou de groupes. Il a seulement accès à la visualisation des groupes dont il fait partie.
-Appartenance au groupe LDAP : "amu:glob:ldap:personnel"
+Appartenance au groupe LDAP : "univ:glob:personnel"
 - ROLE_GESTIONNAIRE : l'utilisateur est administrateur d'un ou de groupes. Il a accès en visualisation aux groupes dont il fait partie, et il peut modifier les membres des groupes qu'il gère.
-Appartenance au groupe LDAP : "amu:app:grp:grouper:grouper-ent"
+Appartenance au groupe LDAP : "univ:app:groupie:gest"
 - ROLE_CREATEUR : l'utilisateur peut créer des groupes. Il est positionné en 'amuGroupCreator' sur un groupe. Il peut effectuer toutes les opérations sur les groupes descendant de groupe parent.
-  Appartenance au groupe LDAP : "amu:app:grp:grouper:creators"  
+  Appartenance au groupe LDAP : "univ:app:groupie:creat"  
 - ROLE_DOSI : l'utilisateur est membre de la DOSI, il accède en visualisation à toutes les infos des groupes.
-Appartenance au groupe LDAP : "amu:svc:dosi:tous"
+Appartenance au groupe LDAP : "univ:svc:dosi"
 - ROLE_PRIVE : l'utilisateur peut accéder à la partie "groupes privés".
-Appartenance au groupe LDAP : "amu:svc:dosi:tous"
+Appartenance au groupe LDAP : "univ:svc:dosi"
 - ROLE_ADMIN : l'utilisateur a tous les droits sur tous les groupes, ainsi que les droits de création/modification/suppression de groupes.
-Appartenance au groupe LDAP : "amu:adm:app:groupie"
+Appartenance au groupe LDAP : "univ:app:groupie:admin"
 - ROLE_SUPER_ADMIN : partie développeur
 
 NB: Les groupes sont paramétrables
@@ -217,6 +217,7 @@ role:
   rules:
     - { name: ROLE_MEMBRE,         type: ldap, rule: '(&(memberof=cn=personnel,ou=groups,dc=univ,dc=fr)(uid=login))' }
     - { name: ROLE_GESTIONNAIRE,   type: ldap, rule: '(&(memberof=cn=gest,ou=groups,dc=univ,dc=fr)(uid=login))' }
+    - { name: ROLE_CREATEUR,       type: ldap, rule: '(&(memberof=cn=creat,ou=groups,dc=univ,dc=fr)(uid=login))' }
     - { name: ROLE_DOSI,           type: ldap, rule: '(&(memberof=cn=dosi,ou=groups,dc=univ,dc=fr)(uid=login))' }
     - { name: ROLE_PRIVE,          type: ldap, rule: '(&(memberof=cn=dosi,ou=groups,dc=univ,dc=fr)(uid=login))' }
     - { name: ROLE_ADMIN,          type: ldap, rule: '(&(memberof=cn=groupie,ou=groups,dc=univ,dc=fr)(uid=login))' }
