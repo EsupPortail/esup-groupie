@@ -1657,6 +1657,10 @@ class GroupController extends AbstractController {
         
         $dn = $this->config_groups['cn']."=".$cn.", ".$this->config_groups['group_branch'].", ".$this->base;
 
+        $filtre = $this->config_groups['creatorfilter'];
+        if (true === $this->get('security.authorization_checker')->isGranted('ROLE_ADMIN'))
+            $filtre = true;
+
         // Pré-remplir le formulaire avec les valeurs actuelles du groupe
         $group->setCn($cn);
         $group->setDescription($desc);
@@ -1741,7 +1745,7 @@ class GroupController extends AbstractController {
             // Ferme fichier log
             closelog();
         }
-        return $this->render('Group/modifyform.html.twig', array('form' => $form->createView(), 'group' => $group, 'filtre' => $this->config_groups['creatorfilter']));
+        return $this->render('Group/modifyform.html.twig', array('form' => $form->createView(), 'group' => $group, 'filtre' => $filtre));
     }
 
     /**
