@@ -2266,7 +2266,6 @@ class GroupController extends AbstractController {
 
         $editForm->handleRequest($request);
         if ($editForm->isSubmitted() && $editForm->isValid()) {
-            echo "Formulaire validé";
             $groupupdate = new Group();
             $groupupdate = $editForm->getData();
             
