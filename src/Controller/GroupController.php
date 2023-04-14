@@ -1741,7 +1741,7 @@ class GroupController extends AbstractController {
             // Ferme fichier log
             closelog();
         }
-        return $this->render('Group/modifyform.html.twig', array('form' => $form->createView(), 'group' => $group));
+        return $this->render('Group/modifyform.html.twig', array('form' => $form->createView(), 'group' => $group, 'filtre' => $this->config_groups['creatorfilter']));
     }
 
     /**
