@@ -7,7 +7,7 @@ Groupie est un logiciel de gestion de groupes.
 Il se compose d'une interface web développée sous Symfony 4.2 et de plusieurs scripts effectuant des opérations sur le LDAP.
 
 
-Groupie permet de gérer 2 types de groupes :
+Groupie permet de gérer plusieurs types de groupes :
 
 - Groupes institutionnels
 Ce sont les groupes créés par l'administrateur de Groupie. La gestion des membres s'effectue soit :
@@ -20,6 +20,10 @@ L'utilisateur de Groupie peut visualiser les groupes dont il est membre.
 Si l'utilisateur est administrateur de Groupie, il peut visualiser les groupes qu'il gère et accéder aux fonctions d'ajout/suppression de membres.
 
 Si l'utilisateur a un rôle DOSI, il peut visualiser tous les groupes.
+
+- Groupes de partage, qui peuvent être créés par des utilisateurs identifiés, avec un nommage précis correspondant à une partie de l'arborescence.
+Les utilisateurs identifiés ont un rôle de créateur, qui leur permet de créer, modifier ou supprimer des groupes depuis une arborescence donnée.
+Les créateurs peuvent créer des groupes avec ou sans filtre (paramétrable avec creatorfilter: true)  
 
 - Groupes privés
 Ce sont des groupes créés et gérés par l'utilisateur. Ils sont préfixés par "amu:perso". Chaque utilisateur peut :
@@ -35,6 +39,7 @@ Au niveau LDAP
 - Plusieurs attributs ont été ajoutés au niveau des groupes :
     - amuGroupFilter : filtre LDAP si le groupe est alimenté automatiquement
     - amuGroupAdmin : dn du ou des administrateurs du groupe
+    - amuGroupCreator : dn du ou des utilisateurs qui peuvent créer des groupes à partir de cette arborescence 
   Le nom des attributs est paramétrable.
 - Scripts d'alimentation qui tournent régulièrement sont sur la machine LDAP
     - SyncAllGroups.pl : met à jour les groupes alimentés par des filtres LDAP ou par une table d'une base Oracle.
@@ -52,6 +57,8 @@ On identifie 6 rôles dans l'application :
 Appartenance au groupe LDAP : "amu:glob:ldap:personnel"
 - ROLE_GESTIONNAIRE : l'utilisateur est administrateur d'un ou de groupes. Il a accès en visualisation aux groupes dont il fait partie, et il peut modifier les membres des groupes qu'il gère.
 Appartenance au groupe LDAP : "amu:app:grp:grouper:grouper-ent"
+- ROLE_CREATEUR : l'utilisateur peut créer des groupes. Il est positionné en 'amuGroupCreator' sur un groupe. Il peut effectuer toutes les opérations sur les groupes descendant de groupe parent.
+  Appartenance au groupe LDAP : "amu:app:grp:grouper:creators"  
 - ROLE_DOSI : l'utilisateur est membre de la DOSI, il accède en visualisation à toutes les infos des groupes.
 Appartenance au groupe LDAP : "amu:svc:dosi:tous"
 - ROLE_PRIVE : l'utilisateur peut accéder à la partie "groupes privés".
@@ -181,6 +188,9 @@ Le reste du paramétrage s'effectue dans les fichiers de config dans config. Il 
                 memberof: memberOf
                 groupfilter: amuGroupFilter
                 groupadmin: amuGroupAdmin
+                creator: amuGroupCreator
+                creatorfilter: true
+                owner: owner
                 separator: ':'
             private:
                 private_branch: ou=private
