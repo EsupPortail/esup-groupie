@@ -1,19 +1,8 @@
 <?php
-/*
- * Copyright 2022, ESUP-Portail  http://www.esup-portail.org/
- *  Licensed under APACHE2
- *  @author  Peggy FERNANDEZ BLANCO <peggy.fernandez-blanco@univ-amu.fr>
- *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
- *
- */
 
 namespace App\Controller;
 
+use App\Form\GroupCreatorCreateType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
@@ -73,7 +62,7 @@ class GroupController extends AbstractController {
      * Affiche tous les groupes
      *
      * @Route("/all",name="all_groups")
-     * @Template("Group/allgroups.html.twig")
+     * @Template()
     */
     public function allgroupsAction(LdapFonctions $ldapfonctions) {
 
@@ -157,7 +146,7 @@ class GroupController extends AbstractController {
      * Affiche tous les groupes privés
      *
      * @Route("/all_private",name="all_private_groups")
-     * @Template("Group/allprivate.html.twig")
+     * @Template()
      */
     public function allprivateAction(LdapFonctions $ldapfonctions) {
         $this->init_config();
@@ -203,7 +192,7 @@ class GroupController extends AbstractController {
      * Affiche tous les groupes dont l'utilisateur est administrateur
      *
      * @Route("/my_groups",name="my_groups")
-     * @Template("Group/mygroups.html.twig")
+     * @Template()
      */
     public function mygroupsAction(LdapFonctions $ldapfonctions) {
         $this->init_config();
@@ -287,7 +276,7 @@ class GroupController extends AbstractController {
      * Affiche tous les groupes dont l'utilisateur est membre
      *
      * @Route("/memberships",name="memberships")
-     * @Template("Group/memberships.html.twig")
+     * @Template()
      */
     public function membershipsAction(Request $request, LdapFonctions $ldapfonctions) {
         $this->init_config();
@@ -362,7 +351,7 @@ class GroupController extends AbstractController {
      * Affiche tous les groupes privés dont l'utilisateur est membre
      *
      * @Route("/private_memberships",name="private_memberships")
-     * @Template("Group/privatememberships.html.twig")
+     * @Template()
      */
     public function privatemembershipsAction(Request $request, LdapFonctions $ldapfonctions) {
         $this->init_config();
@@ -403,13 +392,21 @@ class GroupController extends AbstractController {
      * Recherche de groupes
      *
      * @Route("/search/{opt}/{uid}",name="group_search")
-     * @Template("Group/search.html.twig")
+     * @Template()
      */
     public function searchAction(Request $request, LdapFonctions $ldapfonctions,  $opt='search', $uid='') {
         $this->init_config();
         // Déclaration variables
         $groupsearch = new Group();
         $groups = array();
+        $uidCreator =  '0';
+
+        // Droits creator
+        if ((true != $this->get('security.authorization_checker')->isGranted('ROLE_ADMIN')) && (true === $this->get('security.authorization_checker')->isGranted('ROLE_CREATEUR'))) {
+            // Recherche pour la modification ou suppression de groupe
+            if (($opt == 'mod') || ($opt == 'del'))
+                $uidCreator = $this->container->get('security.token_storage')->getToken()->getAttribute("uid");
+        }
 
         // Création du formulaire de recherche de groupe
         $form = $this->createForm(GroupSearchType::class,
@@ -446,8 +443,36 @@ class GroupController extends AbstractController {
                     $arData=$ldapfonctions->recherche("(&(objectClass=".$this->config_groups['object_class'][0].")(".$this->config_groups['cn']."=" . $groupsearch->getCn() . "))", array($this->config_groups['cn'], $this->config_groups['desc'], $this->config_groups['groupfilter']), 1, $this->config_groups['cn']);
                 }
                 else {
-                    // Recherche avec * des groupes dans le LDAP directement 
-                    $arData=$ldapfonctions->recherche("(&(objectClass=".$this->config_groups['object_class'][0].")(".$this->config_groups['cn']."=*" . $groupsearch->getCn() . "*))",array($this->config_groups['cn'],$this->config_groups['desc'],$this->config_groups['groupfilter']), 1, $this->config_groups['cn']);
+                    // Cas modification ou suppression pour les creators
+                    if ((($opt=='mod')||($opt=='del')) && (true === $this->get('security.authorization_checker')->isGranted('ROLE_CREATEUR'))) {
+                        // On cherche uniquement sur les groupes où sont positionnés les droits
+                        // Récupération du dn de l'utilisateur creator
+                        $result = $ldapfonctions->recherche($this->config_users['login']."=".$uidCreator, array('dn'), 0, $this->config_users['login']);
+                        $dnUser = $result[0]->getDn();
+
+                        // Récupération des groupes du creator
+                        $arCreatGroup = $ldapfonctions->recherche("(&(objectClass=".$this->config_groups['object_class'][0].")(".$this->config_groups['creator']."=".$dnUser.")(".$this->config_groups['cn']."=*". $groupsearch->getCn() ."*))", array($this->config_groups['cn'], $this->config_groups['desc'], $this->config_groups['groupfilter']), 1, $this->config_groups['cn']);
+
+                        // Recuperation de l'arborescence du creator
+                        $arData = array(); $cpt=0;
+                        foreach ($arCreatGroup as $creatGroup) {
+                            $arData[$cpt] = $creatGroup;
+                            $cpt++;
+                            $arRes = $ldapfonctions->recherche("(&(objectClass=".$this->config_groups['object_class'][0].")(".$this->config_groups['cn']."=".$creatGroup->getAttribute($this->config_groups['cn'])[0].":*))", array($this->config_groups['cn'], $this->config_groups['desc'], $this->config_groups['groupfilter']), 1, $this->config_groups['cn']);
+                            foreach ($arRes as $gr){
+                                // on vérifie que le groupe n'est pas déjà dans la liste
+                                if (in_array($gr, $arData)) {
+                                    // rien
+                                }else {
+                                    $arData[$cpt] = $gr;
+                                    $cpt++;
+                                };
+                            }
+                        }
+                    }else {
+                        // Recherche avec * des groupes dans le LDAP directement
+                        $arData = $ldapfonctions->recherche("(&(objectClass=" . $this->config_groups['object_class'][0] . ")(" . $this->config_groups['cn'] . "=*" . $groupsearch->getCn() . "*))", array($this->config_groups['cn'], $this->config_groups['desc'], $this->config_groups['groupfilter']), 1, $this->config_groups['cn']);
+                    }
                 }
                 
                 // si c'est un gestionnaire, on ne renvoie que les groupes dont il est admin
@@ -534,7 +559,7 @@ class GroupController extends AbstractController {
             }
         }
         
-        return $this->render('Group/search.html.twig', array('form' => $form->createView(), 'opt' => $opt, 'uid' => $uid));
+        return $this->render('Group/search.html.twig', array('form' => $form->createView(), 'opt' => $opt, 'uid' => $uid, 'uidCreator' => $uidCreator));
         
     }
     
@@ -542,7 +567,7 @@ class GroupController extends AbstractController {
      * Recherche de groupes pour la suppression
      *
      * @Route("/searchdel",name="group_search_del")
-     * @Template("Group/search.html.twig")
+     * @Template()
      */
     public function searchdelAction(Request $request) {
         return $this->redirect($this->generateUrl('group_search', array('opt' => 'del', 'uid'=>'')));
@@ -552,7 +577,7 @@ class GroupController extends AbstractController {
      * Recherche de groupes pour la modification
      *
      * @Route("/searchmod",name="group_search_modify")
-     * @Template("Group/search.html.twig")
+     * @Template()
      */
     public function searchmodAction(Request $request) {
         return $this->redirect($this->generateUrl('group_search', array('opt' => 'mod', 'uid'=>'')));
@@ -623,10 +648,17 @@ class GroupController extends AbstractController {
         // Récupération des groupes dont l'utilisateur recherché est admin
         $result = $ldapfonctions->recherche($this->config_users['login']."=".$uid, array('dn'), 0, "no");
         $dnUser = $result[0]->getDn();
-        $arDataAdmin=$ldapfonctions->recherche($this->config_groups['groupadmin']."=".$dnUser,array($this->config_groups['cn'], $this->config_groups['desc'], $this->config_groups['groupfilter']), 1, $this->config_groups['cn']);
+        $arDataAdmin = $ldapfonctions->recherche($this->config_groups['groupadmin']."=".$dnUser,array($this->config_groups['cn'], $this->config_groups['desc'], $this->config_groups['groupfilter']), 1, $this->config_groups['cn']);
         $tab_cn_admin = array();
         for($i=0;$i<sizeof($arDataAdmin);$i++) {
             $tab_cn_admin[$i] = $arDataAdmin[$i]->getAttribute($this->config_groups['cn'])[0];
+        }
+
+        // Récupération des groupes dont l'utilisateur recherché est creator
+        $arDataCreator = $ldapfonctions->recherche($this->config_groups['creator']."=".$dnUser,array($this->config_groups['cn'], $this->config_groups['desc'], $this->config_groups['groupfilter']), 1, $this->config_groups['cn']);
+        $tab_cn_creator = array();
+        for($i=0;$i<sizeof($arDataCreator);$i++) {
+            $tab_cn_creator[$i] = $arDataCreator[$i]->getAttribute($this->config_groups['cn'])[0];
         }
 
         // Si on a sélectionné une proposition dans la liste d'autocomplétion
@@ -691,6 +723,19 @@ class GroupController extends AbstractController {
                     $membership->setAdminof(FALSE);
                     $membershipini->setAdminof(FALSE);
                  }
+            }
+
+            //Remplissage des droits creator
+            foreach($tab_cn_creator as $cn) {
+                if ($cn==$groupname) {
+                    $membership->setCreatorof(TRUE);
+                    $membershipini->setCreatorof(TRUE);
+                    break;
+                }
+                else {
+                    $membership->setCreatorof(FALSE);
+                    $membershipini->setCreatorof(FALSE);
+                }
             }
                         
             // Gestion droits pour un gestionnaire
@@ -782,6 +827,27 @@ class GroupController extends AbstractController {
                             syslog(LOG_ERR, "LDAP ERROR : del_admin by $adm : group : $gr, user : $uid ");
                     }
                 }
+
+                // Traitement des creators
+                // Si il y a changement pour creator, on modifie dans le ldap, sinon, on ne fait rien
+                if ($memb->getCreatorof() != $membershipsini[$i]->getCreatorof()) {
+                    if ($memb->getCreatorof()) {
+                        // Ajout creator dans le groupe
+                        $r = $ldapfonctions->addCreatorGroup($dn_group, array($uid));
+                        if ($r)
+                            syslog(LOG_INFO, "add_creator by $adm : group : $gr, user : $uid ");
+                        else
+                            syslog(LOG_ERR, "LDAP ERROR : add_creator by $adm : group : $gr, user : $uid ");
+                    }
+                    else {
+                        // Suppression creator du groupe
+                        $r = $ldapfonctions->delCreatorGroup($dn_group, array($uid));
+                        if ($r)
+                            syslog(LOG_INFO, "del_creator by $adm : group : $gr, user : $uid ");
+                        else
+                            syslog(LOG_ERR, "LDAP ERROR : del_creator by $adm : group : $gr, user : $uid ");
+                    }
+                }
             }
             // Ferme fichier de log
             closelog();
@@ -805,7 +871,7 @@ class GroupController extends AbstractController {
      * Voir les membres et administrateurs d'un groupe.
      *
      * @Route("/see/{cn}/{mail}/{liste}", name="see_group")
-     * @Template("Group/see.html.twig")
+     * @Template()
      */
     public function seeAction(Request $request, LdapFonctions $ldapfonctions, $cn, $mail, $liste)
     {
@@ -841,7 +907,7 @@ class GroupController extends AbstractController {
         $ldapfonctions->SetLdap($ldap, getenv("base_dn"), $this->config_users, $this->config_groups, $this->config_private);
 
         // Récupération du groupe recherché
-        $result = $ldapfonctions->recherche("(&(objectClass=".$this->config_groups['object_class'][0].")(".$this->config_groups['cn']."=" . $cn . "))", array($this->config_groups['cn'], $this->config_groups['desc'], $this->config_groups['groupfilter']), 1, $this->config_groups['cn']);
+        $result = $ldapfonctions->recherche("(&(objectClass=".$this->config_groups['object_class'][0].")(".$this->config_groups['cn']."=" . $cn . "))", array($this->config_groups['cn'], $this->config_groups['desc'], $this->config_groups['owner'], $this->config_groups['groupfilter']), 1, $this->config_groups['cn']);
         if (isset($result[0]->getAttribute($this->config_groups['groupfilter'])[0]))
             $amugroupfilter = $result[0]->getAttribute($this->config_groups['groupfilter'])[0];
         else
@@ -850,6 +916,11 @@ class GroupController extends AbstractController {
             $description = $result[0]->getAttribute($this->config_groups['desc'])[0];
         else
             $description = "";
+
+        if (isset($result[0]->getAttribute($this->config_groups['owner'])[0]))
+            $owner = $result[0]->getAttribute($this->config_groups['owner'])[0];
+        else
+            $owner = "";
         
         // Recherche des membres dans le LDAP
         //$arUsers = $this->getLdap()->getMembersGroup($cn);
@@ -914,6 +985,42 @@ class GroupController extends AbstractController {
             $nb_admins=0;
         }
 
+        // Recherche des creators du groupe
+        $arCreators = $ldapfonctions->getCreatorsGroup($cn);
+
+        if (sizeof($arCreators[0]->getAttribute($this->config_groups['creator'])) > 0) {
+            $nb_creators = sizeof($arCreators[0]->getAttribute($this->config_groups['creator']));
+            // on remplit le tableau d'entités
+            for ($i=0; $i<sizeof($arCreators[0]->getAttribute($this->config_groups['creator'])); $i++) {
+                $uid = preg_replace("/(".$this->config_users['login']."=)(([A-Za-z0-9:._-]{1,}))(,ou=.*)/", "$3", strtolower($arCreators[0]->getAttribute($this->config_groups['creator'])[$i]));
+                $result = $ldapfonctions->getInfosUser($uid);
+                $creators[$i] = new User();
+                $creators[$i]->setUid($result[0]->getAttribute($this->config_users['login'])[0]);
+                $creators[$i]->setSn($result[0]->getAttribute($this->config_users['name'])[0]);
+                $creators[$i]->setDisplayname($result[0]->getattribute($this->config_users['displayname'])[0]);
+                if (isset($result[0]->getAttribute($this->config_users['mail'])[0]))
+                    $creators[$i]->setMail($result[0]->getAttribute($this->config_users['mail'])[0]);
+                else
+                    $creators[$i]->setMail("");
+                if (isset($result[0]->getAttribute($this->config_users['tel'])[0]))
+                    $creators[$i]->setTel($result[0]->getAttribute($this->config_users['tel'])[0]);
+                else
+                    $creators[$i]->setTel("");
+                if (isset($result[0]->getAttribute($this->config_users['aff'])[0]))
+                    $creators[$i]->setAff($result[0]->getattribute($this->config_users['aff'])[0]);
+                else
+                    $creators[$i]->setAff("");
+                if (isset($result[0]->getAttribute($this->config_users['primaff'])[0]))
+                    $creators[$i]->setPrimAff($result[0]->getAttribute($this->config_users['primaff'])[0]);
+                else
+                    $creators[$i]->setPrimAff("");
+
+            }
+        }
+        else {
+            $nb_creators=0;
+        }
+
         if (true === $this->get('security.authorization_checker')->isGranted('ROLE_DOSI'))
             $dosi=1;
         else
@@ -923,6 +1030,7 @@ class GroupController extends AbstractController {
         return array('cn' => $cn,
                     'amugroupfilter' => $amugroupfilter,
                     'description' => $description,
+                    'owner' => $owner,
                     'nb_membres' => sizeof($arUsers),
                     'users' => $users,
                     'nb_admins' => $nb_admins,
@@ -936,7 +1044,7 @@ class GroupController extends AbstractController {
      * Voir les membres et administrateurs d'un groupe privé.
      *
      * @Route("/see_private/{cn}/{opt}", name="see_private_group")
-     * @Template("Group/seeprivate.html.twig")
+     * @Template()
      */
     public function seeprivateAction(Request $request, LdapFonctions $ldapfonctions, $cn, $opt)
     {
@@ -1006,93 +1114,213 @@ class GroupController extends AbstractController {
         // Initialisation des entités
         $group = new Group();
         $groups = array();
+        $uidCreator = '';
+
+        // On déclare le LDAP
+        try {
+            $ldap = Ldap::create('ext_ldap', array('connection_string' => getenv("connection_string")));
+            $ldap->bind(getenv("relative_dn"), getenv("ldappassword"));
+        }catch (ConnectionException $e) {
+            throw new \Exception(sprintf('Erreur connexion LDAP.'), 0, $e);
+        }
+
+        // On récupère le service ldapfonctions
+        $ldapfonctions->SetLdap($ldap, getenv("base_dn"), $this->config_users, $this->config_groups, $this->config_private);
+
+        // recup des infos de l'utilisateur courant
+        $uidCreator = $this->container->get('security.token_storage')->getToken()->getAttribute("uid");
+        $result = $ldapfonctions->recherche($this->config_users['login']."=". $uidCreator, array('dn'), 0, "no");
+        $dnUser = $result[0]->getDn();
 
         // Vérification des droits
         $flag = "nok";
-        // Droits seulement pour les admins de l'appli
-        if (true === $this->get('security.authorization_checker')->isGranted('ROLE_ADMIN'))
+        // Droits pour les admins de l'appli
+        if (true === $this->get('security.authorization_checker')->isGranted('ROLE_ADMIN')) {
             $flag = "ok";
+
+            // Création du formulaire de création de groupe
+            $form = $this->createForm(GroupCreateType::class,
+                new Group(),
+                array('action' => $this->generateUrl('group_create'),
+                    'method' => 'GET'));
+            $form->handleRequest($request);
+            if ($form->isSubmitted() && $form->isValid()) {
+                // Récupération des données
+                $group = $form->getData();
+
+                if ($group->getAmugroupfilter() != "") {
+                    // Test validité du filtre si c'est un filtre LDAP
+                    $filtre = $group->getAmugroupfilter();
+                    $b = $ldapfonctions->testAmugroupfilter($filtre);
+                    if ($b === true) {
+                        // Le filtre LDAP est valide, on continue
+                    } else {
+                        // affichage erreur filtre invalide
+                        $this->get('session')->getFlashBag()->add('flash-error', 'amuGroupFilter n\'est pas valide !');
+
+                        // Retour à la page contenant le formulaire de création de groupe
+                        return $this->render('Group/group.html.twig', array('form' => $form->createView()));
+                    }
+                }
+
+                // Ajout owner = createur du groupe
+                $group->setOwner($dnUser);
+
+                // Log création de groupe
+                openlog($this->config_logs['tag'], LOG_PID | LOG_PERROR, constant($this->config_logs['facility']));
+                $adm = $this->container->get('security.token_storage')->getToken()->getAttribute("uid");
+
+                // Création du groupe dans le LDAP
+                $infogroup = $group->infosGroupeLdap($this->config_groups['cn'], $this->config_groups['desc'], $this->config_groups['owner'], $this->config_groups['groupfilter'], $this->config_groups['object_class']);
+                $b =$ldapfonctions->createGroupeLdap($this->config_groups['cn']."=".$group->getCn().",".$this->config_groups['group_branch'].",".getenv("base_dn") , $infogroup);
+                if ($b==true) {
+                    // affichage groupe créé
+                    $this->get('session')->getFlashBag()->add('flash-notice', 'Le groupe a bien été créé');
+                    $groups[0] = $group;
+                    $cn = $group->getCn();
+
+                    // Log création OK
+                    syslog(LOG_INFO, "create_group by $adm : group : $cn");
+
+                    // Affichage via fichier twig
+                    return $this->render('Group/create.html.twig',array('groups' => $groups));
+                }
+                else {
+                    // affichage erreur
+                    $this->get('session')->getFlashBag()->add('flash-error', 'Erreur LDAP lors de la création du groupe');
+                    $groups[0] = $group;
+                    $cn = $group->getCn();
+
+                    // Log erreur
+                    syslog(LOG_ERR, "LDAP ERREUR : create_group by $adm : group : $cn");
+
+                    // Retour à la page contenant le formulaire de création de groupe
+                    return $this->render('Group/group.html.twig', array('form' => $form->createView()));
+                }
+
+                // Ferme le fichier de log
+                closelog();
+            }
+
+            // Affichage formulaire de création de groupe
+            return $this->render('Group/group.html.twig', array('form' => $form->createView()));
+
+        } else {
+            // Droits pour les amuCreators
+            if (true === $this->get('security.authorization_checker')->isGranted('ROLE_CREATEUR')){
+                $flag = "ok";
+                $group = new Group();
+                $tab_creat_groups = array();
+                $tab_choice_groups = array();
+                // Recup des groupes dont l'utilisateur courant (logué) est creator
+                $arDataCreat = $ldapfonctions->recherche($this->config_groups['creator']."=".$dnUser, array($this->config_groups['cn'], $this->config_groups['desc'], $this->config_groups['groupfilter']), 1, $this->config_groups['cn']);
+                for($i=0;$i<sizeof($arDataCreat);$i++) {
+                    $tab_creat_groups[$i] = $arDataCreat[$i]->getAttribute($this->config_groups['cn'])[0];
+                    $tab_choice_groups[$arDataCreat[$i]->getAttribute($this->config_groups['cn'])[0].':'] = $i;
+                }
+
+                // Création du formulaire de création de groupe
+                $form = $this->createForm(GroupCreatorCreateType::class,
+                    array('action' => $this->generateUrl('group_create'),
+                        'method' => 'GET',
+                        'liste_groupes' => $tab_choice_groups));
+                $form->handleRequest($request);
+
+                if ($form->isSubmitted() && $form->isValid()) {
+                    // Récupération des données
+                    $dataForm = $form->getData();
+                    $group->setDescription($dataForm['description']);
+                    $cn = $tab_creat_groups[$dataForm['prefixe']] . ':' . $dataForm['nom'];
+                    $group->setCn($cn);
+
+                    if ($dataForm['amugroupfilter'] != "") {
+                        // Test validité du filtre si c'est un filtre LDAP
+                        $filtre = $dataForm['amugroupfilter'];
+                        $b = $ldapfonctions->testAmugroupfilter($filtre);
+                        if ($b === true) {
+                            // Le filtre LDAP est valide, on continue
+                            $group->setAmugroupfilter($filtre);
+                        } else {
+                            // affichage erreur filtre invalide
+                            $this->get('session')->getFlashBag()->add('flash-error', 'amuGroupFilter n\'est pas valide !');
+
+                            // Retour à la page contenant le formulaire de création de groupe
+                            return $this->render('Group/creatorgroup.html.twig', array('form' => $form->createView(), 'filtre' => $this->config_groups['creatorfilter']));
+                        }
+
+                    }
+
+                    // Test validite du groupe créé pour les creators
+                    foreach ($tab_creat_groups as $creat_group) {
+                        if (strpos($group->getCn(), $creat_group) == 0) {
+                            // ok, le groupe commence bien par la chaine souhaitee
+                        } else {
+                            // affichage erreur
+                            $this->get('session')->getFlashBag()->add('flash-error', 'Attention : vous ne pouvez pas choisir ce nom de groupe !');
+
+                            // Retour à la page contenant le formulaire de création de groupe
+                            return $this->render('Group/creatorgroup.html.twig', array('form' => $form->createView(), 'filtre' => $this->config_groups['creatorfilter']));
+                        }
+                    }
+
+                    // Ajout owner = createur du groupe
+                    $group->setOwner($dnUser);
+
+                    // Log création de groupe
+                    openlog($this->config_logs['tag'], LOG_PID | LOG_PERROR, constant($this->config_logs['facility']));
+                    $adm = $this->container->get('security.token_storage')->getToken()->getAttribute("uid");
+
+                    // Création du groupe dans le LDAP
+                    $infogroup = $group->infosGroupeLdap($this->config_groups['cn'], $this->config_groups['desc'], $this->config_groups['owner'], $this->config_groups['groupfilter'], $this->config_groups['object_class']);
+                    $b = $ldapfonctions->createGroupeLdap($this->config_groups['cn'] . "=" . $group->getCn() . "," . $this->config_groups['group_branch'] . "," . getenv("base_dn"), $infogroup);
+                    if ($b == true) {
+                        // affichage groupe créé
+                        $this->get('session')->getFlashBag()->add('flash-notice', 'Le groupe a bien été créé');
+                        $groups[0] = $group;
+                        $cn = $group->getCn();
+
+                        // Log création OK
+                        syslog(LOG_INFO, "create_group by $adm : group : $cn");
+
+                        // Il faut ajouter les droits admin au creator
+                        $dn_group = $this->config_groups['cn']."=" . $cn . ", ".$this->config_groups['group_branch'].", ".$this->base;
+                        $r = $ldapfonctions->addAdminGroup($dn_group, array($adm));
+                        if ($r)
+                            syslog(LOG_INFO, "add_admin by $adm : group : $cn, user : $adm ");
+                        else
+                            syslog(LOG_ERR, "LDAP ERROR : add_admin by $adm : group : $cn, user : $adm ");
+
+                        // Affichage via fichier twig
+                        return $this->render('Group/create.html.twig', array('groups' => $groups));
+                    } else {
+                        // affichage erreur
+                        $this->get('session')->getFlashBag()->add('flash-error', 'Erreur LDAP lors de la création du groupe');
+                        $groups[0] = $group;
+                        $cn = $group->getCn();
+
+                        // Log erreur
+                        syslog(LOG_ERR, "LDAP ERREUR : create_group by $adm : group : $cn");
+
+                        // Retour à la page contenant le formulaire de création de groupe
+                        return $this->render('Group/creatorgroup.html.twig', array('form' => $form->createView(), 'filtre' => $this->config_groups['creatorfilter']));
+                    }
+                    // Ferme le fichier de log
+                    closelog();
+                }
+                // Affichage formulaire de création de groupe
+                return $this->render('Group/creatorgroup.html.twig', array('form' => $form->createView(), 'filtre' => $this->config_groups['creatorfilter']));
+            }
+
+
+        }
+
         if ($flag=="nok") {
             // Retour à l'accueil
             $this->get('session')->getFlashBag()->add('flash-error', 'Vous n\'avez pas les droits pour effectuer cette opération');
             return $this->redirect($this->generateUrl('homepage'));
         }
         
-        // Création du formulaire de création de groupe
-        $form = $this->createForm(GroupCreateType::class,
-            new Group(),
-            array('action' => $this->generateUrl('group_create'),
-                'method' => 'GET'));
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            // Récupération des données
-            $group = $form->getData();
 
-            // On déclare le LDAP
-            try {
-                $ldap = Ldap::create('ext_ldap', array('connection_string' => getenv("connection_string")));
-                $ldap->bind(getenv("relative_dn"), getenv("ldappassword"));
-            }catch (ConnectionException $e) {
-                throw new \Exception(sprintf('Erreur connexion LDAP.'), 0, $e);
-            }
-
-            // On récupère le service ldapfonctions
-            $ldapfonctions->SetLdap($ldap, getenv("base_dn"), $this->config_users, $this->config_groups, $this->config_private);
-
-            if ($group->getAmugroupfilter() != "") {
-                // Test validité du filtre si c'est un filtre LDAP
-                $filtre = $group->getAmugroupfilter();
-                $b = $ldapfonctions->testAmugroupfilter($filtre);
-                if ($b === true) {
-                    // Le filtre LDAP est valide, on continue
-                } else {
-                    // affichage erreur filtre invalide
-                    $this->get('session')->getFlashBag()->add('flash-error', 'amuGroupFilter n\'est pas valide !');
-
-                    // Retour à la page contenant le formulaire de création de groupe
-                    return $this->render('Group/group.html.twig', array('form' => $form->createView()));
-                }
-
-            }
-            
-            // Log création de groupe
-            openlog($this->config_logs['tag'], LOG_PID | LOG_PERROR, constant($this->config_logs['facility']));
-            $adm = $this->container->get('security.token_storage')->getToken()->getAttribute("uid");
-                
-            // Création du groupe dans le LDAP
-            $infogroup = $group->infosGroupeLdap($this->config_groups['cn'], $this->config_groups['desc'], $this->config_groups['groupfilter'], $this->config_groups['object_class']);
-            $b =$ldapfonctions->createGroupeLdap($this->config_groups['cn']."=".$group->getCn().",".$this->config_groups['group_branch'].",".getenv("base_dn") , $infogroup);
-            if ($b==true) {          
-                // affichage groupe créé
-                $this->get('session')->getFlashBag()->add('flash-notice', 'Le groupe a bien été créé');
-                $groups[0] = $group;
-                $cn = $group->getCn();
-                
-                // Log création OK
-                syslog(LOG_INFO, "create_group by $adm : group : $cn");
-               
-                // Affichage via fichier twig
-                return $this->render('Group/create.html.twig',array('groups' => $groups));
-            }
-            else {
-                // affichage erreur
-                $this->get('session')->getFlashBag()->add('flash-error', 'Erreur LDAP lors de la création du groupe');
-                $groups[0] = $group;
-                $cn = $group->getCn();
-                
-                // Log erreur
-                syslog(LOG_ERR, "LDAP ERREUR : create_group by $adm : group : $cn");
-                
-                // Retour à la page contenant le formulaire de création de groupe
-                return $this->render('Group/group.html.twig', array('form' => $form->createView()));
-            }
-            
-            // Ferme le fichier de log
-            closelog();
-        }
-        
-        // Affichage formulaire de création de groupe
-        return $this->render('Group/group.html.twig', array('form' => $form->createView()));
     }
     
     /**
@@ -1216,7 +1444,7 @@ class GroupController extends AbstractController {
      * Supprimer un groupe.
      *
      * @Route("/delete/{cn}", name="group_delete")
-     * @Template("Group/delete.html.twig")
+     * @Template()
      */
     public function deleteAction(Request $request, LdapFonctions $ldapfonctions, $cn)
     {
@@ -1242,6 +1470,37 @@ class GroupController extends AbstractController {
         // Suppression autorisée pour les admin de l'appli seulement
         if (true === $this->get('security.authorization_checker')->isGranted('ROLE_ADMIN'))
             $flag = "ok";
+        // Droits pour les amuCreators
+        if (true === $this->get('security.authorization_checker')->isGranted('ROLE_CREATEUR')) {
+            $uidCreator = $this->container->get('security.token_storage')->getToken()->getAttribute("uid");
+            $tab_creat_groups = array();
+            // Recup des groupes dont l'utilisateur courant (logué) est creator
+            $result = $ldapfonctions->recherche($this->config_users['login'] . "=" . $uidCreator, array('dn'), 0, "no");
+            $dnUser = $result[0]->getDn();
+            $arDataCreat = $ldapfonctions->recherche($this->config_groups['creator'] . "=" . $dnUser, array($this->config_groups['cn'], $this->config_groups['desc'], $this->config_groups['groupfilter']), 1, $this->config_groups['cn']);
+            // Recuperation de l'arborescence du creator
+            $arData = array(); $cpt=0;
+            foreach ($arDataCreat as $creatGroup) {
+                $arData[$cpt] = $creatGroup;
+                $cpt++;
+                $arRes = $ldapfonctions->recherche("(&(objectClass=".$this->config_groups['object_class'][0].")(".$this->config_groups['cn']."=".$creatGroup->getAttribute($this->config_groups['cn'])[0]."*))", array($this->config_groups['cn']), 1, $this->config_groups['cn']);
+                foreach ($arRes as $gr){
+                    // on vérifie que le groupe n'est pas déjà dans la liste
+                    if (in_array($gr, $arData)) {
+                        // rien
+                    }else {
+                        $arData[$cpt] = $gr;
+                        $cpt++;
+                    };
+                }
+            }
+            for ($i = 0; $i < sizeof($arData); $i++) {
+                if ($arData[$i]->getAttribute($this->config_groups['cn'])[0] == $cn) {
+                    $flag = "ok";
+                    break;
+                }
+            }
+        }
         if ($flag=="nok") {
             // Retour à l'accueil
             $this->get('session')->getFlashBag()->add('flash-error', 'Vous n\'avez pas les droits pour effectuer cette opération');
@@ -1309,7 +1568,7 @@ class GroupController extends AbstractController {
      * Supprimer un groupe privé.
      *
      * @Route("/private/del_1/{cn}", name="private_group_del_1")
-     * @Template("Group/private.html.twig")
+     * @Template()
      */
     public function del1PrivateAction(Request $request,LdapFonctions $ldapfonctions, $cn) {
         $this->init_config();
@@ -1377,7 +1636,7 @@ class GroupController extends AbstractController {
      * Modifier un groupe.
      *
      * @Route("/modify/{cn}/{desc}/{filt}", name="group_modify")
-     * @Template("Group/modify.html.twig")
+     * @Template()
      */
     public function modifyAction(Request $request, LdapFonctions $ldapfonctions, $cn, $desc, $filt)
     {
@@ -1496,14 +1755,14 @@ class GroupController extends AbstractController {
         //$groups = $this->container->get('request')->getSession()->get('groups');
         $groups = $this->get('session')->get('groups');
 
-        return $this->render('Group/search.html.twig',array('groups' => $groups, 'opt' => $opt, 'uid' => $uid));
+        return $this->render('Group/search.html.twig',array('groups' => $groups, 'opt' => $opt, 'uid' => $uid, 'uidCreator'=> ''));
     }
     
     /**
     * Gestion des groupes privés de l'utilisateur
     *
     * @Route("/private",name="private_group")
-    * @Template("Group/private.html.twig")
+    * @Template() 
     */
     public function privateAction(Request $request, LdapFonctions $ldapfonctions) {
         $this->init_config();
@@ -1747,6 +2006,10 @@ class GroupController extends AbstractController {
         // Récup de la description du groupe pour affichage
         $description = $ldapfonctions->getDescription($cn);
         $group->setDescription($description);
+
+        // Récup du createur du groupe pour affichage
+        $owner = $ldapfonctions->getOwner($cn);
+        $group->setOwner($owner);
                
         // Recherche des membres dans le LDAP
         $arUsers = $ldapfonctions->getMembersGroup($cn);
@@ -1760,6 +2023,19 @@ class GroupController extends AbstractController {
             $nb_admins = sizeof($arAdmins[0]->getAttribute($this->config_groups['groupadmin']));
             for ($i = 0; $i < $nb_admins; $i++) {
                 $flagMembers[$i] = FALSE;
+            }
+        }
+
+        // Recherche des creators dans le LDAP
+        $nb_creators = 0;
+        $arCreators = $ldapfonctions->getCreatorsGroup($cn);
+        $flagCreatMembers = array();
+        $flagCreatAdmins = array();
+        if (null !== $arCreators[0]->getAttribute($this->config_groups['creator'])) {
+            $nb_creators = sizeof($arCreators[0]->getAttribute($this->config_groups['creator']));
+            for ($i = 0; $i < $nb_creators; $i++) {
+                $flagCreatMembers[$i] = FALSE;
+                $flagCreatAdmins[$i] = FALSE;
             }
         }
         
@@ -1786,6 +2062,7 @@ class GroupController extends AbstractController {
                 $members[$i]->setPrimAff("");
             $members[$i]->setMember(TRUE);
             $members[$i]->setAdmin(FALSE);
+            $members[$i]->setCreator(FALSE);
            
             // Idem pour groupini
             $membersini[$i] = new Member();
@@ -1809,6 +2086,7 @@ class GroupController extends AbstractController {
                 $membersini[$i]->setPrimAff("");
             $membersini[$i]->setMember(TRUE);
             $membersini[$i]->setAdmin(FALSE);
+            $membersini[$i]->setCreator(FALSE);
             
             // on teste si le membre est aussi admin
             if (null !== $arAdmins[0]->getAttribute($this->config_groups['groupadmin'])) {
@@ -1818,6 +2096,19 @@ class GroupController extends AbstractController {
                         $members[$i]->setAdmin(TRUE);
                         $membersini[$i]->setAdmin(TRUE);
                         $flagMembers[$j] = TRUE;
+                        break;
+                    }
+                }
+            }
+
+            // on teste si le membre est aussi creator
+            if (null !== $arCreators[0]->getAttribute($this->config_groups['creator'])) {
+                for ($j = 0; $j < sizeof($arCreators[0]->getAttribute($this->config_groups['creator'])); $j++) {
+                    $uid = preg_replace("/(".$this->config_users['login']."=)(([A-Za-z0-9:._-]{1,}))(,ou=.*)/", "$3", strtolower($arCreators[0]->getAttribute($this->config_groups['creator'])[$j]));
+                    if ($uid == $arUsers[$i]->getAttribute($this->config_users['login'])[0]) {
+                        $members[$i]->setCreator(TRUE);
+                        $membersini[$i]->setCreator(TRUE);
+                        $flagCreatMembers[$j] = TRUE;
                         break;
                     }
                 }
@@ -1852,6 +2143,18 @@ class GroupController extends AbstractController {
                         $memb->setPrimAff("");
                     $memb->setMember(FALSE);
                     $memb->setAdmin(TRUE);
+
+                    // on teste si l'admin est aussi creator
+                    if (null !== $arCreators[0]->getAttribute($this->config_groups['creator'])) {
+                        for ($k = 0; $k < sizeof($arCreators[0]->getAttribute($this->config_groups['creator'])); $k++) {
+                            $uidCreat = preg_replace("/(".$this->config_users['login']."=)(([A-Za-z0-9:._-]{1,}))(,ou=.*)/", "$3", strtolower($arCreators[0]->getAttribute($this->config_groups['creator'])[$k]));
+                            if ($uidCreat == $uid) {
+                                $memb->setCreator(TRUE);
+                                $flagCreatAdmins[$k] = TRUE;
+                                break;
+                            }
+                        }
+                    }
                     $members[] = $memb;
 
                     // Idem pour groupini
@@ -1876,9 +2179,81 @@ class GroupController extends AbstractController {
                         $membini->setPrimAff("");
                     $membini->setMember(FALSE);
                     $membini->setAdmin(TRUE);
+                    // on teste si le membre est aussi creator
+                    if (null !== $arCreators[0]->getAttribute($this->config_groups['creator'])) {
+                        for ($k = 0; $k < sizeof($arCreators[0]->getAttribute($this->config_groups['creator'])); $k++) {
+                            $uidCreat = preg_replace("/(".$this->config_users['login']."=)(([A-Za-z0-9:._-]{1,}))(,ou=.*)/", "$3", strtolower($arCreators[0]->getAttribute($this->config_groups['creator'])[$k]));
+                            if ($uidCreat == $uid) {
+                                $membini->setCreator(TRUE);
+                                $flagCreatAdmins[$k] = TRUE;
+                                break;
+                            }
+                        }
+                    }
                     $membersini[] = $membini;
                 }
             }
+            
+        }
+
+        // Affichage des creators qui ne sont pas membres ni admins
+        if (null !== $arCreators[0]->getAttribute($this->config_groups['creator'])) {
+            for ($j = 0; $j < sizeof($arCreators[0]->getAttribute($this->config_groups['creator'])); $j++) {
+                if (($flagCreatMembers[$j] == FALSE) && ($flagCreatAdmins[$j] == FALSE)) {
+                    // si l'admin n'est pas membre du groupe, il faut aller récupérer ses infos dans le LDAP
+                    $uid = preg_replace("/(".$this->config_users['login']."=)(([A-Za-z0-9:._-]{1,}))(,ou=.*)/", "$3", strtolower($arCreators[0]->getAttribute($this->config_groups['creator'])[$j]));
+                    $result = $ldapfonctions->getInfosUser($uid);
+                    $memb = new Member();
+                    $memb->setUid($result[0]->getAttribute($this->config_users['login'])[0]);
+                    $memb->setDisplayname($result[0]->getAttribute($this->config_users['displayname'])[0]);
+                    if (isset($result[0]->getAttribute($this->config_users['mail'])[0]))
+                        $memb->setMail($result[0]->getAttribute($this->config_users['mail'])[0]);
+                    else
+                        $memb->setMail("");
+                    if (isset($result[0]->getAttribute($this->config_users['tel'])[0]))
+                        $memb->setTel($result[0]->getAttribute($this->config_users['tel'])[0]);
+                    else
+                        $memb->setTel("");
+                    if (isset($result[0]->getAttribute($this->config_users['aff'])[0]))
+                        $memb->setAff($result[0]->getAttribute($this->config_users['aff'])[0]);
+                    else
+                        $memb->setAff("");
+                    if (isset($result[0]->getAttribute($this->config_users['primaff'])[0]))
+                        $memb->setPrimAff($result[0]->getAttribute($this->config_users['primaff'])[0]);
+                    else
+                        $memb->setPrimAff("");
+                    $memb->setMember(FALSE);
+                    $memb->setAdmin(FALSE);
+                    $memb->setCreator(TRUE);
+                    $members[] = $memb;
+
+                    // Idem pour groupini
+                    $membini = new Member();
+                    $membini->setUid($result[0]->getAttribute($this->config_users['login'])[0]);
+                    $membini->setDisplayname($result[0]->getAttribute($this->config_users['displayname'])[0]);
+                    if (isset($result[0]->getAttribute($this->config_users['mail'])[0]))
+                        $membini->setMail($result[0]->getAttribute($this->config_users['mail'])[0]);
+                    else
+                        $membini->setMail("");
+                    if (isset($result[0]->getAttribute($this->config_users['tel'])[0]))
+                        $membini->setTel($result[0]->getAttribute($this->config_users['tel'])[0]);
+                    else
+                        $membini->setTel("");
+                    if (isset($result[0]->getAttribute($this->config_users['aff'])[0]))
+                        $membini->setAff($result[0]->getAttribute($this->config_users['aff'])[0]);
+                    else
+                        $membini->setAff("");
+                    if (isset($result[0]->getAttribute($this->config_users['primaff'])[0]))
+                        $membini->setPrimAff($result[0]->getAttribute($this->config_users['primaff'])[0]);
+                    else
+                        $membini->setPrimAff("");
+                    $membini->setMember(FALSE);
+                    $membini->setAdmin(FALSE);
+                    $membini->setCreator(TRUE);
+                    $membersini[] = $membini;
+                }
+            }
+
         }
         
         $group ->setMembers($members);
@@ -1959,6 +2334,30 @@ class GroupController extends AbstractController {
                         }
                         else {
                             syslog(LOG_ERR, "LDAP ERROR : del_admin by $adm : group : $cn, user : $u ");
+                        }
+                    }
+                }
+                // Seulement pour les admin
+                if (true === $this->get('security.authorization_checker')->isGranted('ROLE_ADMIN')) {
+                    // Traitement des creators
+                    // Idem : si changement, on répercute dans le ldap
+                    if ($memb->getCreator() != $membi->getCreator()) {
+                        if ($memb->getCreator()) {
+                            $r = $ldapfonctions->addCreatorGroup($dn_group, array($u));
+                            if ($r) {
+                                // Log modif
+                                syslog(LOG_INFO, "add_creator by $adm : group : $cn, user : $u ");
+                            } else {
+                                syslog(LOG_ERR, "LDAP ERROR : add_creator by $adm : group : $cn, user : $u ");
+                            }
+                        } else {
+                            $r = $ldapfonctions->delCreatorGroup($dn_group, array($u));
+                            if ($r) {
+                                // Log modif
+                                syslog(LOG_INFO, "del_creator by $adm : group : $cn, user : $u ");
+                            } else {
+                                syslog(LOG_ERR, "LDAP ERROR : del_creator by $adm : group : $cn, user : $u ");
+                            }
                         }
                     }
                 }

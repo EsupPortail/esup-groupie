@@ -35,9 +35,15 @@
         {{ form_errors(form) }}
 
         <div>
-            {{ form_label(form.cn) }}
-            {{ form_errors(form.cn) }}
-            {{ form_widget(form.cn, { 'attr': { 'size' : 32 } }) }}
+            {{ form_label(form.prefixe) }}
+            {{ form_errors(form.prefixe) }}
+            {{ form_widget(form.prefixe) }}
+        </div>
+        <br>
+        <div>
+            {{ form_label(form.nom) }}
+            {{ form_errors(form.nom) }}
+            {{ form_widget(form.nom, { 'attr': { 'size' : 32 } }) }}
         </div>
         <br>
         <div>
@@ -48,9 +54,15 @@
         </div>
         <br>
         <div>
-            {{ form_label(form.amugroupfilter) }}
-            {{ form_errors(form.amugroupfilter) }}
-            {{ form_widget(form.amugroupfilter, { 'attr': { 'size' : 128 } }) }}
+            {% if filtre == true %}
+                {{ form_label(form.amugroupfilter) }}
+                {{ form_errors(form.amugroupfilter) }}
+                {{ form_widget(form.amugroupfilter, { 'attr': { 'size' : 128 } }) }}
+            {% else %}
+                {{ form_label(form.amugroupfilter) }}
+                {{ form_errors(form.amugroupfilter) }}
+                {{ form_widget(form.amugroupfilter, { 'attr': { 'disabled': 'true'} }) }}
+            {% endif %}
         </div>
         <br>
         Exemple de filtre à partir d'une requête SQL : dbi:mysql:host=server.univ.fr;port=3306;database=name|user|pwduser|SELECT * from V_USERS
@@ -76,7 +88,6 @@
     {{ parent() }}
     <script type="text/javascript" src="{{ asset('build/js/jquery-3.6.0.min.js') }}"></script>
     <script type="text/javascript" src="{{ asset('build/js/jquery-ui.1.12.1.min.js') }}"></script>
-
 
     {# Ajout d'une fonction javascript pour effacer automatiquement les messages flash après 5s #}
     <script type="text/javascript">

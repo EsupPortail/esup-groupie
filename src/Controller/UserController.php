@@ -1,16 +1,4 @@
 <?php
-/*
- * Copyright 2022, ESUP-Portail  http://www.esup-portail.org/
- *  Licensed under APACHE2
- *  @author  Peggy FERNANDEZ BLANCO <peggy.fernandez-blanco@univ-amu.fr>
- *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
- *
- */
 
 namespace App\Controller;
 
@@ -154,6 +142,13 @@ class UserController extends AbstractController {
         $flagMember = array();
         for($i=0;$i<sizeof($arDataAdmin);$i++)
             $flagMember[$i] = FALSE;
+        $arDataCreator = $ldapfonctions->recherche($this->config_groups['creator']."=".$dnUser,array($this->config_groups['cn'], $this->config_groups['desc'], $this->config_groups['groupfilter']), 1, $this->config_groups['cn']);
+        $flagCreatMembers = array();
+        $flagCreatAdmins = array();
+        for($i=0;$i<sizeof($arDataCreator);$i++) {
+            $flagCreatMembers[$i] = FALSE;
+            $flagCreatAdmins[$i] = FALSE;
+        }
         
         // Initialisation des tableaux d'entités
         $groups = new ArrayCollection();
@@ -183,6 +178,19 @@ class UserController extends AbstractController {
                 else {
                     $membership->setAdminof(FALSE);
                     $membershipini->setAdminof(FALSE);
+                }
+            }
+            // on teste si l'utilisateur est aussi creator du groupe
+            for ($j=0; $j<sizeof($arDataCreator);$j++) {
+                if (strtolower($arDataCreator[$j]->getAttribute($this->config_groups['cn'])[0]) == $tab_cn[$i]) {
+                    $membership->setCreatorof(TRUE);
+                    $membershipini->setCreatorof(TRUE);
+                    $flagCreatMembers[$j] = TRUE;
+                    break;
+                }
+                else {
+                    $membership->setCreatorof(FALSE);
+                    $membershipini->setCreatorof(FALSE);
                 }
             }
             
@@ -233,6 +241,20 @@ class UserController extends AbstractController {
                 $membershipini->setMemberof(FALSE);
                 $membershipini->setAdminof(TRUE);
                 $membershipini->setDroits('Aucun');
+
+                // on teste si l'utilisateur est aussi creator du groupe
+                for ($j=0; $j<sizeof($arDataCreator);$j++) {
+                    if (strtolower($arDataCreator[$j]->getAttribute($this->config_groups['cn'])[0]) == $arDataAdmin[$i]->getAttribute($this->config_groups['cn'])[0]) {
+                        $membership->setCreatorof(TRUE);
+                        $membershipini->setCreatorof(TRUE);
+                        $flagCreatAdmins[$j] = TRUE;
+                        break;
+                    }
+                    else {
+                        $membership->setCreatorof(FALSE);
+                        $membershipini->setCreatorof(FALSE);
+                    }
+                }
                 
                 // Gestion droits pour un membre de la DOSI
                 if (true === $this->get('security.authorization_checker')->isGranted('ROLE_DOSI')) {
@@ -259,7 +281,45 @@ class UserController extends AbstractController {
                 $memberships[] = $membership;
                 $membershipsini[] = $membershipini;
             }
-            
+        }
+
+        // Gestion des groupes dont l'utilisateur est seulement creator
+        for($i=0;$i<sizeof($arDataCreator);$i++) {
+            if (($flagCreatMembers[$i]==FALSE)  && ($flagCreatAdmins[$i] == FALSE)) {
+                // on ajoute le groupe pour l'utilisateur
+                $membership = new Membership();
+                $membership->setGroupname($arDataCreator[$i]->getAttribute($this->config_groups['cn'])[0]);
+                $membership->setMemberof(FALSE);
+                $membership->setAdminof(FALSE);
+                $membership->setDroits('Aucun');
+
+                // Idem pour membershipini
+                $membershipini = new Membership();
+                $membershipini->setGroupname($arDataCreator[$i]->getAttribute($this->config_groups['cn'])[0]);
+                $membershipini->setMemberof(FALSE);
+                $membershipini->setAdminof(FALSE);
+                $membershipini->setDroits('Aucun');
+
+                // ajout creatorof
+                $membership->setCreatorof(TRUE);
+                $membershipini->setCreatorof(TRUE);
+
+                // Gestion droits pour un membre de la DOSI
+                if (true === $this->get('security.authorization_checker')->isGranted('ROLE_DOSI')) {
+                    $membership->setDroits('Voir');
+                    $membershipini->setDroits('Voir');
+                }
+
+                // Gestion droits pour un admin de l'appli
+                if (true === $this->get('security.authorization_checker')->isGranted('ROLE_ADMIN')) {
+                    $membership->setDroits('Modifier');
+                    $membershipini->setDroits('Modifier');
+                }
+
+                $memberships[] = $membership;
+                $membershipsini[] = $membershipini;
+            }
+
         }
         
         $user->setMemberships($memberships);
@@ -339,6 +399,33 @@ class UserController extends AbstractController {
                             else {
                                 $this->get('session')->getFlashBag()->add('flash-error', 'Erreur lors de la suppression des droits \'admin\'');
                                 syslog(LOG_ERR, "LDAP ERROR : del_admin by $adm : group : $c, user : $uid");
+                            }
+                        }
+                    }
+
+                    // Seulement pour les admin
+                    if (true === $this->get('security.authorization_checker')->isGranted('ROLE_ADMIN')) {
+                        // Traitement des creators
+                        // Idem si changement des droits
+                        if ($memb->getCreatorof() != $membershipsini[$i]->getCreatorof()) {
+                            if ($memb->getCreatorof()) {
+                                $r = $ldapfonctions->addCreatorGroup($dn_group, array($uid));
+                                if ($r) {
+                                    // Log modif
+                                    syslog(LOG_INFO, "add_creator by $adm : group : $c, user : $uid");
+                                } else {
+                                    $this->get('session')->getFlashBag()->add('flash-error', 'Erreur lors de l\'ajout des droits \'creator\'');
+                                    syslog(LOG_ERR, "LDAP ERROR : add_creator by $adm : group : $c, user : $uid");
+                                }
+                            } else {
+                                $r = $ldapfonctions->delCreatorGroup($dn_group, array($uid));
+                                if ($r) {
+                                    // Log modif
+                                    syslog(LOG_INFO, "del_creator by $adm : group : $c, user : $uid");
+                                } else {
+                                    $this->get('session')->getFlashBag()->add('flash-error', 'Erreur lors de la suppression des droits \'creator\'');
+                                    syslog(LOG_ERR, "LDAP ERROR : del_creator by $adm : group : $c, user : $uid");
+                                }
                             }
                         }
                     }
@@ -430,6 +517,9 @@ class UserController extends AbstractController {
             // Recherche des admins du groupe dans le LDAP
             $arAdmins = $ldapfonctions->getAdminsGroup($cn);
 
+            // Recherche des creators du groupe dans le LDAP
+            $arCreators = $ldapfonctions->getCreatorsGroup($cn);
+
             // User initial pour détecter les modifications
             $userini = new User();
             $userini->setUid($uid);
@@ -472,6 +562,22 @@ class UserController extends AbstractController {
                     else {
                         $membership->setAdminof(FALSE);
                         $membershipini->setAdminof(FALSE);
+                    }
+                }
+            }
+            // Droits "creator"
+            if (isset($arCreators[0]->getAttribute($this->config_groups['creator'])["count"])){
+                for ($j=0; $j<sizeof($arCreators[0]->getAttribute($this->config_groups['creator'])); $j++) {
+                    // récupération des uid des creators du groupe
+                    $uid_creators = preg_replace("/(".$this->config_users['login']."=)(([A-Za-z0-9:._-]{1,}))(,ou=.*)/", "$3", strtolower($arCreators[0]->getAttribute($this->config_groups['creator'])[$j]));
+                    if ($uid == $uid_creators) {
+                        $membership->setCreatorof(TRUE);
+                        $membershipini->setCreatorof(TRUE);
+                        break;
+                    }
+                    else {
+                        $membership->setCreatorof(FALSE);
+                        $membershipini->setCreatorof(FALSE);
                     }
                 }
             }
@@ -558,6 +664,34 @@ class UserController extends AbstractController {
                             else {
                                 $this->get('session')->getFlashBag()->add('flash-error', 'Erreur lors de la suppression des droits \'admin\'');
                                 syslog(LOG_ERR, "LDAP ERROR : del_admin by $adm : group : $cn, user : $uid");
+                            }
+                        }
+                    }
+
+                    // Traitement des creators
+                    // Si modification des droits, on modifie dans le ldap
+                    if ($memb->getCreatorof() != $membershipsini[$i]->getCreatorof()) {
+                        if ($memb->getCreatorof()) {
+                            $r = $ldapfonctions->addCreatorGroup($dn_group, array($uid));
+                            if ($r) {
+                                // Log modif
+                                syslog(LOG_INFO, "add_creator by $adm : group : $cn, user : $uid");
+                            }
+                            else {
+                                // Affichage notification
+                                $this->get('session')->getFlashBag()->add('flash-error', 'Erreur lors de l\'ajout des droits \'creator\'');
+                                syslog(LOG_ERR, "LDAP ERROR : add_creator by $adm : group : $cn, user : $uid");
+                            }
+                        }
+                        else {
+                            $r = $ldapfonctions->delCreatorGroup($dn_group, array($uid));
+                            if ($r) {
+                                // Log modif
+                                syslog(LOG_INFO, "del_creator by $adm : group : $cn, user : $uid");
+                            }
+                            else {
+                                $this->get('session')->getFlashBag()->add('flash-error', 'Erreur lors de la suppression des droits \'creator\'');
+                                syslog(LOG_ERR, "LDAP ERROR : del_creator by $adm : group : $cn, user : $uid");
                             }
                         }
                     }
@@ -690,7 +824,7 @@ class UserController extends AbstractController {
      * Voir les appartenances et droits d'un utilisateur.
      *
      * @Route("/see/{uid}", name="see_user")
-     * @Template("User/see.html.twig")
+     * @Template()
      */
     public function seeAction(LdapFonctions $ldapfonctions, Request $request, $uid)
     {
@@ -758,7 +892,7 @@ class UserController extends AbstractController {
      * Voir les appartenances et droits d'un utilisateur.
      *
      * @Route("/seeprivate/{uid}", name="see_user_private")
-     * @Template("User/seeprivate.html.twig")
+     * @Template()
      */
     public function seeprivateAction(LdapFonctions $ldapfonctions, Request $request, $uid)
     {
@@ -828,7 +962,7 @@ class UserController extends AbstractController {
     * Recherche de personnes
     *
     * @Route("/search/{opt}/{cn}/{liste}",name="user_search")
-    * @Template("User/search.html.twig")
+    * @Template()
     */
     public function searchAction(LdapFonctions $ldapfonctions, Request $request, $opt='search', $cn='', $liste='') {
         $this->init_config();
@@ -997,7 +1131,7 @@ class UserController extends AbstractController {
     * Formulaire pour l'ajout d'utilisateurs en masse
     *
     * @Route("/multiple/{opt}/{cn}/{liste}",name="user_multiple")
-    * @Template("User/multiple.html.twig")
+    * @Template("AmuGroupieBundle:User:multiple.html.twig")
     */
     public function multipleAction(LdapFonctions $ldapfonctions, Request $request, $opt='search', $cn='', $liste='') {
         $this->init_config();

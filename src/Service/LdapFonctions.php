@@ -1,17 +1,4 @@
 <?php
-/*
- * Copyright 2022, ESUP-Portail  http://www.esup-portail.org/
- *  Licensed under APACHE2
- *  @author  Peggy FERNANDEZ BLANCO <peggy.fernandez-blanco@univ-amu.fr>
- *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
- *
- */
-
 /**
  * Created by PhpStorm.
  * User: peggy_fernandez
@@ -126,6 +113,16 @@ class LdapFonctions
     public function getAdminsGroup($groupName) {
         $filtre = $this->config_groups['cn']."=". $groupName ;
         $restriction = array($this->config_groups['groupadmin']);
+        $result = $this->recherche($filtre, $restriction, 1, "no");
+        return $result;
+    }
+
+    /**
+     * Récupération des creators d'un groupe + infos des membres
+     */
+    public function getCreatorsGroup($groupName) {
+        $filtre = $this->config_groups['cn']."=". $groupName ;
+        $restriction = array($this->config_groups['creator']);
         $result = $this->recherche($filtre, $restriction, 1, "no");
         return $result;
     }
@@ -251,6 +248,65 @@ class LdapFonctions
     }
 
     /**
+     * Ajouter un creator dans un groupe
+     * @return  \Amu\AppBundle\Service\Ldap
+     */
+    public function addCreatorGroup($dn_group, $arUserUid) {
+        $arDnCreators = array();
+        foreach ($arUserUid as $uid) {
+            $result = $this->recherche($this->config_users['login']."=". $uid, array('dn'), 0, "no");
+            $arDnCreators[] = $result[0]->getDn();
+        }
+        // Entry manager
+        $entryManager = $this->ldap->getEntryManager();
+
+        // Finding and updating group
+        $pos = strpos($dn_group, "ou=");
+        $cn = substr($dn_group, 0, $pos-2);
+        $base = substr($dn_group, $pos);
+        $query = $this->ldap->query($base, $cn, array('filter' => array('description')));
+        $result = $query->execute();
+        $entry = $result[0];
+        try {
+            $entryManager->addAttributeValues($entry, $this->config_groups['creator'], $arDnCreators);
+        }catch (\Exception $e) {
+            return(false);
+        }
+        return(true);
+
+    }
+
+    /**
+     * Supprimer un creator d'un groupe
+     * @return  \Amu\AppBundle\Service\Ldap
+     */
+    public function delCreatorGroup($dn_group, $arUserUid) {
+
+        $arDnCreators = array();
+        foreach ($arUserUid as $uid) {
+            $result = $this->recherche($this->config_users['login']."=". $uid, array('dn'), 0, "no");
+            $arDnCreators[] = $result[0]->getDn();
+        }
+        // Entry manager
+        $entryManager = $this->ldap->getEntryManager();
+
+        // Finding and updating group
+        $pos = strpos($dn_group, "ou=");
+        $cn = substr($dn_group, 0, $pos-2);
+        $base = substr($dn_group, $pos);
+        $query = $this->ldap->query($base, $cn, array('filter' => array('description')));
+        $result = $query->execute();
+        $entry = $result[0];
+        try {
+            $entryManager->removeAttributeValues($entry, $this->config_groups['creator'], $arDnCreators);
+        }catch (\Exception $e) {
+            return(false);
+        }
+        return(true);
+
+    }
+
+    /**
      * Supprimer le amugroupfilter d'un groupe
      * @return  \Amu\AppBundle\Service\Ldap
      */
@@ -305,6 +361,22 @@ class LdapFonctions
             $description = "";
 
         return $description;
+    }
+
+    /**
+     * Récupérer le createur d'un groupe
+     * @return  \Amu\AppBundle\Service\Ldap
+     */
+    public function getOwner($cn_group) {
+
+        $filtre = $this->config_groups['cn']."=" . $cn_group;
+        $result = $this->recherche($filtre, array($this->config_groups['owner']), 1, $this->config_groups['cn']);
+        if (null !== $result[0]->getAttribute($this->config_groups['owner']))
+            $owner = $result[0]->getAttribute($this->config_groups['owner'])[0];
+        else
+            $owner = "";
+
+        return $owner;
     }
 
     public function createGroupeLdap($dn, $groupeinfo)
