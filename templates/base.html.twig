@@ -38,16 +38,16 @@
             {% if env != "ent" %}
                 {% block topbar_menu %}
                 <nav class="amui-o-top-bar navbar">
-                    <nav class="amui-o-top-bar navbar">
+{#                     <nav class="amui-o-top-bar navbar"> #}
                       <div class="container-fluidAmu">
                         <!-- Brand and toggle get grouped for better mobile display -->
                         <div class="navbar-header">
-                          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#top-bar-collapse" aria-expanded="false">
+{#                           <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#top-bar-collapse" aria-expanded="false">
                             <span class="sr-only">Toggle navigation</span>
                             <span class="icon-bar"></span>
                             <span class="icon-bar"></span>
                             <span class="icon-bar"></span>
-                          </button>
+                          </button> #}
                           <a class="amui-o-top-bar__logo amui-m-navbar-logo navbar-brand" href="/">
                             <h1 class="amui-a-brand-logo is--light">Bienvenue Aix-Marseille université</h1>
                             <span class="amui-m-navbar-logo__heading-title">{{ nom_appli }}</span>
@@ -90,7 +90,7 @@
                           </ul>
                         </div>
                       </div>  <!-- Container fluidAmu -->
-                    </nav>  <!-- Organism top bar -->
+{#                     </nav>  <!-- Organism top bar --> #}
                  </nav>  <!-- Organism : Top bar -->
                 {%  endblock%} <!-- endblock topbar_menu -->
             {% endif %}
