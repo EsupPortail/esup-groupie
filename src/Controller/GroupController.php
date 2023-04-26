@@ -1147,6 +1147,25 @@ class GroupController extends AbstractController {
             if ($form->isSubmitted() && $form->isValid()) {
                 // Récupération des données
                 $group = $form->getData();
+                $cn = $group->getName();
+
+                // Test longueur du nom
+                if (strlen($cn) > $this->config_groups['max_name_size']) {
+                    $this->get('session')->getFlashBag()->add('flash-error', 'Le nom du groupe est trop long.');
+                    // Retour à la page contenant le formulaire de création de groupe
+                    return $this->render('Group/group.html.twig', array('form' => $form->createView(), 'phrase_regex' => $this->config_groups['phrase_regex']));
+                }
+
+                // Test validité nom du groupe
+                $pattern = $this->config_groups['name_regex'];
+                // On cherche les caracteres autorises
+                preg_match($pattern,$cn,$result);
+                if(!empty($result)){
+                    // affichage erreur nom invalide
+                    $this->get('session')->getFlashBag()->add('flash-error', 'Le nom choisi ne respecte pas les règles de nommage.');
+                    // Retour à la page contenant le formulaire de création de groupe
+                    return $this->render('Group/group.html.twig', array('form' => $form->createView(), 'phrase_regex' => $this->config_groups['phrase_regex']));
+                }
 
                 if ($group->getAmugroupfilter() != "") {
                     // Test validité du filtre si c'est un filtre LDAP
@@ -1159,7 +1178,7 @@ class GroupController extends AbstractController {
                         $this->get('session')->getFlashBag()->add('flash-error', 'amuGroupFilter n\'est pas valide !');
 
                         // Retour à la page contenant le formulaire de création de groupe
-                        return $this->render('Group/group.html.twig', array('form' => $form->createView()));
+                        return $this->render('Group/group.html.twig', array('form' => $form->createView(), 'phrase_regex' => $this->config_groups['phrase_regex']));
                     }
                 }
 
@@ -1195,7 +1214,7 @@ class GroupController extends AbstractController {
                     syslog(LOG_ERR, "LDAP ERREUR : create_group by $adm : group : $cn");
 
                     // Retour à la page contenant le formulaire de création de groupe
-                    return $this->render('Group/group.html.twig', array('form' => $form->createView()));
+                    return $this->render('Group/group.html.twig', array('form' => $form->createView(), 'phrase_regex' => $this->config_groups['phrase_regex']));
                 }
 
                 // Ferme le fichier de log
@@ -1203,7 +1222,7 @@ class GroupController extends AbstractController {
             }
 
             // Affichage formulaire de création de groupe
-            return $this->render('Group/group.html.twig', array('form' => $form->createView()));
+            return $this->render('Group/group.html.twig', array('form' => $form->createView(), 'phrase_regex' => $this->config_groups['phrase_regex']));
 
         } else {
             // Droits pour les amuCreators
@@ -1233,6 +1252,25 @@ class GroupController extends AbstractController {
                     $cn = $tab_creat_groups[$dataForm['prefixe']] . ':' . $dataForm['nom'];
                     $group->setCn($cn);
 
+                    // Test longueur du nom
+                    if (strlen($cn) > $this->config_groups['max_name_size']) {
+                        $this->get('session')->getFlashBag()->add('flash-error', 'Le nom du groupe est trop long.');
+                        // Retour à la page contenant le formulaire de création de groupe
+                        return $this->render('Group/creatorgroup.html.twig', array('form' => $form->createView(), 'filtre' => $this->config_groups['creatorfilter'], 'phrase_regex' => $this->config_groups['phrase_regex']));
+                    }
+
+                    // Test validité nom du groupe
+                    $pattern = $this->config_groups['name_regex'];
+                    $nameGr = $dataForm['nom'];
+                    // On cherche les caracteres autorises
+                    preg_match($pattern,$nameGr,$result);
+                    if(!empty($result)){
+                        // affichage erreur nom invalide
+                        $this->get('session')->getFlashBag()->add('flash-error', 'Le nom choisi ne respecte pas les règles de nommage.');
+                        // Retour à la page contenant le formulaire de création de groupe
+                        return $this->render('Group/creatorgroup.html.twig', array('form' => $form->createView(), 'filtre' => $this->config_groups['creatorfilter'], 'phrase_regex' => $this->config_groups['phrase_regex']));
+                    }
+
                     if ($dataForm['amugroupfilter'] != "") {
                         // Test validité du filtre si c'est un filtre LDAP
                         $filtre = $dataForm['amugroupfilter'];
@@ -1245,7 +1283,7 @@ class GroupController extends AbstractController {
                             $this->get('session')->getFlashBag()->add('flash-error', 'amuGroupFilter n\'est pas valide !');
 
                             // Retour à la page contenant le formulaire de création de groupe
-                            return $this->render('Group/creatorgroup.html.twig', array('form' => $form->createView(), 'filtre' => $this->config_groups['creatorfilter']));
+                            return $this->render('Group/creatorgroup.html.twig', array('form' => $form->createView(), 'filtre' => $this->config_groups['creatorfilter'], 'phrase_regex' => $this->config_groups['phrase_regex']));
                         }
 
                     }
@@ -1259,7 +1297,7 @@ class GroupController extends AbstractController {
                             $this->get('session')->getFlashBag()->add('flash-error', 'Attention : vous ne pouvez pas choisir ce nom de groupe !');
 
                             // Retour à la page contenant le formulaire de création de groupe
-                            return $this->render('Group/creatorgroup.html.twig', array('form' => $form->createView(), 'filtre' => $this->config_groups['creatorfilter']));
+                            return $this->render('Group/creatorgroup.html.twig', array('form' => $form->createView(), 'filtre' => $this->config_groups['creatorfilter'], 'phrase_regex' => $this->config_groups['phrase_regex']));
                         }
                     }
 
@@ -1302,13 +1340,13 @@ class GroupController extends AbstractController {
                         syslog(LOG_ERR, "LDAP ERREUR : create_group by $adm : group : $cn");
 
                         // Retour à la page contenant le formulaire de création de groupe
-                        return $this->render('Group/creatorgroup.html.twig', array('form' => $form->createView(), 'filtre' => $this->config_groups['creatorfilter']));
+                        return $this->render('Group/creatorgroup.html.twig', array('form' => $form->createView(), 'filtre' => $this->config_groups['creatorfilter'], 'phrase_regex' => $this->config_groups['phrase_regex']));
                     }
                     // Ferme le fichier de log
                     closelog();
                 }
                 // Affichage formulaire de création de groupe
-                return $this->render('Group/creatorgroup.html.twig', array('form' => $form->createView(), 'filtre' => $this->config_groups['creatorfilter']));
+                return $this->render('Group/creatorgroup.html.twig', array('form' => $form->createView(), 'filtre' => $this->config_groups['creatorfilter'], 'phrase_regex' => $this->config_groups['phrase_regex']));
             }
 
 

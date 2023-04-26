@@ -52,6 +52,9 @@ parameters:
         creator: amuGroupCreator
         creatorfilter: true
         owner: owner
+        max_name_size: 63
+        name_regex: "/([^a-z0-9:])/"
+        phrase_regex: "Le nom ne doit pas excéder 63 caractères. Les caractères autorisés pour le nommage sont les lettres minuscules, les chiffres et le séparateur :"
     private:
         private_branch: ou=private
         prefix: amu:perso
