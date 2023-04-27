@@ -1829,7 +1829,7 @@ class GroupController extends AbstractController {
                         'prefixe' => $i_default,
                         'nom' => $nom,
                         'desc' => $desc,
-                        'filter' => $filtAff));
+                        'filter' => $filtreAff));
 
                 $form->handleRequest($request);
                 if ($form->isSubmitted() && $form->isValid()) {
