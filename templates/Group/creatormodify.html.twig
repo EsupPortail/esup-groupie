@@ -10,7 +10,7 @@
 
     <div style="padding: 15px">
 
-        <h1 class="h1-groupie">Création de groupe</h1>
+        <h1 class="h1-groupie">Modification de groupe</h1>
 
         {% if app.session.flashbag.has('flash-notice') %}
             <center>
@@ -69,7 +69,7 @@
         Exemple de filtre à partir d'une requête SQL : dbi:mysql:host=server.univ.fr;port=3306;database=name|user|pwduser|SELECT * from V_USERS
         <br><br>
         <div class="amui-a-btn ">
-            <button class="amui-a-btn is--sm is--default" type="submit" name="btCreer"><img align="absmiddle" src="{{ asset('build/images/add-2.png') }}" />&nbsp;Créer&nbsp;</button>
+            <button class="amui-a-btn is--sm is--default" type="submit" name="btModifier"><img align="absmiddle" src="{{ asset('build/images/accept.png') }}" />&nbsp;Enregistrer les modifications&nbsp;</button>
             <a href="{{ path('homepage') }}">
                 <button class="amui-a-btn is--sm is--default" type="button" >
                     <img src="{{asset('build/images/cancel-16.png')}}" alt=""/>

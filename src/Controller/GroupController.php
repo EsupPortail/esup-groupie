@@ -1809,15 +1809,21 @@ class GroupController extends AbstractController {
 
                 // valeur par défaut du nom
                 $pos = strpos($cn, $tab_creat_groups[$i_default]);
-                if ($pos == false) {
-                    // Erreur nom groupe
+                if ($pos === 0) {
+                    $nom = substr($cn, strlen($tab_creat_groups[$i_default])+1);
                 } else{
-                    $nom = substr($cn,0,$pos+1);
+                    // erreur nom
                 }
+
+                // Affichage du filtre
+                if ($filt == "no")
+                    $filtreAff = "";
+                else
+                    $filtreAff = $filt;
 
                 // Création du formulaire de création de groupe
                 $form = $this->createForm(GroupCreatorModifType::class,
-                    array('action' => $this->generateUrl('group_modify'),
+                    array('action' => $this->generateUrl('group_modify', array('cn' => $cn, 'desc' => $desc, 'filt' => $filt)),
                         'method' => 'GET',
                         'liste_groupes' => $tab_choice_groups,
                         'prefixe' => $i_default,
@@ -1830,11 +1836,11 @@ class GroupController extends AbstractController {
                     // Récupération des données
                     $dataForm = $form->getData();
                     $group->setDescription($dataForm['description']);
-                    $cn = $tab_creat_groups[$dataForm['prefixe']] . ':' . $dataForm['nom'];
-                    $group->setCn($cn);
+                    $cnNew = $tab_creat_groups[$dataForm['prefixe']] . ':' . $dataForm['nom'];
+                    $group->setCn($cnNew);
 
                     // Test longueur du nom
-                    if (strlen($cn) > $this->config_groups['max_name_size']) {
+                    if (strlen($cnNew) > $this->config_groups['max_name_size']) {
                         $this->get('session')->getFlashBag()->add('flash-error', 'Le nom du groupe est trop long.');
                         // Retour à la page contenant le formulaire de création de groupe
                         return $this->render('Group/creatormodify.html.twig', array('form' => $form->createView(), 'filtre' => $this->config_groups['creatorfilter'], 'phrase_regex' => $this->config_groups['phrase_regex']));
