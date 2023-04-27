@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Form\GroupCreatorCreateType;
+use App\Form\GroupCreatorModifType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
@@ -1692,98 +1693,269 @@ class GroupController extends AbstractController {
 
         // On récupère le service ldapfonctions
         $ldapfonctions->SetLdap($ldap, getenv("base_dn"), $this->config_users, $this->config_groups, $this->config_private);
-        
+
+        // dn groupe
         $dn = $this->config_groups['cn']."=".$cn.", ".$this->config_groups['group_branch'].", ".$this->base;
 
+        // recup des infos de l'utilisateur courant
+        $uidCurr = $this->container->get('security.token_storage')->getToken()->getAttribute("uid");
+        $result = $ldapfonctions->recherche($this->config_users['login']."=". $uidCurr, array('dn'), 0, "no");
+        $dnUser = $result[0]->getDn();
+
         $filtre = $this->config_groups['creatorfilter'];
-        if (true === $this->get('security.authorization_checker')->isGranted('ROLE_ADMIN'))
+        if (true === $this->get('security.authorization_checker')->isGranted('ROLE_ADMIN')) {
             $filtre = true;
 
-        // Pré-remplir le formulaire avec les valeurs actuelles du groupe
-        $group->setCn($cn);
-        $group->setDescription($desc);
-        if ($filt=="no")
-            $group->setAmugroupfilter("");
-        else
-            $group->setAmugroupfilter($filt);
-        
-        $form = $this->createForm(GroupModifType::class, $group);
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            $groupmod = new Group();
-            $groupmod = $form->getData();
+            // Pré-remplir le formulaire avec les valeurs actuelles du groupe
+            $group->setCn($cn);
+            $group->setDescription($desc);
+            if ($filt == "no")
+                $group->setAmugroupfilter("");
+            else
+                $group->setAmugroupfilter($filt);
 
-            // Log modif de groupe
-            openlog($this->config_logs['tag'], LOG_PID | LOG_PERROR, constant($this->config_logs['facility']));
-            $adm = $this->container->get('security.token_storage')->getToken()->getAttribute("uid");
+            $form = $this->createForm(GroupModifType::class, $group);
+            $form->handleRequest($request);
+            if ($form->isSubmitted() && $form->isValid()) {
+                $groupmod = new Group();
+                $groupmod = $form->getData();
 
-            // Cas particulier de la suppression amugroupfilter
-            if (($filt != "no") && ($groupmod->getAmugroupfilter() == "")) {
-                // Suppression de l'attribut
-                $b = $ldapfonctions->delAmuGroupFilter($dn, $filt);
-                if ($b == true) {
-                    //Le filtre du groupe a bien été supprimé
-                    $this->get('session')->getFlashBag()->add('flash-notice', 'AmuGroupFilter  a bien été supprimé');
-                    // Log
-                    syslog(LOG_INFO, "delete_amugroupfilter by $adm : group : $cn");
+                // Log modif de groupe
+                openlog($this->config_logs['tag'], LOG_PID | LOG_PERROR, constant($this->config_logs['facility']));
+                $adm = $this->container->get('security.token_storage')->getToken()->getAttribute("uid");
+
+                // Cas particulier de la suppression amugroupfilter
+                if (($filt != "no") && ($groupmod->getAmugroupfilter() == "")) {
+                    // Suppression de l'attribut
+                    $b = $ldapfonctions->delAmuGroupFilter($dn, $filt);
+                    if ($b == true) {
+                        //Le filtre du groupe a bien été supprimé
+                        $this->get('session')->getFlashBag()->add('flash-notice', 'AmuGroupFilter  a bien été supprimé');
+                        // Log
+                        syslog(LOG_INFO, "delete_amugroupfilter by $adm : group : $cn");
+                    } else {
+                        // Log erreur
+                        syslog(LOG_ERR, "LDAP ERROR : delete_amugroupfilter by $adm : group : $cn");
+                        // affichage erreur
+                        $this->get('session')->getFlashBag()->add('flash-error', 'Erreur LDAP lors de la suppression de l\'attribut amuGroupFilter');
+                        return $this->render('Group/modifyform.html.twig', array('form' => $form->createView(), 'group' => $group));
+                    }
+                }
+
+                // Modification du groupe dans le LDAP
+                $b = $ldapfonctions->modGroup($dn, $groupmod->getDescription(), $groupmod->getAmugroupfilter());
+                if ($b === true) {
+                    //Le groupe a bien été modifié
+                    // Log modif de groupe OK
+                    syslog(LOG_INFO, "modif_group by $adm : group : $cn");
+
+                    // affichage groupe créé
+                    $this->get('session')->getFlashBag()->add('flash-notice', 'Le groupe a bien été modifié');
+                    $groups[0] = $group;
                 } else {
-                    // Log erreur
-                    syslog(LOG_ERR, "LDAP ERROR : delete_amugroupfilter by $adm : group : $cn");
-                    // affichage erreur
-                    $this->get('session')->getFlashBag()->add('flash-error', 'Erreur LDAP lors de la suppression de l\'attribut amuGroupFilter');
+                    if ($b == 2) {
+                        // Erreur filtre
+                        $this->get('session')->getFlashBag()->add('flash-error', 'amuGroupFilter n\'est pas valide !');
+                    } else {
+                        // Log Erreur LDAP
+                        syslog(LOG_ERR, "LDAP ERROR : modif_group by $adm : group : $cn");
+                        $this->get('session')->getFlashBag()->add('flash-error', 'Erreur LDAP lors de la modification du groupe');
+                    }
                     return $this->render('Group/modifyform.html.twig', array('form' => $form->createView(), 'group' => $group));
                 }
-            }
 
-            // Modification du groupe dans le LDAP
-            $b = $ldapfonctions->modGroup($dn, $groupmod->getDescription(), $groupmod->getAmugroupfilter());
-            if ($b === true) {
-                //Le groupe a bien été modifié
-                // Log modif de groupe OK
-                syslog(LOG_INFO, "modif_group by $adm : group : $cn");
+                // Renommage groupe dans le LDAP
+                if ($cn != $groupmod->getCn()) {
+                    $b = $ldapfonctions->renameGroupeLdap($dn, $groupmod->getCn());
+                    if ($b == true) {
+                        //Le groupe a bien été renommé
+                        // Log modif de groupe OK
+                        $new_cn = $groupmod->getCn();
+                        syslog(LOG_INFO, "rename_group by $adm : group : $cn, new : $new_cn");
 
-                // affichage groupe créé
-                $this->get('session')->getFlashBag()->add('flash-notice', 'Le groupe a bien été modifié');
-                $groups[0] = $group;
-            } else {
-                if ($b == 2) {
-                    // Erreur filtre
-                    $this->get('session')->getFlashBag()->add('flash-error', 'amuGroupFilter n\'est pas valide !');
-                } else {
-                    // Log Erreur LDAP
-                    syslog(LOG_ERR, "LDAP ERROR : modif_group by $adm : group : $cn");
-                    $this->get('session')->getFlashBag()->add('flash-error', 'Erreur LDAP lors de la modification du groupe');
+                        // affichage groupe modifé
+                        $this->get('session')->getFlashBag()->add('flash-notice', 'Le groupe a bien été renommé');
+                        $groups[0] = $group;
+                        return $this->render('Group/modifygroup.html.twig', array('groups' => $groups));
+                    } else {
+                        // Log Erreur LDAP
+                        syslog(LOG_ERR, "LDAP ERROR : modif_group by $adm : group : $cn");
+                        $this->get('session')->getFlashBag()->add('flash-error', 'Erreur LDAP lors du renommage du groupe');
+                    }
                 }
-                return $this->render('Group/modifyform.html.twig', array('form' => $form->createView(), 'group' => $group));
+
+                // retour sur la fiche du groupe
+                return $this->redirect($this->generateUrl('group_update', array('cn' => $cn, 'liste' => 'recherchegroupe')));
+
+                // Ferme fichier log
+                closelog();
             }
-
-            // Renommage groupe dans le LDAP
-            if ($cn != $groupmod->getCn()) {
-                $b = $ldapfonctions->renameGroupeLdap($dn, $groupmod->getCn());
-                if ($b == true) {
-                    //Le groupe a bien été renommé
-                    // Log modif de groupe OK
-                    $new_cn = $groupmod->getCn();
-                    syslog(LOG_INFO, "rename_group by $adm : group : $cn, new : $new_cn");
-
-                    // affichage groupe modifé
-                    $this->get('session')->getFlashBag()->add('flash-notice', 'Le groupe a bien été renommé');
-                    $groups[0] = $group;
-                    return $this->render('Group/modifygroup.html.twig', array('groups' => $groups));
-                } else {
-                    // Log Erreur LDAP
-                    syslog(LOG_ERR, "LDAP ERROR : modif_group by $adm : group : $cn");
-                    $this->get('session')->getFlashBag()->add('flash-error', 'Erreur LDAP lors du renommage du groupe');
+            return $this->render('Group/modifyform.html.twig', array('form' => $form->createView(), 'group' => $group, 'filtre' => $filtre));
+        } else {
+            // Droits pour les amuCreators
+            if (true === $this->get('security.authorization_checker')->isGranted('ROLE_CREATEUR')) {
+                $tab_creat_groups = array();
+                $tab_choice_groups = array();
+                $i_default = 0;
+                // Recup des groupes dont l'utilisateur courant (logué) est creator
+                $arDataCreat = $ldapfonctions->recherche($this->config_groups['creator'] . "=" . $dnUser, array($this->config_groups['cn'], $this->config_groups['desc'], $this->config_groups['groupfilter']), 1, $this->config_groups['cn']);
+                for ($i = 0; $i < sizeof($arDataCreat); $i++) {
+                    $tab_creat_groups[$i] = $arDataCreat[$i]->getAttribute($this->config_groups['cn'])[0];
+                    $tab_choice_groups[$arDataCreat[$i]->getAttribute($this->config_groups['cn'])[0] . ':'] = $i;
+                    if (strpos($cn, $tab_creat_groups[$i]) !== false){
+                        $i_default = $i;
+                    }
                 }
-            }
 
-            // retour sur la fiche du groupe
-            return $this->redirect($this->generateUrl('group_update', array('cn'=>$cn, 'liste' => 'recherchegroupe')));
-            
-            // Ferme fichier log
-            closelog();
+                // valeur par défaut du nom
+                $pos = strpos($cn, $tab_creat_groups[$i_default]);
+                if ($pos == false) {
+                    // Erreur nom groupe
+                } else{
+                    $nom = substr($cn,0,$pos+1);
+                }
+
+                // Création du formulaire de création de groupe
+                $form = $this->createForm(GroupCreatorModifType::class,
+                    array('action' => $this->generateUrl('group_modify'),
+                        'method' => 'GET',
+                        'liste_groupes' => $tab_choice_groups,
+                        'prefixe' => $i_default,
+                        'nom' => $nom,
+                        'desc' => $desc,
+                        'filter' => $filt));
+
+                $form->handleRequest($request);
+                if ($form->isSubmitted() && $form->isValid()) {
+                    // Récupération des données
+                    $dataForm = $form->getData();
+                    $group->setDescription($dataForm['description']);
+                    $cn = $tab_creat_groups[$dataForm['prefixe']] . ':' . $dataForm['nom'];
+                    $group->setCn($cn);
+
+                    // Test longueur du nom
+                    if (strlen($cn) > $this->config_groups['max_name_size']) {
+                        $this->get('session')->getFlashBag()->add('flash-error', 'Le nom du groupe est trop long.');
+                        // Retour à la page contenant le formulaire de création de groupe
+                        return $this->render('Group/creatormodify.html.twig', array('form' => $form->createView(), 'filtre' => $this->config_groups['creatorfilter'], 'phrase_regex' => $this->config_groups['phrase_regex']));
+                    }
+
+                    // Test validité nom du groupe
+                    $pattern = $this->config_groups['name_regex'];
+                    $nameGr = $dataForm['nom'];
+                    // On cherche les caracteres autorises
+                    preg_match($pattern, $nameGr, $result);
+                    if (!empty($result)) {
+                        // affichage erreur nom invalide
+                        $this->get('session')->getFlashBag()->add('flash-error', 'Le nom choisi ne respecte pas les règles de nommage.');
+                        // Retour à la page contenant le formulaire de création de groupe
+                        return $this->render('Group/creatormodify.html.twig', array('form' => $form->createView(), 'filtre' => $this->config_groups['creatorfilter'], 'phrase_regex' => $this->config_groups['phrase_regex']));
+                    }
+
+                    if ($dataForm['amugroupfilter'] != "") {
+                        // Test validité du filtre si c'est un filtre LDAP
+                        $filtre = $dataForm['amugroupfilter'];
+                        $b = $ldapfonctions->testAmugroupfilter($filtre);
+                        if ($b === true) {
+                            // Le filtre LDAP est valide, on continue
+                            $group->setAmugroupfilter($filtre);
+                        } else {
+                            // affichage erreur filtre invalide
+                            $this->get('session')->getFlashBag()->add('flash-error', 'amuGroupFilter n\'est pas valide !');
+
+                            // Retour à la page contenant le formulaire de création de groupe
+                            return $this->render('Group/creatormodify.html.twig', array('form' => $form->createView(), 'filtre' => $this->config_groups['creatorfilter'], 'phrase_regex' => $this->config_groups['phrase_regex']));
+                        }
+
+                    }
+
+                    // Test validite du groupe créé pour les creators
+                    foreach ($tab_creat_groups as $creat_group) {
+                        if (strpos($group->getCn(), $creat_group) == 0) {
+                            // ok, le groupe commence bien par la chaine souhaitee
+                        } else {
+                            // affichage erreur
+                            $this->get('session')->getFlashBag()->add('flash-error', 'Attention : vous ne pouvez pas choisir ce nom de groupe !');
+
+                            // Retour à la page contenant le formulaire de création de groupe
+                            return $this->render('Group/creatormodify.html.twig', array('form' => $form->createView(), 'filtre' => $this->config_groups['creatorfilter'], 'phrase_regex' => $this->config_groups['phrase_regex']));
+                        }
+                    }
+
+                    // Log modif de groupe
+                    openlog($this->config_logs['tag'], LOG_PID | LOG_PERROR, constant($this->config_logs['facility']));
+
+                    // Cas particulier de la suppression amugroupfilter
+                    if (($filt != "no") && ($group->getAmugroupfilter() == "")) {
+                        // Suppression de l'attribut
+                        $b = $ldapfonctions->delAmuGroupFilter($dn, $filt);
+                        if ($b == true) {
+                            //Le filtre du groupe a bien été supprimé
+                            $this->get('session')->getFlashBag()->add('flash-notice', 'AmuGroupFilter  a bien été supprimé');
+                            // Log
+                            syslog(LOG_INFO, "delete_amugroupfilter by $uidCurr : group : $cn");
+                        } else {
+                            // Log erreur
+                            syslog(LOG_ERR, "LDAP ERROR : delete_amugroupfilter by $uidCurr : group : $cn");
+                            // affichage erreur
+                            $this->get('session')->getFlashBag()->add('flash-error', 'Erreur LDAP lors de la suppression de l\'attribut amuGroupFilter');
+                            return $this->render('Group/creatormodify.html.twig', array('form' => $form->createView(), 'filtre' => $this->config_groups['creatorfilter'], 'phrase_regex' => $this->config_groups['phrase_regex']));
+                        }
+                    }
+
+                    // Modification du groupe dans le LDAP
+                    $b = $ldapfonctions->modGroup($dn, $group->getDescription(), $group->getAmugroupfilter());
+                    if ($b === true) {
+                        //Le groupe a bien été modifié
+                        // Log modif de groupe OK
+                        syslog(LOG_INFO, "modif_group by $uidCurr : group : $cn");
+
+                        // affichage groupe créé
+                        $this->get('session')->getFlashBag()->add('flash-notice', 'Le groupe a bien été modifié');
+                        $groups[0] = $group;
+                    } else {
+                        if ($b == 2) {
+                            // Erreur filtre
+                            $this->get('session')->getFlashBag()->add('flash-error', 'amuGroupFilter n\'est pas valide !');
+                        } else {
+                            // Log Erreur LDAP
+                            syslog(LOG_ERR, "LDAP ERROR : modif_group by $uidCurr : group : $cn");
+                            $this->get('session')->getFlashBag()->add('flash-error', 'Erreur LDAP lors de la modification du groupe');
+                        }
+                        return $this->render('Group/creatormodify.html.twig', array('form' => $form->createView(), 'filtre' => $this->config_groups['creatorfilter'], 'phrase_regex' => $this->config_groups['phrase_regex']));
+                    }
+
+                    // Renommage groupe dans le LDAP
+                    if ($cn != $group->getCn()) {
+                        $b = $ldapfonctions->renameGroupeLdap($dn, $group->getCn());
+                        if ($b == true) {
+                            //Le groupe a bien été renommé
+                            // Log modif de groupe OK
+                            $new_cn = $group->getCn();
+                            syslog(LOG_INFO, "rename_group by $uidCurr : group : $cn, new : $new_cn");
+
+                            // affichage groupe modifé
+                            $this->get('session')->getFlashBag()->add('flash-notice', 'Le groupe a bien été renommé');
+                            $groups[0] = $group;
+                            return $this->render('Group/modifygroup.html.twig', array('groups' => $groups));
+                        } else {
+                            // Log Erreur LDAP
+                            syslog(LOG_ERR, "LDAP ERROR : modif_group by $uidCurr: group : $cn");
+                            $this->get('session')->getFlashBag()->add('flash-error', 'Erreur LDAP lors du renommage du groupe');
+                        }
+                    }
+
+                    // retour sur la fiche du groupe
+                    return $this->redirect($this->generateUrl('group_update', array('cn' => $cn, 'liste' => 'recherchegroupe')));
+
+                    // Ferme fichier log
+                    closelog();
+                }
+
+                // Affichage formulaire de modification de groupe
+                return $this->render('Group/creatormodify.html.twig', array('form' => $form->createView(), 'filtre' => $this->config_groups['creatorfilter'], 'phrase_regex' => $this->config_groups['phrase_regex']));
+            }
         }
-        return $this->render('Group/modifyform.html.twig', array('form' => $form->createView(), 'group' => $group, 'filtre' => $filtre));
     }
 
     /**
