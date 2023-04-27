@@ -952,8 +952,8 @@ class GroupController extends AbstractController {
         
         // Recherche des administrateurs du groupe
         $arAdmins = $ldapfonctions->getAdminsGroup($cn);
-        
-        if (sizeof($arAdmins[0]->getAttribute($this->config_groups['groupadmin'])) > 0) {
+
+        if (($arAdmins[0]->getAttribute($this->config_groups['groupadmin']) != null) && (sizeof($arAdmins[0]->getAttribute($this->config_groups['groupadmin'])) > 0)) {
             $nb_admins = sizeof($arAdmins[0]->getAttribute($this->config_groups['groupadmin']));
             // on remplit le tableau d'entités
             for ($i=0; $i<sizeof($arAdmins[0]->getAttribute($this->config_groups['groupadmin'])); $i++) {
@@ -989,7 +989,7 @@ class GroupController extends AbstractController {
         // Recherche des creators du groupe
         $arCreators = $ldapfonctions->getCreatorsGroup($cn);
 
-        if (sizeof($arCreators[0]->getAttribute($this->config_groups['creator'])) > 0) {
+        if (($arCreators[0]->getAttribute($this->config_groups['creator']) != null) && (sizeof($arCreators[0]->getAttribute($this->config_groups['creator'])) > 0)) {
             $nb_creators = sizeof($arCreators[0]->getAttribute($this->config_groups['creator']));
             // on remplit le tableau d'entités
             for ($i=0; $i<sizeof($arCreators[0]->getAttribute($this->config_groups['creator'])); $i++) {
