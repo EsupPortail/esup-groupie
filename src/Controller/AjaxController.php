@@ -91,7 +91,7 @@ class AjaxController extends AbstractController
             foreach ($arCreatGroup as $creatGroup) {
                 $arData[$cpt] = $creatGroup;
                 $cpt++;
-                $arRes = $ldapfonctions->recherche("(&(objectClass=".$this->config_groups['object_class'][0].")(".$this->config_groups['cn']."=".$creatGroup->getAttribute($this->config_groups['cn'])[0].":*))", array($this->config_groups['cn']), 1, $this->config_groups['cn']);
+                $arRes = $ldapfonctions->recherche("(&(objectClass=".$this->config_groups['object_class'][0].")(".$this->config_groups['cn']."=".$creatGroup->getAttribute($this->config_groups['cn'])[0].$this->config_groups['separator']."*))", array($this->config_groups['cn']), 1, $this->config_groups['cn']);
                 foreach ($arRes as $gr){
                     // on vérifie que le groupe n'est pas déjà dans la liste
                     if (in_array($gr, $arData)) {
