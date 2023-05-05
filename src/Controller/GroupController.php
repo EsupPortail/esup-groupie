@@ -499,6 +499,10 @@ class GroupController extends AbstractController {
                             $groups[$i]->setAmugroupfilter($arData[$i]->getAttribute($this->config_groups['groupfilter'])[0]);
                         else
                             $groups[$i]->setAmugroupfilter("");
+                        if (isset($arData[$i]->getAttribute($this->config_groups['groupofgroup'])[0]))
+                            $groups[$i]->setGroupofgroup($arData[$i]->getAttribute($this->config_groups['groupofgroup'])[0]);
+                        else
+                            $groups[$i]->setGroupofgroup("");
                         $groups[$i]->setDroits('Aucun');
 
                         // Droits DOSI seulement en visu
@@ -542,10 +546,16 @@ class GroupController extends AbstractController {
                     if ($nb==1) {
                         if ($groups[0]->getDroits() == 'Modifier') {
                             if ($groups[0]->getAmuGroupFilter() == "") {
-                                return $this->redirect($this->generateUrl('group_modify', array('cn' => $groups[0]->getCn(), 'desc' => $groups[0]->getDescription(), 'filt' => 'no')));
+                                $filt = 'no';
                             } else {
-                                return $this->redirect($this->generateUrl('group_modify', array('cn' => $groups[0]->getCn(), 'desc' => $groups[0]->getDescription(), 'filt' => $groups[0]->getAmuGroupFilter())));
+                                $filt = $groups[0]->getAmuGroupFilter();
                             }
+                            if ($groups[0]->getGroupofgroup() == "") {
+                                $grofgr = 'no';
+                            } else {
+                                $grofgr = $groups[0]->getGroupofgroup();
+                            }
+                            return $this->redirect($this->generateUrl('group_modify', array('cn' => $groups[0]->getCn(), 'desc' => $groups[0]->getDescription(), 'filt' => $filt, 'groupofgroup' => $grofgr)));
                         }
                     }
                 }
@@ -1674,10 +1684,10 @@ class GroupController extends AbstractController {
     /**
      * Modifier un groupe.
      *
-     * @Route("/modify/{cn}/{desc}/{filt}", name="group_modify")
+     * @Route("/modify/{cn}/{desc}/{filt}/{groupofgroup}", name="group_modify")
      * @Template()
      */
-    public function modifyAction(Request $request, LdapFonctions $ldapfonctions, $cn, $desc, $filt)
+    public function modifyAction(Request $request, LdapFonctions $ldapfonctions, $cn, $desc, $filt, $groupofgroup)
     {
         $this->init_config();
         $group = new Group();
@@ -1714,6 +1724,11 @@ class GroupController extends AbstractController {
             else
                 $group->setAmugroupfilter($filt);
 
+            if ($groupofgroup == "no")
+                $group->setGroupofgroup("");
+            else
+                $group->setGroupofgroup($groupofgroup);
+
             $form = $this->createForm(GroupModifType::class, $group);
             $form->handleRequest($request);
             if ($form->isSubmitted() && $form->isValid()) {
@@ -1738,6 +1753,24 @@ class GroupController extends AbstractController {
                         syslog(LOG_ERR, "LDAP ERROR : delete_amugroupfilter by $adm : group : $cn");
                         // affichage erreur
                         $this->get('session')->getFlashBag()->add('flash-error', 'Erreur LDAP lors de la suppression de l\'attribut amuGroupFilter');
+                        return $this->render('Group/modifyform.html.twig', array('form' => $form->createView(), 'group' => $group));
+                    }
+                }
+
+                // Cas particulier de la suppression groupofgroup
+                if (($groupofgroup != "no") && ($groupmod->getGroupofgroup() == "")) {
+                    // Suppression de l'attribut
+                    $b = $ldapfonctions->delGroupofgroup($dn, $groupofgroup);
+                    if ($b == true) {
+                        //Le filtre du groupe a bien été supprimé
+                        $this->get('session')->getFlashBag()->add('flash-notice', 'Groupofgroup  a bien été supprimé');
+                        // Log
+                        syslog(LOG_INFO, "delete_groupofgroup by $adm : group : $cn");
+                    } else {
+                        // Log erreur
+                        syslog(LOG_ERR, "LDAP ERROR : delete_groupofgroup by $adm : group : $cn");
+                        // affichage erreur
+                        $this->get('session')->getFlashBag()->add('flash-error', 'Erreur LDAP lors de la suppression de l\'attribut groupofgroup');
                         return $this->render('Group/modifyform.html.twig', array('form' => $form->createView(), 'group' => $group));
                     }
                 }
@@ -1823,7 +1856,7 @@ class GroupController extends AbstractController {
 
                 // Création du formulaire de création de groupe
                 $form = $this->createForm(GroupCreatorModifType::class,
-                    array('action' => $this->generateUrl('group_modify', array('cn' => $cn, 'desc' => $desc, 'filt' => $filt)),
+                    array('action' => $this->generateUrl('group_modify', array('cn' => $cn, 'desc' => $desc, 'filt' => $filt, 'groupofgroup' => '')),
                         'method' => 'GET',
                         'liste_groupes' => $tab_choice_groups,
                         'prefixe' => $i_default,

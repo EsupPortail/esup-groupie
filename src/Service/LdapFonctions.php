@@ -364,6 +364,31 @@ class LdapFonctions
     }
 
     /**
+     * Supprimer le amugroupfilter d'un groupe
+     * @return  \Amu\AppBundle\Service\Ldap
+     */
+    public function delGroupofgroup($dn_group, $groupofgroup) {
+
+        // Entry manager
+        $entryManager = $this->ldap->getEntryManager();
+
+        // Finding and updating group
+        $pos = strpos($dn_group, "ou=");
+        $cn = substr($dn_group, 0, $pos-2);
+        $base = substr($dn_group, $pos);
+        $query = $this->ldap->query($base, $cn, array('filter' => array('description')));
+        $result = $query->execute();
+        $entry = $result[0];
+        try {
+            $entryManager->removeAttributeValues($entry, $this->config_groups['groupofgroup'], [$groupofgroup]);
+        }catch (\Exception $e) {
+            return(false);
+        }
+        return(true);
+
+    }
+
+    /**
      * Récupérer le createur d'un groupe
      * @return  \Amu\AppBundle\Service\Ldap
      */
@@ -437,7 +462,7 @@ class LdapFonctions
      * Supprimer le amugroupfilter et la description d'un groupe
      * @return  \Amu\AppBundle\Service\Ldap
      */
-    public function modGroup($dn_group, $desc, $filter) {
+    public function modGroup($dn_group, $desc, $filter, $groupofgroup) {
 
         // Entry manager
         $entryManager = $this->ldap->getEntryManager();
@@ -451,6 +476,7 @@ class LdapFonctions
         $entry = $result[0];
         try {
             $entry->setAttribute($this->config_groups['desc'], [$desc]);
+            $entry->setAttribute($this->config_groups['groupofgroup'], [$groupofgroup]);
             $entryManager->update($entry);
             if ($filter !== null) {
                 // Test amu groupfilter :

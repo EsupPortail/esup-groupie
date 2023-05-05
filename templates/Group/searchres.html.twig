@@ -86,18 +86,21 @@
                             {% endif %}
                             {% if opt=='mod' %}
                                 {% if group.amugroupfilter == "" %}
-                                    <td style="vertical-align: middle;">
-                                        <a href="{{path('group_modify', { 'cn': group.cn, 'desc': group.description, 'filt': 'no' })}}">
-                                            <img align="absmiddle" src="{{ asset("build/images/modif.png") }}" title="Modifier le groupe {{ group.cn }} "/>
-                                        </a>
-                                    </td>
+                                    {% set filt = 'no' %}
                                 {% else %}
-                                    <td style="vertical-align: middle;">
-                                        <a href="{{path('group_modify', { 'cn': group.cn, 'desc': group.description, 'filt': group.amugroupfilter })}}">
-                                            <img align="absmiddle" src="{{ asset("build/images/modif.png") }}" title="Modifier le groupe {{ group.cn }} "/>
-                                        </a>
-                                    </td>
+                                    {% set filt = group.amugroupfilter %}
                                 {% endif %}
+                                {% if group.groupofgroup == "" %}
+                                    {% set groupofgroup = 'no' %}
+                                {% else %}
+                                    {% set groupofgroup = group.groupofgroup %}
+                                {% endif %}
+                                <td style="vertical-align: middle;">
+                                    <a href="{{path('group_modify', { 'cn': group.cn, 'desc': group.description, 'filt': filt, 'groupofgroup': groupofgroup })}}" >
+                                        <img align="absmiddle" src="{{ asset("build/images/modif.png") }}" title="Modifier le groupe {{ group.cn }} "/>
+                                    </a>
+                                </td>
+
                             {% endif %}
                             {% if opt=='add' %}
                                 <td style="vertical-align: middle;">
