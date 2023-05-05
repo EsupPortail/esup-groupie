@@ -16,6 +16,7 @@ namespace App\Form;
 
 use App\Entity\Group;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -33,6 +34,12 @@ class GroupCreateType extends AbstractType
             ->add('description', TextType::class, array(
                                              'required' => true
                                              ))
+
+            ->add('groupofgroup', ChoiceType::class, array(
+                                            'label' => 'Groupe de groupes',
+                                            'choices' => array('OUI' => true, 'NON' => false),
+                                            'required' => false
+                                        ))
 
             ->add('amugroupfilter', TextType::class, array(
                                                 'label' => 'Filtre',

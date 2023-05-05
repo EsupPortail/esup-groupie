@@ -20,6 +20,7 @@ class Group {
   protected $amugroupfilter;
   protected $amugroupcreator;
   protected $owner;
+  protected $groupofgroup;
   protected $droits;
   protected $flag;
   
@@ -55,8 +56,17 @@ public function __construct()
  {
     $this->amugroupfilter = $amugroupfilter;
  }
+/**
+ * Set groupofgroup
+ *
+ * @param string groupofgroup
+ */
+public function setGroupofgroup($groupofgroup)
+{
+    $this->groupofgroup = $groupofgroup;
+}
  /**
-  * Set cn
+  * Set owner
   *
   * @param string $owner
  */
@@ -144,6 +154,13 @@ public function setFlag($flag)
  {
     return ($this->amugroupfilter);
  }
+/**
+ * Get groupofgroup
+ */
+public function getGroupofgroup()
+{
+    return($this->groupofgroup);
+}
  /**
   * Get owner
  */
@@ -202,13 +219,16 @@ public function getFlag()
 
  */
 
- public function infosGroupeLdap($param_cn, $param_desc, $param_owner, $param_groupfilter, $param_objectclass)
+ public function infosGroupeLdap($param_cn, $param_desc, $param_owner, $param_groupofgroup, $param_groupfilter, $param_objectclass)
  {
    $addgroup = array();
 
    $addgroup[$param_cn] = $this->cn;
    $addgroup[$param_desc] = $this->description;
    $addgroup[$param_owner] = $this->owner;
+   if ($this->groupofgroup != "") {
+       $addgroup[$param_groupofgroup] = $this->groupofgroup;
+   }
    if ($this->amugroupfilter != "") {
         $addgroup[$param_groupfilter] = $this->amugroupfilter;
    }
