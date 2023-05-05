@@ -1148,7 +1148,7 @@ class GroupController extends AbstractController {
             if ($form->isSubmitted() && $form->isValid()) {
                 // Récupération des données
                 $group = $form->getData();
-                $cn = $group->getName();
+                $cn = $group->getCn();
 
                 // Test longueur du nom
                 if (strlen($cn) > $this->config_groups['max_name_size']) {

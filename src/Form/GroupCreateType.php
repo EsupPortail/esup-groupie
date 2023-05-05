@@ -37,7 +37,7 @@ class GroupCreateType extends AbstractType
 
             ->add('groupofgroup', ChoiceType::class, array(
                                             'label' => 'Groupe de groupes',
-                                            'choices' => array('OUI' => true, 'NON' => false),
+                                            'choices' => array('OUI' => 'TRUE', 'NON' => 'FALSE'),
                                             'required' => false
                                         ))
 
