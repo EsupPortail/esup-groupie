@@ -1,5 +1,5 @@
 #!/usr/bin/perl
-# Dominique LALOT AMU
+# Fait la maj des groupes basés sur des filtres en général sur ou=people, mais aussi sur des groupes si $group2groupattr est positionné à TRUE
 use strict;
 use Data::Dumper;
 use Net::LDAPS;
@@ -23,16 +23,20 @@ my %HldapValide;
 our ($opt_h, $opt_v,$opt_t,$opt_f);
 # utilisé pour les groupes SQL limités au personnel
 my $filter='(&(amudatevalidation=*)(|(edupersonaffiliation=employee)(edupersonaffiliation=faculty)(edupersonaffiliation=researcher)(edupersonaffiliation=affiliate)))';
+#  Sert à créer des groupes à filtre regroupant des admins
+#  A changer selon votre schéma LDAP
 my $adminattr='amugroupadmin';    # DN des admins de groupe
+my $admincreatorattr='amugroupcreator';    # DN des admins de création de groupe
+# Groupes normaux basés sur member
 my $memberattr='amugroupmember';    # DN des membres groupe forcés dans un groupe à filtre (gestion manuelle en LDAP)
 my $filterattr='amugroupfilter';    # nom de l'attribut contennant un filtre LDAP ou SQl 
-my $group2groupattr='amugroupofgroup';    # nom de l'attribut contennant un filtre LDAP ou SQl 
+my $group2groupattr='amugroupofgroup';    # cet attribut booléen TRUE/FALSE indique si le filtre pointe vers des groupes pour faire des groupes de groupes
 my $filtergrp="$filterattr=*";
     
 getopts('tvhf:d:');
 if (defined($opt_h)){
    print "Usage: [-t] [-v]
-   -f fitre de groupe
+   -f nom du groupe
    -v mode verbose
    -t teste seulement\n";
    exit;
@@ -106,6 +110,9 @@ sub Group {
             if ($filter=~/$adminattr/i){ # le groupe qui contient tous les admins groupie
                 $attr=$adminattr;
             }
+            elsif ($filter=~/$admincreatorattr/i){ # le groupe qui contient tous les admins createurs de groupes dans groupie
+                $attr=$admincreatorattr;
+            }
             else {
                 $attr='member'; # groupe de groupe normal dont filtre sous la forme cn=*:*
             } 
@@ -146,6 +153,7 @@ sub Group {
         }
     }
     else { #SQL
+        print "SQL $groupeDN $filter\n" if $VERBOSE;
         my ($dbi,$user,$pass,$sql)=split(/\|/,$filter);
         my $dbh = DBI->connect($dbi,$user,$pass) || do {warn( "$groupeDN connect ".$DBI::errstr . "\n" );return};
         my $sthSearch = $dbh->prepare( $sql );
