@@ -92,6 +92,8 @@
                     <th>Administrateur</th>
                     {% if is_granted('ROLE_ADMIN') %}
                         <th>Créateur</th>
+                    {% else %}
+                        <th style="display:none">Créateur</th>
                     {% endif %}
                 </tr>
                 </thead>
@@ -176,6 +178,7 @@
             },
             "columns": [
                 null, null,null, null, null, null,
+                { "orderDataType": "dom-checkbox" },
                 { "orderDataType": "dom-checkbox" },
                 { "orderDataType": "dom-checkbox" }
             ],
