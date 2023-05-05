@@ -441,7 +441,7 @@ class GroupController extends AbstractController {
                         return $this->redirect($this->generateUrl('group_search', array('opt'=>$opt, 'uid'=>$uid)));
                     }
                     // Recherche exacte des groupes dans le LDAP
-                    $arData=$ldapfonctions->recherche("(&(objectClass=".$this->config_groups['object_class'][0].")(".$this->config_groups['cn']."=" . $groupsearch->getCn() . "))", array($this->config_groups['cn'], $this->config_groups['desc'], $this->config_groups['groupfilter']), 1, $this->config_groups['cn']);
+                    $arData=$ldapfonctions->recherche("(&(objectClass=".$this->config_groups['object_class'][0].")(".$this->config_groups['cn']."=" . $groupsearch->getCn() . "))", array($this->config_groups['cn'], $this->config_groups['desc'], $this->config_groups['groupfilter'], $this->config_groups['groupofgroup']), 1, $this->config_groups['cn']);
                 }
                 else {
                     // Cas modification ou suppression pour les creators
@@ -1753,7 +1753,7 @@ class GroupController extends AbstractController {
                         syslog(LOG_ERR, "LDAP ERROR : delete_amugroupfilter by $adm : group : $cn");
                         // affichage erreur
                         $this->get('session')->getFlashBag()->add('flash-error', 'Erreur LDAP lors de la suppression de l\'attribut amuGroupFilter');
-                        return $this->render('Group/modifyform.html.twig', array('form' => $form->createView(), 'group' => $group));
+                        return $this->render('Group/modifyform.html.twig', array('form' => $form->createView(), 'group' => $group, 'filtre' => true));
                     }
                 }
 
@@ -1771,12 +1771,12 @@ class GroupController extends AbstractController {
                         syslog(LOG_ERR, "LDAP ERROR : delete_groupofgroup by $adm : group : $cn");
                         // affichage erreur
                         $this->get('session')->getFlashBag()->add('flash-error', 'Erreur LDAP lors de la suppression de l\'attribut groupofgroup');
-                        return $this->render('Group/modifyform.html.twig', array('form' => $form->createView(), 'group' => $group));
+                        return $this->render('Group/modifyform.html.twig', array('form' => $form->createView(), 'group' => $group, 'filtre' => true));
                     }
                 }
 
                 // Modification du groupe dans le LDAP
-                $b = $ldapfonctions->modGroup($dn, $groupmod->getDescription(), $groupmod->getAmugroupfilter());
+                $b = $ldapfonctions->modGroup($dn, $groupmod->getDescription(), $groupmod->getAmugroupfilter(), $groupmod->getGroupofgroup());
                 if ($b === true) {
                     //Le groupe a bien été modifié
                     // Log modif de groupe OK
@@ -1794,7 +1794,7 @@ class GroupController extends AbstractController {
                         syslog(LOG_ERR, "LDAP ERROR : modif_group by $adm : group : $cn");
                         $this->get('session')->getFlashBag()->add('flash-error', 'Erreur LDAP lors de la modification du groupe');
                     }
-                    return $this->render('Group/modifyform.html.twig', array('form' => $form->createView(), 'group' => $group));
+                    return $this->render('Group/modifyform.html.twig', array('form' => $form->createView(), 'group' => $group, 'filtre' => true));
                 }
 
                 // Renommage groupe dans le LDAP

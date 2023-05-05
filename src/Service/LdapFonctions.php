@@ -476,6 +476,7 @@ class LdapFonctions
         $entry = $result[0];
         try {
             $entry->setAttribute($this->config_groups['desc'], [$desc]);
+            $entryManager->update($entry);
             $entry->setAttribute($this->config_groups['groupofgroup'], [$groupofgroup]);
             $entryManager->update($entry);
             if ($filter !== null) {
