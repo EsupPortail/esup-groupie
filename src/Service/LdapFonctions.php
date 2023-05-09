@@ -462,7 +462,7 @@ class LdapFonctions
      * Supprimer le amugroupfilter et la description d'un groupe
      * @return  \Amu\AppBundle\Service\Ldap
      */
-    public function modGroup($dn_group, $desc, $filter, $groupofgroup) {
+    public function modGroup($dn_group, $desc, $filter, $groupofgroup = '') {
 
         // Entry manager
         $entryManager = $this->ldap->getEntryManager();
@@ -477,8 +477,10 @@ class LdapFonctions
         try {
             $entry->setAttribute($this->config_groups['desc'], [$desc]);
             $entryManager->update($entry);
-            $entry->setAttribute($this->config_groups['groupofgroup'], [$groupofgroup]);
-            $entryManager->update($entry);
+            if ($groupofgroup != '') {
+                $entry->setAttribute($this->config_groups['groupofgroup'], [$groupofgroup]);
+                $entryManager->update($entry);
+            }
             if ($filter !== null) {
                 // Test amu groupfilter :
                 // on verifie que le filtre ldap est valide

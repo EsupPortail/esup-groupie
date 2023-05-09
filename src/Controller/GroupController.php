@@ -1320,7 +1320,7 @@ class GroupController extends AbstractController {
                     $adm = $this->container->get('security.token_storage')->getToken()->getAttribute("uid");
 
                     // Création du groupe dans le LDAP
-                    $infogroup = $group->infosGroupeLdap($this->config_groups['cn'], $this->config_groups['desc'], $this->config_groups['owner'], $this->config_groups['groupfilter'], $this->config_groups['object_class']);
+                    $infogroup = $group->infosGroupeLdap($this->config_groups['cn'], $this->config_groups['desc'], $this->config_groups['owner'], '', $this->config_groups['groupfilter'], $this->config_groups['object_class']);
                     $b = $ldapfonctions->createGroupeLdap($this->config_groups['cn'] . "=" . $group->getCn() . "," . $this->config_groups['group_branch'] . "," . getenv("base_dn"), $infogroup);
                     if ($b == true) {
                         // affichage groupe créé
@@ -1856,7 +1856,7 @@ class GroupController extends AbstractController {
 
                 // Création du formulaire de création de groupe
                 $form = $this->createForm(GroupCreatorModifType::class,
-                    array('action' => $this->generateUrl('group_modify', array('cn' => $cn, 'desc' => $desc, 'filt' => $filt, 'groupofgroup' => '')),
+                    array('action' => $this->generateUrl('group_modify', array('cn' => $cn, 'desc' => $desc, 'filt' => $filt, 'groupofgroup' => 'no')),
                         'method' => 'GET',
                         'liste_groupes' => $tab_choice_groups,
                         'prefixe' => $i_default,
