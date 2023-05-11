@@ -4,7 +4,8 @@ cas_guard:
   certificate:          false # Example: certificate path
 
   # Enter a filename to trace log or leave empty to use the default filename. Set to false to disable debug function.
-  debug:                '%kernel.logs_dir%/%kernel.environment%.guard.log' # Example: phpcas-trace.log
+#  debug:                '%kernel.logs_dir%/%kernel.environment%.guard.log' # Example: phpcas-trace.log
+  debug:                false
 
   # Enter the hostname of the CAS server.
   hostname:             cas.fr # Required, Example: example.org
