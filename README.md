@@ -40,6 +40,7 @@ Au niveau LDAP
     - amuGroupFilter : filtre LDAP si le groupe est alimenté automatiquement
     - amuGroupAdmin : dn du ou des administrateurs du groupe
     - amuGroupCreator : dn du ou des utilisateurs qui peuvent créer des groupes à partir de cette arborescence 
+    - amuGroupofGroup : booléen pour indiquer si on fait un filtre sur l'ou groups
   Le nom des attributs est paramétrable.
 - Scripts d'alimentation qui tournent régulièrement sont sur la machine LDAP
     - SyncAllGroups.pl : met à jour les groupes alimentés par des filtres LDAP ou par une table d'une base Oracle.
@@ -191,7 +192,11 @@ Le reste du paramétrage s'effectue dans les fichiers de config dans config. Il 
                 creator: amuGroupCreator
                 creatorfilter: true
                 owner: owner
+                groupofgroup: amuGroupOfGroup
                 separator: ':'
+                max_name_size: 63
+                name_regex: "/([^a-z0-9:])/"
+                phrase_regex: "Le nom ne doit pas excéder 63 caractères. Les caractères autorisés pour le nommage sont les lettres minuscules, les chiffres et le séparateur :"
             private:
                 private_branch: ou=private
                 prefix: amu:perso
@@ -247,28 +252,35 @@ Schéma LDAP
 ----------------------------------------------------------------------------------
 Le nom des attributs est paramétrable.
 
-		objectclass   ( 1.3.6.1.4.1.7135.1.1.2.2.7 NAME 'AMUGroup' SUP top AUXILIARY
-			 DESC 'Groupes spécifiques AMU '
-			 MAY ( amuGroupFilter $ amuGroupAdmin $ amuGroupAD $ amuGroupMember ))
+        objectclass   ( 1.3.6.1.4.1.7135.1.1.2.2.7 NAME 'AMUGroup' SUP top AUXILIARY
+            DESC 'Groupes spécifiques AMU '
+            MAY ( amuGroupFilter $ amuGroupCreator $ amuGroupAdmin $ amuGroupMember $ amuGroupOfGroup $ objectSid $ supannEntiteAffectation))
 
-		attributetype (  1.3.6.1.4.1.7135.1.3.131.3.40 NAME 'amuGroupAdmin'
+        attributetype (  1.3.6.1.4.1.7135.1.3.131.3.40 NAME 'amuGroupAdmin'
 			DESC 'RFC2256: admin of a group'
 			SUP distinguishedName )
 
-		attributetype ( 1.3.6.1.4.1.7135.1.3.131.3.41 NAME 'amuGroupFilter'
+        attributetype ( 1.3.6.1.4.1.7135.1.3.131.3.41 NAME 'amuGroupFilter'
 			DESC 'Filtre LDAP pour les groupes'
 			 EQUALITY caseIgnoreMatch
 			 SUBSTR caseIgnoreSubstringsMatch
 			 SYNTAX 1.3.6.1.4.1.1466.115.121.1.15{256} )
 
-		attributetype (  1.3.6.1.4.1.7135.1.3.131.3.45 NAME 'amuGroupMember'
+        attributetype (  1.3.6.1.4.1.7135.1.3.131.3.45 NAME 'amuGroupMember'
 			DESC 'manual member of a group in a group by filter using ldapadd'
 			SUP distinguishedName )
 
-		attributetype ( 1.3.6.1.4.1.7135.1.3.131.3.42 NAME 'amuGroupAD'
-           DESC 'Export AD '
-           EQUALITY booleanMatch
-           SINGLE-VALUE
-          SYNTAX 1.3.6.1.4.1.1466.115.121.1.7 )
+        attributetype ( 1.3.6.1.4.1.7135.1.3.131.3.46 NAME 'amuGroupOfGroup'
+            DESC 'Groupe de Groupe '
+            EQUALITY booleanMatch
+            SINGLE-VALUE
+            SYNTAX 1.3.6.1.4.1.1466.115.121.1.7 )
+
+        attributetype (  1.3.6.1.4.1.7135.1.3.131.3.44 NAME 'amuGroupCreator'
+          DESC 'RFC2256: createur de groupes'
+          SUP distinguishedName )
+
 
 L'attribut amuGroupMember permet d'ajouter manuellement une personne à un groupe qui est alimenté par un filtre. Cet attribut ne se modifie pas dans l'interface.
+L'attribut amuGroupOfGroup permet de peupler un groupe avec un filtre définissant un groupe de groupes. Si l'attribut est positionné à TRUE, le filtre se fait dans l'ou groups.
+Il faut également penser à positionner les droits sur ces attributs pour l'utilisateur privilégié que vous utilisez (acl.conf).
