@@ -223,6 +223,7 @@ role:
     - { name: ROLE_MEMBRE,         type: ldap, rule: '(&(memberof=cn=personnel,ou=groups,dc=univ,dc=fr)(uid=login))' }
     - { name: ROLE_GESTIONNAIRE,   type: ldap, rule: '(&(memberof=cn=gest,ou=groups,dc=univ,dc=fr)(uid=login))' }
     - { name: ROLE_CREATEUR,       type: ldap, rule: '(&(memberof=cn=creat,ou=groups,dc=univ,dc=fr)(uid=login))' }
+    - { name: ROLE_CREATEUR_FILTRE,type: ldap, rule: '(&(memberof=cn=filtcreat,ou=groups,dc=univ,dc=fr)(uid=login))' }
     - { name: ROLE_DOSI,           type: ldap, rule: '(&(memberof=cn=dosi,ou=groups,dc=univ,dc=fr)(uid=login))' }
     - { name: ROLE_PRIVE,          type: ldap, rule: '(&(memberof=cn=dosi,ou=groups,dc=univ,dc=fr)(uid=login))' }
     - { name: ROLE_ADMIN,          type: ldap, rule: '(&(memberof=cn=groupie,ou=groups,dc=univ,dc=fr)(uid=login))' }
